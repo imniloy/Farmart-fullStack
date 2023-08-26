@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --brand-primary-color: #02b290;
+    --color-white: #ffffff;
+    --color-secondary-white: #f3f4f6;
+    --color-black: #253d4e;
+    --font-poppins: "Poppins";
+    --font-inter: "Inter";
+  }
+}
+
+@layer components {
+  .section-container {
+    @apply mx-2 500px:mx-6 xl:mx-auto xl:max-w-[1200px] 2xl:max-w-[1420px];
+  }
+  .swiper {
+    @apply w-full h-full;
+  }
+  .swiper-slide {
+    @apply text-center text-lg bg-white flex items-center justify-center;
+  }
+  .swiper-slide-img {
+    @apply h-[380px] 500px:h-[360px] lg:h-[380px] xl:h-[400px] 2xl:h-[440px] bg-cover w-full;
+  }
+  .swiper-pagination {
+    @apply relative;
+  }
+
+  .product-image-swipper {
+    @apply order-1 xl:order-2 flex-grow bg-transparent border border-brand-color h-[600px] w-full overflow-hidden;
+  }
+
+  .product-thumb-swipper {
+    @apply flex flex-row xl:flex-col space-x-2 xl:space-x-0 xl:space-y-2 order-2 xl:order-1  mt-2 xl:mt-0;
+  }
+}
+
+@layer utilities {
+}
