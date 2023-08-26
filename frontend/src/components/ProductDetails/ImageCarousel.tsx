@@ -1,7 +1,7 @@
 "use client";
 import { product } from "@/types/products";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
 const ImageCarousel = ({
   thumbnail,
@@ -9,78 +9,81 @@ const ImageCarousel = ({
 }: {
   thumbnail: any;
   images: any;
-}) => {
+}): React.ReactNode => {
+  const [showImage, setShowImage] = useState<string>("");
+
   console.log(thumbnail);
-  console.log(images);
+  if (images) {
+    console.log(images);
+  }
+
+  console.log(showImage);
   return (
     <div className="lg:col-span-6 xl:col-span-7">
       <div className="w-full space-x-0 xl:space-x-3 flex flex-col xl:flex-row">
         {/* image chooser */}
         <div className="product-thumb-swipper">
-          <div className="relative border border-brand-color rounded overflow-hidden cursor-pointer hover:opacity-60 transition-all duration-200 shrink-0 w-20 sm:w-24 md:w-[120px] xl:w-[150px] 2xl:w-[170px]">
-            <img
-              src={`http://127.0.0.1:1337/uploads/small_Organic_Green_Cauliflower_1lb_316bb2566e.webp`}
-              alt="product-image-1"
+          {/* thubnail image */}
+          <div
+            className={`relative border ${
+              showImage === thumbnail.attributes.formats.small.url ||
+              showImage === ""
+                ? "border-brand-color"
+                : "border-gray-200"
+            } rounded overflow-hidden cursor-pointer hover:opacity-70 transition-all duration-200 shrink-0 w-20 h-20 sm:w-24 sm:h-24 md:w-[120px] md:h-[120px] xl:w-[150px] xl:h-[150px] 2xl:w-[170px]`}
+            onClick={() => setShowImage(thumbnail.attributes.formats.small.url)}
+          >
+            <Image
+              src={`http://127.0.0.1:1337${thumbnail.attributes.formats.small.url}`}
+              alt="{thumbnail.attributes.name}"
+              fill
+              style={{
+                objectFit: "cover",
+              }}
+              sizes="90px, (min-width: 640px) 100px, (min-width: 786px) 130px, (min-width: 1280px) 160px, (min-width: 1536px) 170px"
             />
           </div>
-          <div className="border border-brand-color rounded overflow-hidden cursor-pointer hover:opacity-60 transition-all duration-200 shrink-0 w-20 sm:w-24 md:w-[120px] xl:w-[150px] 2xl:w-[170px]">
-            <img
-              src="https://borobazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fproducts%2Fp-3-2.png&w=750&q=75"
-              alt="product-image-2"
-            />
-          </div>
-          <div className="border border-brand-color rounded overflow-hidden cursor-pointer hover:opacity-60 transition-all duration-200 shrink-0 w-20 sm:w-24 md:w-[120px] xl:w-[150px] 2xl:w-[170px]">
-            <img
-              src="https://borobazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fproducts%2Fp-3-1.png&w=256&q=75"
-              alt="product-image-3"
-            />
-          </div>
+
+          {images &&
+            images.length > 0 &&
+            images.map((image: any) => (
+              <div
+                key={image.id}
+                className={`relative border ${
+                  showImage === image.attributes.formats.small.url
+                    ? "border-brand-color"
+                    : "border-gray-200"
+                } rounded overflow-hidden cursor-pointer hover:opacity-70 transition-all duration-200 shrink-0 w-20 h-20 sm:w-24 sm:h-24 md:w-[120px] md:h-[120px] xl:w-[150px] xl:h-[150px] 2xl:w-[170px]`}
+                onClick={() => setShowImage(image.attributes.formats.small.url)}
+              >
+                <Image
+                  src={`http://127.0.0.1:1337${image.attributes.formats.small.url}`}
+                  alt="{image.attributes.name}"
+                  fill
+                  style={{
+                    objectFit: "cover",
+                  }}
+                  sizes="90px, (min-width: 640px) 100px, (min-width: 786px) 130px, (min-width: 1280px) 160px, (min-width: 1536px) 170px"
+                />
+              </div>
+            ))}
         </div>
         {/* image  */}
-        <div className="order-1 xl:order-2 flex-grow bg-transparent border border-brand-color h-[320px] 500px:h-[380px] sm:h-[480px] md:h-[500px] lg:h-[580px] w-full overflow-hidden rounded-md">
-          <img
-            // fetchpriority="high"
-            src="https://borobazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fproducts%2Fp-3-2.png&w=750&q=75"
+        <div className="relative order-1 xl:order-2 flex-grow bg-transparent border border-brand-color h-[320px] 500px:h-[380px] sm:h-[480px] md:h-[500px] lg:h-[580px] w-full overflow-hidden rounded-md">
+          <Image
+            src={
+              showImage
+                ? `http://127.0.0.1:1337${showImage}`
+                : `http://127.0.0.1:1337${thumbnail.attributes.formats.small.url}`
+            }
+            fill
+            style={{
+              objectFit: "contain",
+            }}
             className="h-full mx-auto"
-            alt=""
+            alt={`${thumbnail.attributes.name}`}
           />
         </div>
-        {/* swipper code start here */}
-        {/* <div class="swiper product-image-swipper">
-<div class="swiper-wrapper">
-  <div class="swiper-slide">
-    <img
-      fetchpriority="high"
-      src="https://borobazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fproducts%2Fp-3-3.png&w=750&q=75"
-      class="w-full h-full"
-      alt=""
-    />
-  </div>
-
-  <div class="swiper-slide">
-    <img
-      fetchpriority="high"
-      src="https://borobazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fproducts%2Fp-3-2.png&w=750&q=75"
-      class="w-full h-full"
-      alt=""
-    />
-  </div>
-
-  <div class="swiper-slide">
-    <img
-      fetchpriority="high"
-      src="https://borobazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fproducts%2Fp-3-3.png&w=750&q=75"
-      class="w-full h-full"
-      alt=""
-    />
-  </div>
-</div>
-
-
-<div class="swiper-button-prev"></div>
-<div class="swiper-button-next"></div>
-    </div> */}
-        {/* swipper code end here */}
       </div>
     </div>
   );

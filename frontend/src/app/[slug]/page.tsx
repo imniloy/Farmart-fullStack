@@ -44,7 +44,10 @@ const page = async ({ params }: { params: Params }) => {
         <div className="mb-8 lg:mb-10">
           <div className="grid gap-y-8 lg:gap-x-4 xl:gap-x-6 lg:grid-cols-12 mb-8 lg:mb-12 xl:mb-20">
             {/* image carosul or selector */}
-            <ImageCarousel thumbnail={attributes} images={attributes.images} />
+            <ImageCarousel
+              thumbnail={attributes.thumbnail.data}
+              images={attributes.images.data}
+            />
 
             {/* details info */}
             <div className="lg:col-span-6 xl:col-span-5">
@@ -100,7 +103,7 @@ const page = async ({ params }: { params: Params }) => {
                 </div>
                 <div className="flex flex-wrap space-x-[2px] lg:space-x-1 space-y-[2px] lg:space-y-1">
                   <div className="block font-medium text-13px md:text-sm rounded hover:bg-emerald-100 border border-sink-base px-2 py-1 transition-all duration-300 cursor-pointer">
-                    Fresh food
+                    {attributes.category.data.attributes.name}
                   </div>
                 </div>
               </div>
@@ -114,17 +117,7 @@ const page = async ({ params }: { params: Params }) => {
               <hr />
             </div>
             <p className="font-normal text-gray-700 font-inter">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam
-              alias, similique magnam in corrupti facere? Neque non at nostrum
-              nisi aliquid necessitatibus repellat exercitationem dolores,
-              sapiente quia magni commodi expedita.Lorem ipsum dolor sit amet
-              consectetur adipisicing elit. Numquam alias, similique magnam in
-              corrupti facere? Neque non at nostrum nisi aliquid necessitatibus
-              repellat exercitationem dolores, sapiente quia magni commodi
-              expedita.Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Numquam alias, similique magnam in corrupti facere? Neque non at
-              nostrum nisi aliquid necessitatibus repellat exercitationem
-              dolores, sapiente quia magni commodi expedita.
+              {attributes.description}
             </p>
           </div>
         </div>
