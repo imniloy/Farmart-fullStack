@@ -1,14 +1,25 @@
+"use client";
+import { product } from "@/types/products";
+import Image from "next/image";
 import React from "react";
 
-const ImageCarousel = () => {
+const ImageCarousel = ({
+  thumbnail,
+  images,
+}: {
+  thumbnail: any;
+  images: any;
+}) => {
+  console.log(thumbnail);
+  console.log(images);
   return (
     <div className="lg:col-span-6 xl:col-span-7">
       <div className="w-full space-x-0 xl:space-x-3 flex flex-col xl:flex-row">
         {/* image chooser */}
         <div className="product-thumb-swipper">
-          <div className="border border-brand-color rounded overflow-hidden cursor-pointer hover:opacity-60 transition-all duration-200 shrink-0 w-20 sm:w-24 md:w-[120px] xl:w-[150px] 2xl:w-[170px]">
+          <div className="relative border border-brand-color rounded overflow-hidden cursor-pointer hover:opacity-60 transition-all duration-200 shrink-0 w-20 sm:w-24 md:w-[120px] xl:w-[150px] 2xl:w-[170px]">
             <img
-              src="https://borobazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fproducts%2Fp-3-1.png&w=256&q=75"
+              src={`http://127.0.0.1:1337/uploads/small_Organic_Green_Cauliflower_1lb_316bb2566e.webp`}
               alt="product-image-1"
             />
           </div>

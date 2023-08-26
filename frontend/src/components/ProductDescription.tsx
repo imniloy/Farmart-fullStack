@@ -8,7 +8,7 @@ const ProductDescription = ({
   originalPrice,
   stock,
 }: {
-  id: string;
+  id: number;
   name: string;
   price: number;
   originalPrice: number | null | undefined;

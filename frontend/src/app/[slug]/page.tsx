@@ -1,9 +1,10 @@
+import Product from "@/components/Product";
 import BreadCum from "@/components/ProductDetails/BreadCum";
 import Button from "@/components/ProductDetails/Button";
 import ImageCarousel from "@/components/ProductDetails/ImageCarousel";
 import { getProductDetails, getRelatedProducts } from "@/services/product";
 import { Category } from "@/types/Categories";
-import { product } from "@/types/products";
+import { attributes, product } from "@/types/products";
 import React from "react";
 
 type Params = {
@@ -12,22 +13,30 @@ type Params = {
 
 const page = async ({ params }: { params: Params }) => {
   const { slug } = params;
-  let reletedProducts;
+  let reletedProducts: product[] = [];
   const { success, data }: { success: boolean; data: product[] } =
     await getProductDetails(slug);
 
+  const { id, attributes }: { id: number; attributes: attributes } = data[0];
+
   if (success && data.length > 0) {
-    const categoryId = data[0].attributes?.category.data.id;
+    const categoryId: number = data[0].attributes?.category.data.id;
+    const productId: number = id;
+
     const {
       success: FetchRelatedProductSuccess,
-      data: relatedProducts,
-    }: { success: boolean; data: product[] } = await getRelatedProducts(
-      categoryId
-    );
+      data: allRelatedProducts,
+    }: { success: boolean; data: product[] } = await getRelatedProducts({
+      categoryId,
+      productId,
+    });
+
+    reletedProducts = allRelatedProducts;
   }
 
   return (
     <div className="bg-white">
+      {/* product details */}
       <section className="section-container">
         {/* Breadcrumbs  */}
         <BreadCum />
@@ -35,21 +44,29 @@ const page = async ({ params }: { params: Params }) => {
         <div className="mb-8 lg:mb-10">
           <div className="grid gap-y-8 lg:gap-x-4 xl:gap-x-6 lg:grid-cols-12 mb-8 lg:mb-12 xl:mb-20">
             {/* image carosul or selector */}
-            <ImageCarousel />
+            <ImageCarousel thumbnail={attributes} images={attributes.images} />
 
             {/* details info */}
             <div className="lg:col-span-6 xl:col-span-5">
-              <div className="title&stock-info space-y-2">
+              <div className="title&stock-info space-y-4">
                 <h1 className="text-lg md:text-xl xl:text-2xl font-inter font-semibold transition-colors duration-300 text-color-black leading-tight">
-                  MSI Optix G241V E2 24" FHD FreeSync IPS Esports Gaming Monitor
+                  {attributes.name}
                 </h1>
                 <h4 className="inline-block px-3 py-1 text-sm rounded-sm bg-emerald-100 text-emerald-500 font-bold">
                   Stock: <span className="text-red-500">450</span>
                 </h4>
               </div>
-              <h3 className="font-semibold text-color-black font-inter text-lg mt-4 500px:mt-6 md:text-xl">
-                Price: $800
-              </h3>
+              <div className="space-y-1">
+                <h3 className="font-semibold text-color-black font-inter text-lg mt-4 500px:mt-6 md:text-xl">
+                  Price: ${attributes.price}
+                </h3>
+
+                {attributes.original_price && (
+                  <p className="font-semibold text-color-black font-inter text-sm line-through">
+                    Original Price: ${attributes.original_price}
+                  </p>
+                )}
+              </div>
 
               <Button />
 
@@ -112,6 +129,24 @@ const page = async ({ params }: { params: Params }) => {
           </div>
         </div>
       </section>
+
+      {/* all releted products if have any */}
+      {reletedProducts?.length > 0 && (
+        <section className="py-8 lg:py-10 2xl:pt-12 2xl:pb-16 bg-gray-50">
+          <div className="section-container">
+            {/* title section */}
+            <h1 className="mb-4 sm:mb-6 lg:mb-8 text-xl lg:text-2xl text-color-black font-bold capitalize font-inter">
+              Related products
+            </h1>
+            {/* products lists */}
+            <ul className="w-full h-full grid gap-[10px] 500px:gap-4 grid-cols-2 md:grid-cols-3 980px:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+              {reletedProducts.map((product) => (
+                <Product product={product} />
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
     </div>
   );
 };

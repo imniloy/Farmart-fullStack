@@ -33,11 +33,15 @@ export const getProductDetails = async (
   return response.json();
 };
 
-export const getRelatedProducts = async (
-  categoryId: number
-): Promise<ProductsData> => {
+export const getRelatedProducts = async ({
+  categoryId,
+  productId,
+}: {
+  categoryId: number;
+  productId: number;
+}): Promise<ProductsData> => {
   const response = await fetch(
-    `${PUBLIC_API_URL}/items/related-products?categoryId=${categoryId}`,
+    `${PUBLIC_API_URL}/items/related-products?categoryId=${categoryId}&productId=${productId}`,
     {
       method: "GET",
       cache: "no-store",
