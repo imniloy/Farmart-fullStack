@@ -1,9 +1,10 @@
 import Product from "@/components/Product";
-import BreadCum from "@/components/ProductDetails/BreadCum";
+import BreadCumbs from "@/components/ProductDetails/BreadCumbs";
 import Button from "@/components/ProductDetails/Button";
 import ImageCarousel from "@/components/ProductDetails/ImageCarousel";
 import { getProductDetails, getRelatedProducts } from "@/services/product";
 import { Category } from "@/types/Categories";
+import { BreadCumb } from "@/types/breadCumbs";
 import { attributes, product } from "@/types/products";
 import React from "react";
 
@@ -34,12 +35,22 @@ const page = async ({ params }: { params: Params }) => {
     reletedProducts = allRelatedProducts;
   }
 
+  // breadcumbs data..
+
+  const breadcumbs: BreadCumb[] = [
+    { name: "Home", url: "/" },
+    {
+      name: `${attributes.name.substring(0, 100)}`,
+      url: `/${attributes.slug}`,
+    },
+  ];
+
   return (
     <div className="bg-white">
       {/* product details */}
       <section className="section-container">
         {/* Breadcrumbs  */}
-        <BreadCum />
+        <BreadCumbs breadcumbs={breadcumbs} />
         {/* <!-- product details and image --> */}
         <div className="mb-8 lg:mb-10">
           <div className="grid gap-y-8 lg:gap-x-4 xl:gap-x-6 lg:grid-cols-12 mb-8 lg:mb-12 xl:mb-20">
@@ -56,7 +67,8 @@ const page = async ({ params }: { params: Params }) => {
                   {attributes.name}
                 </h1>
                 <h4 className="inline-block px-3 py-1 text-sm rounded-sm bg-emerald-100 text-emerald-500 font-bold">
-                  Stock: <span className="text-red-500">450</span>
+                  Stock:{" "}
+                  <span className="text-red-500">{attributes.stock}</span>
                 </h4>
               </div>
               <div className="space-y-1">
