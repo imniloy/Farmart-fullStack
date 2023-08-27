@@ -49,7 +49,7 @@ const HeroSlider = () => {
                 We source and sell the very best Mangoes, Bananas, Apples, and
                 other fruits, sourced with the greatest care from the farmer.
               </p>
-              <Link href="" className="inline-block">
+              <Link href="/products" className="inline-block">
                 <button className="py-2 px-4 500px:py-3 500px:px-6 text-base rounded-md bg-brand-color text-white capitalize">
                   Shop Now
                 </button>
@@ -82,7 +82,7 @@ const HeroSlider = () => {
                 grocery products and Healthy vegetable that you deserve to eat
                 fresh.
               </p>
-              <Link href="" className="inline-block">
+              <Link href="/products" className="inline-block">
                 <button className="py-2 px-4 500px:py-3 500px:px-6 text-base rounded-md bg-brand-color text-white capitalize">
                   Shop Now
                 </button>
@@ -107,7 +107,7 @@ const HeroSlider = () => {
               </span>
             </p>
           </div>
-          <Link href="">
+          <Link href="/products">
             <button className="bg-brand-color px-4 py-2 rounded-[20px] text-white font-semibold">
               Shop Now
             </button>

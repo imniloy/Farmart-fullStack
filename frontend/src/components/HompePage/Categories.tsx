@@ -27,7 +27,7 @@ const Categories = async () => {
             ({ id, attributes }): React.ReactElement => (
               <li className="bg-white group rounded-md" key={id}>
                 <Link
-                  href={``}
+                  href={`/products?category=${attributes.slug}`}
                   className="p-2 500px:p-3 lg:p-4 2xl:p-5 w-full h-full flex flex-col items-center justify-center space-y-[2px]"
                 >
                   <div className="relative mb-[2px] h-[60px] w-[60px] md:h-[100px] md:w-[100px] lg:h-[120px] lg:w-[120px] overflow-hidden">

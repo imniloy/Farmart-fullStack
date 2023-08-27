@@ -1,31 +1,62 @@
 "use client";
 import { Category } from "@/types/Categories";
-import { attributes } from "@/types/products";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const CategoriesSidebar = ({
   categories,
 }: {
   categories: Category[];
 }): React.ReactNode => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<Array<string>>(
     []
   );
 
-  const handleSelectedCategoris = (name: string): void => {
-    let currentCategories = [...selectedCategories];
-    let check = currentCategories.includes(name);
-    if (check) {
-      let store = currentCategories.filter(
-        (catgoryName: string): boolean => catgoryName !== name
-      );
+  const categoriesToShow: Array<string> = searchParams.getAll("category");
+  const searchQueryExits: boolean = searchParams.has("query");
+  const searchQuery: string | null = searchParams.get("query");
 
-      setSelectedCategories(store);
+  console.log(categoriesToShow);
+
+  const handleSelectedCategoris = (name: string): void => {
+    if (categoriesToShow.length > 0) {
+      const checkIndex: number = categoriesToShow.findIndex(
+        (category) => category.toLocaleLowerCase() === name.toLocaleLowerCase()
+      );
+      if (searchQueryExits) {
+        if (checkIndex !== -1) {
+          let url: string = `,${categories.join().toLocaleLowerCase()}`;
+          setSelectedCategories([...selectedCategories, name]);
+          router.push(url);
+        } else if (checkIndex > -1) {
+          const filteredCategories = categoriesToShow.splice(checkIndex, 1);
+          let url: string = `,${categories.join().toLocaleLowerCase()}`;
+          setSelectedCategories(filteredCategories);
+          router.push(url);
+        }
+        //
+      } else {
+        if (checkIndex !== -1) {
+          let url: string = `&${categories.join().toLocaleLowerCase()}`;
+          setSelectedCategories([...selectedCategories, name]);
+          router.push(url);
+        } else if (checkIndex > -1) {
+          const filteredCategories = categoriesToShow.splice(checkIndex, 1);
+          let url: string = `,${categories.join().toLocaleLowerCase()}`;
+          setSelectedCategories(filteredCategories);
+          router.push(url);
+        }
+      }
     } else {
-      setSelectedCategories([...selectedCategories, name]);
     }
   };
+
+  useEffect(() => {
+    setSelectedCategories(categoriesToShow);
+  }, []);
 
   return (
     <div className="hidden w-full lg:block lg:max-w-[300px] overflow-hidden">
@@ -37,7 +68,11 @@ const CategoriesSidebar = ({
       <ul className="w-full bg-white">
         {categories.map((category) => (
           <li
-            onClick={() => handleSelectedCategoris(category.attributes.name)}
+            onClick={() =>
+              handleSelectedCategoris(
+                category.attributes.slug.toLocaleLowerCase()
+              )
+            }
             key={category?.id}
             className="flex justify-between items-center group cursor-pointer py-3 px-4 border-gray-200 border-t border-x border-b-0 last:border-b first:rounded-t-md last:rounded-b-md hover:bg-[#e6eff8] transition-all duration-300 ease-in-out w-full"
           >
@@ -58,7 +93,9 @@ const CategoriesSidebar = ({
             {/* group-hover:bg-brand-color */}
             <span
               className={`w-6 h-6 flex items-center justify-center border-[2px] rounded-full ltr:ml-auto rtl:mr-auto transition-all duration-300 ease-in-out group-hover:border-[#FFB531] ${
-                selectedCategories?.includes(category.attributes.name)
+                selectedCategories?.includes(
+                  category.attributes.slug.toLocaleLowerCase()
+                )
                   ? "bg-[#FFB531] border-[#FFB531]"
                   : "bg-white border-gray-300"
               }`}

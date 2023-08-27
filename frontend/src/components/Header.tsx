@@ -1,12 +1,32 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 import FarmartLogo from "./assets/svg/framart-logo-header.svg";
 
 function Header() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [searchText, setSearchText] = useState("");
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log(searchParams);
+
+    if (searchText) {
+      router.replace(`/products?query=${searchText}`);
+      router.refresh();
+
+      // let prevSelectedCategory = searchParams.has("category");
+      // let categoryName = searchParams.get("category");
+      // if (prevSelectedCategory) {
+      // router.replace(`/products?query=${searchText}`);
+      // }
+    } else {
+      router.replace("/");
+    }
+    setSearchText("");
   };
 
   return (
@@ -34,6 +54,10 @@ function Header() {
             <input
               id="product-search"
               type="search"
+              value={searchText}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setSearchText(e.target.value)
+              }
               placeholder="I'm searching for"
               className="flex-grow py-[10px] px-4 outline-none focus:outline-none rounded-md"
             />
