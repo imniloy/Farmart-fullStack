@@ -9,7 +9,7 @@ export const GET = async (request: Request) => {
   if (!response)
     return NextResponse.json({
       success: false,
-      message: "Failed To Fetch Popular Products",
+      message: "Failed To Fetch Products",
     });
 
   const { data } = await response.json();

@@ -22,6 +22,4 @@ export const GET = async (request: Request) => {
     success: true,
     data,
   });
-
-  return NextResponse.json({ message: "done" });
 };

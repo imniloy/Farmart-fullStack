@@ -50,6 +50,7 @@ const DownloadBanner = () => {
                   style={{
                     objectFit: "contain",
                   }}
+                  sizes="64px (min-width: 1024px) 64px, (min-width: 1280px) 188px"
                 />
               </div>
             </Link>
@@ -69,6 +70,7 @@ const DownloadBanner = () => {
                   }}
                   src={`http://127.0.0.1:1337/uploads/google_play_store_9ab84d6c66.png`}
                   alt="google_play_store"
+                  sizes="64px (min-width: 1024px) 64px, (min-width: 1280px) 188px"
                 />
               </div>
             </Link>

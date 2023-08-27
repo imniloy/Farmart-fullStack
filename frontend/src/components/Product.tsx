@@ -15,7 +15,7 @@ const Product = ({ product }: { product: product }): React.ReactNode => {
 
   if (originalPrice) {
     const discountPrice = originalPrice - price;
-    discountPercentise = Math.floor((discountPrice / originalPrice) * 100);
+    discountPercentise = Math.ceil((discountPrice / originalPrice) * 100);
   }
 
   return (

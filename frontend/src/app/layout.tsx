@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => (
   <html lang="en" className={`${poppins.className} ${inter.variable}`}>
-    <body>
+    <body suppressHydrationWarning={true}>
       <Providers>
         <Header />
         {children}
