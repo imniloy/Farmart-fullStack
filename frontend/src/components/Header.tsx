@@ -2,30 +2,20 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import FarmartLogo from "./assets/svg/framart-logo-header.svg";
 
 function Header() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [searchText, setSearchText] = useState("");
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(searchParams);
 
-    if (searchText) {
-      router.replace(`/products?query=${searchText}`);
-      router.refresh();
+    searchText
+      ? router.replace(`/products?query=${searchText}`)
+      : router.replace("/");
 
-      // let prevSelectedCategory = searchParams.has("category");
-      // let categoryName = searchParams.get("category");
-      // if (prevSelectedCategory) {
-      // router.replace(`/products?query=${searchText}`);
-      // }
-    } else {
-      router.replace("/");
-    }
     setSearchText("");
   };
 
