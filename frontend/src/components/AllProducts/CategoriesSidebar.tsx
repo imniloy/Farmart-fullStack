@@ -20,25 +20,22 @@ const CategoriesSidebar = ({
 
   const handleSelectedCategoris = (name: string): void => {
     let url: string;
+    const indexToDelecte = selectedCategories.findIndex(
+      (category: string) => category === name.toLowerCase()
+    );
+    
     if (searchQueryExits) {
       if (selectedCategories.length > 0) {
-        const indexToDelecte = selectedCategories.findIndex(
-          (category: string) => category === name.toLowerCase()
-        );
         if (indexToDelecte !== -1) {
           const filteredCategories = [...selectedCategories];
           filteredCategories.splice(indexToDelecte, 1);
 
-          // here remove and see the changes
-          // setSelectedCategories(filteredCategories);
           filteredCategories.length > 0
             ? router.replace(
                 `/products?query=${searchQuery}&category=${filteredCategories.join()}`
               )
             : router.replace(`/products?query=${searchQuery}`);
         } else {
-          // here remove and see the changes
-          // setSelectedCategories([...selectedCategories, name]);
           const filteredCategories = [...selectedCategories, name];
 
           router.replace(
@@ -50,27 +47,19 @@ const CategoriesSidebar = ({
       }
     } else {
       if (selectedCategories.length > 0) {
-        const indexToDelecte = selectedCategories.findIndex(
-          (category: string) => category === name.toLowerCase()
-        );
-
         if (indexToDelecte !== -1) {
           const filteredCategories = [...selectedCategories];
           filteredCategories.splice(indexToDelecte, 1);
 
-          // setSelectedCategories(filteredCategories);
           filteredCategories.length > 0
             ? router.replace(`/products?category=${filteredCategories.join()}`)
             : router.replace(`/products`);
         } else {
-          // setSelectedCategories([...selectedCategories, name]);
           const filteredCategories = [...selectedCategories, name];
 
           router.replace(`/products?category=${filteredCategories.join()}`);
-          // console.log("url4");
         }
       } else {
-        // setSelectedCategories([name]);
         router.replace(`/products?category=${name}`);
       }
     }
