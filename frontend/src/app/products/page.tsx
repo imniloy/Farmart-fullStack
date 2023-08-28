@@ -15,7 +15,7 @@ const page = async () => {
   const categoriesData: Categories = await getAllCategories();
   const { data: categories, success }: { data: Category[]; success: boolean } =
     categoriesData;
-console.log(categories);
+// console.log(categories);
   return (
     <main className="bg-white">
       <section className="py-10 lg:pb-14 bg-gray-50">
