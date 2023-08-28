@@ -20,10 +20,12 @@ const CategoriesSidebar = ({
 
   const handleSelectedCategoris = (name: string): void => {
     let url: string;
+    // checking whether this name already exists in the selectedCategories state or not...
     const indexToDelecte = selectedCategories.findIndex(
       (category: string) => category === name.toLowerCase()
     );
-    
+
+    // checking have any seach query parameters...
     if (searchQueryExits) {
       if (selectedCategories.length > 0) {
         if (indexToDelecte !== -1) {
@@ -37,7 +39,6 @@ const CategoriesSidebar = ({
             : router.replace(`/products?query=${searchQuery}`);
         } else {
           const filteredCategories = [...selectedCategories, name];
-
           router.replace(
             `/products?query=${searchQuery}&category=${filteredCategories.join()}`
           );
