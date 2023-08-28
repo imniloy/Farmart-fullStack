@@ -15,48 +15,129 @@ const CategoriesSidebar = ({
     []
   );
 
-  const categoriesToShow: Array<string> = searchParams.getAll("category");
+  const categoriesToShow: string | null = searchParams.get("category");
   const searchQueryExits: boolean = searchParams.has("query");
   const searchQuery: string | null = searchParams.get("query");
 
   console.log(categoriesToShow);
 
   const handleSelectedCategoris = (name: string): void => {
-    if (categoriesToShow.length > 0) {
-      const checkIndex: number = categoriesToShow.findIndex(
-        (category) => category.toLocaleLowerCase() === name.toLocaleLowerCase()
-      );
-      if (searchQueryExits) {
-        if (checkIndex !== -1) {
-          let url: string = `,${categories.join().toLocaleLowerCase()}`;
-          setSelectedCategories([...selectedCategories, name]);
-          router.push(url);
-        } else if (checkIndex > -1) {
-          const filteredCategories = categoriesToShow.splice(checkIndex, 1);
-          let url: string = `,${categories.join().toLocaleLowerCase()}`;
+    let url: string;
+    console.log("url");
+    if (searchQueryExits) {
+      if (selectedCategories.length > 0) {
+        const indexToDelecte = selectedCategories.findIndex(
+          (category: string) => category === name.toLowerCase()
+        );
+        if (indexToDelecte != -1) {
+          const filteredCategories = [...selectedCategories];
+          filteredCategories.splice(indexToDelecte, 1);
+          console.log(
+            `/products?query=${searchQuery}&category=${filteredCategories.join()}`
+          );
+
           setSelectedCategories(filteredCategories);
-          router.push(url);
+          // console.log(filteredCategories.length);
+          filteredCategories.length > 0
+            ? router.replace(
+                `/products?query=${searchQuery}&category=${filteredCategories.join()}`
+              )
+            : router.replace(`/products?query=${searchQuery}`);
+          console.log(filteredCategories);
+        } else {
+          setSelectedCategories([...selectedCategories, name]);
+          const filteredCategories = [...selectedCategories, name];
+
+          router.replace(
+            `/products?query=${searchQuery}&category=${filteredCategories.join()}`
+          );
+          console.log("url3");
         }
-        //
       } else {
-        if (checkIndex !== -1) {
-          let url: string = `&${categories.join().toLocaleLowerCase()}`;
-          setSelectedCategories([...selectedCategories, name]);
-          router.push(url);
-        } else if (checkIndex > -1) {
-          const filteredCategories = categoriesToShow.splice(checkIndex, 1);
-          let url: string = `,${categories.join().toLocaleLowerCase()}`;
-          setSelectedCategories(filteredCategories);
-          router.push(url);
-        }
+        console.log("url 2");
+
+        setSelectedCategories([name]);
+        router.replace(`/products?query=${searchQuery}&category=${name}`);
       }
     } else {
+      console.log("outside");
     }
+    // const checkIndex: number = categoriesToShow.findIndex(
+    //   (category) => category.toLowerCase() === name.toLocaleLowerCase()
+    // );
+    // if (categoriesToShow.length > 0) {
+    //   if (searchQueryExits) {
+    //     if (checkIndex === -1) {
+    //       let url: string = `,${categories.join().toLocaleLowerCase()}`;
+    //       setSelectedCategories([...selectedCategories, name]);
+    //       router.push(url);
+    //     } else if (checkIndex > -1) {
+    //       const filteredCategories = categoriesToShow.splice(checkIndex, 1);
+    //       let url: string = `,${categories.join().toLocaleLowerCase()}`;
+    //       setSelectedCategories(filteredCategories);
+    //       router.push(url);
+    //     }
+    //     //
+    //   } else {
+    //     if (checkIndex === -1) {
+    //       let url: string = `?category=${categoriesToShow.join()}`;
+    //       console.log(url);
+    //       setSelectedCategories([...selectedCategories, name]);
+    //       router.push(url);
+    //     } else if (checkIndex > -1) {
+    //       const filteredCategories = categoriesToShow.splice(checkIndex, 1);
+    //       let url: string = `?category=${filteredCategories.join()}`;
+    //       console.log(url);
+    //       setSelectedCategories(filteredCategories);
+    //       router.push(url);
+    //     }
+    //   }
+    // }
+    // else {
+    //   if (searchQueryExits) {
+    //     if (checkIndex === -1) {
+    //       let url: string = `&category=${categories
+    //         .join()
+    //         .toLocaleLowerCase()}`;
+    //       setSelectedCategories([...selectedCategories, name]);
+    //       router.push(url);
+    //     } else if (checkIndex > -1) {
+    //       const filteredCategories = categoriesToShow.splice(checkIndex, 1);
+    //       let url: string = `&${categories.join().toLocaleLowerCase()}`;
+    //       setSelectedCategories(filteredCategories);
+    //       router.push(url);
+    //     }
+    //     //
+    //   } else {
+    //     if (checkIndex === -1) {
+    //       let url: string = `?category=${categories
+    //         .join()
+    //         .toLocaleLowerCase()}`;
+    //       setSelectedCategories([...selectedCategories, name]);
+    //       router.push(url);
+    //     } else if (checkIndex > -1) {
+    //       const filteredCategories = categoriesToShow.splice(checkIndex, 1);
+    //       let url: string = `?category=${categories
+    //         .join()
+    //         .toLocaleLowerCase()}`;
+    //       setSelectedCategories(filteredCategories);
+    //       router.push(url);
+    //     }
+    //   }
+    // }
   };
 
+  console.log(selectedCategories);
+
   useEffect(() => {
-    setSelectedCategories(categoriesToShow);
-  }, []);
+    if (categoriesToShow) {
+      setSelectedCategories(categoriesToShow.toLowerCase().split(","));
+    } else {
+      setSelectedCategories([]);
+    }
+    console.log("changed categories");
+    console.log(categoriesToShow);
+  }, [categoriesToShow]);
 
   return (
     <div className="hidden w-full lg:block lg:max-w-[300px] overflow-hidden">
