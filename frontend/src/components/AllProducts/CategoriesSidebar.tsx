@@ -30,49 +30,47 @@ const CategoriesSidebar = ({
           filteredCategories.splice(indexToDelecte, 1);
 
           // here remove and see the changes
-          setSelectedCategories(filteredCategories);
+          // setSelectedCategories(filteredCategories);
           filteredCategories.length > 0
             ? router.replace(
                 `/products?query=${searchQuery}&category=${filteredCategories.join()}`
               )
             : router.replace(`/products?query=${searchQuery}`);
         } else {
-          setSelectedCategories([...selectedCategories, name]);
+          // here remove and see the changes
+          // setSelectedCategories([...selectedCategories, name]);
           const filteredCategories = [...selectedCategories, name];
 
           router.replace(
             `/products?query=${searchQuery}&category=${filteredCategories.join()}`
           );
-          console.log("url3");
         }
       } else {
         router.replace(`/products?query=${searchQuery}&category=${name}`);
       }
     } else {
       if (selectedCategories.length > 0) {
-        console.log("url4");
         const indexToDelecte = selectedCategories.findIndex(
           (category: string) => category === name.toLowerCase()
         );
 
         if (indexToDelecte !== -1) {
-          console.log("object selected");
           const filteredCategories = [...selectedCategories];
           filteredCategories.splice(indexToDelecte, 1);
 
-          setSelectedCategories(filteredCategories);
+          // setSelectedCategories(filteredCategories);
           filteredCategories.length > 0
             ? router.replace(`/products?category=${filteredCategories.join()}`)
             : router.replace(`/products`);
         } else {
-          setSelectedCategories([...selectedCategories, name]);
+          // setSelectedCategories([...selectedCategories, name]);
           const filteredCategories = [...selectedCategories, name];
 
           router.replace(`/products?category=${filteredCategories.join()}`);
-          console.log("url4");
+          // console.log("url4");
         }
       } else {
-        setSelectedCategories([name]);
+        // setSelectedCategories([name]);
         router.replace(`/products?category=${name}`);
       }
     }
