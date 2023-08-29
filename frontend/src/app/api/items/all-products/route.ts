@@ -1,9 +1,11 @@
+import { MetaType } from "@/types/pagination";
+import { product } from "@/types/products";
 import { PRIVATE_API_URL } from "@/urls";
 import { NextResponse } from "next/server";
 
 export const GET = async (request: Request) => {
   const response = await fetch(
-    `${PRIVATE_API_URL}/api/products?populate=thumbnail&filters[category][name][$eqi]=popular&&sort[0]=stock:desc&pagination[limit]=12`
+    `${PRIVATE_API_URL}/api/products?populate=thumbnail&pagination[start]=0&pagination[withCount]=true&pagination[limit]=12`
   );
 
   if (!response)
@@ -12,10 +14,8 @@ export const GET = async (request: Request) => {
       message: "Failed To Fetch Products",
     });
 
-  const { data } = await response.json();
+  const { data, meta }: { data: product[]; meta: MetaType } =
+    await response.json();
 
-  return NextResponse.json({
-    success: true,
-    data,
-  });
+  return NextResponse.json({ data, meta });
 };
