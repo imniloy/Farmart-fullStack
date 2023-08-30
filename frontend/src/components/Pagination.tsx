@@ -10,7 +10,8 @@ const Pagination = ({
   searchParams: { [key: string]: string | string[] | undefined };
 }): React.ReactElement => {
   const { start, limit, total } = pagination;
-  const { category, query, page: urlPageString } = searchParams;
+  let { category, query, page: urlPageString } = searchParams;
+  if (!urlPageString) urlPageString = "1";
 
   let currentPage: number = 1;
   if (searchParams.page) currentPage = Number(searchParams.page);

@@ -61,6 +61,8 @@ export const getAllProducts = async ({
 }): Promise<ProductsDataType> => {
   let url: string = "populate=thumbnail";
   let filterNumber: number = 0;
+  let limit: number = 12;
+
   //
   if (query) {
     url = `${url}&filters[$or][0][name][$containsi]=${query}&filters[$or][1][slug][$containsi]=${query}`;
@@ -79,20 +81,11 @@ export const getAllProducts = async ({
   }
   //
   if (page) {
-    url = `${url}&pagination[page]=${page}&pagination[pageSize]=12`;
-    // url = `${url}&pagination[start]=${}&pagination[withCount]=true&pagination[limit]=12`;
-    // pagination[page]=1&pagination[pageSize]=10
+    let offset: number = (Number(page) - 1) * limit;
+    url = `${url}&pagination[start]=${offset}&pagination[limit]=${limit}`;
   } else {
-    url = `${url}&pagination[page]=1&pagination[pageSize]=12`;
+    url = `${url}&pagination[start]=0&pagination[limit]=${limit}`;
   }
-
-  // console.log(
-  //   "new URl ----------------------------------------------------------------"
-  // );
-  // console.log("urlString: " + url);
-  // console.log(
-  //   "new URl ----------------------------------------------------------------"
-  // );
 
   const response = await fetch(`${PUBLIC_API_URL}/items/all-products?${url}`, {
     method: "GET",
