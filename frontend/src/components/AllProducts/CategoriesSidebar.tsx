@@ -92,7 +92,13 @@ const CategoriesSidebar = ({
               )
             }
             key={category?.id}
-            className="flex justify-between items-center group cursor-pointer py-3 px-4 border-gray-200 border-t border-x border-b-0 last:border-b first:rounded-t-md last:rounded-b-md hover:bg-[#e6eff8] transition-all duration-300 ease-in-out w-full"
+            className={`flex justify-between items-center ${
+              selectedCategories.includes(
+                category.attributes.slug.toLocaleLowerCase()
+              )
+                ? "bg-[#e6eff8] border-gray-300 border-t"
+                : "hover:bg-[#e6eff8] bg-white border-gray-200 border-t"
+            } group cursor-pointer py-3 px-4 border-x border-b-0 last:border-b first:rounded-t-md last:rounded-b-md transition-all duration-300 ease-in-out w-full`}
           >
             <div className="flex items-center space-x-3">
               <div className="relative h-[40px] w-[40px] rounded-lg overflow-hidden">
