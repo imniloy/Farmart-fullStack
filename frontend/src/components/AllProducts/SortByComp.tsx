@@ -1,8 +1,9 @@
 "use client";
 import React, { useEffect, useState, ChangeEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { MetaType } from "@/types/pagination";
 
-const SortByComp = (): React.ReactElement => {
+const SortByComp = ({ meta }: { meta: MetaType }): React.ReactElement => {
   return (
     <div className="flex items-center w-full justify-between h-10 mb-4">
       <button className="flex items-center px-4 py-2 sm:mr-5 text-sm font-semibold transition duration-200 ease-in-out border rounded-md lg:hidden text-brand-dark border-border-base focus:outline-none hover:border-brand hover:text-brand space-x-2">
@@ -50,9 +51,10 @@ const SortByComp = (): React.ReactElement => {
         </svg>
         <span className="ltr:pl-2.5 rtl:pr-2.5 text-base">Filters</span>
       </button>
-
       <p className="w-fit ml-auto text-color-black font-semibold text-sm sm:text-base md:ltr:mr-6 md:rtl:ml-6 mt-0.5 font-inter">
-        2,683 Products Found
+        {meta.pagination.total > 1 && `${meta.pagination.total} Products Found`}
+        {meta.pagination.total === 1 &&
+          `${meta.pagination.total} Product Found`}
       </p>
     </div>
   );
