@@ -26,9 +26,7 @@ const page = async ({
         <div className="section-container">
           <div className="flex items-start w-full space-x-0 lg:space-x-8">
             <CategoriesSidebar categories={categories} />
-            <AllProductsSection
-              searchParams={searchParams}
-            />
+            <AllProductsSection searchParams={searchParams} />
           </div>
         </div>
       </section>

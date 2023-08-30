@@ -5,6 +5,7 @@ import { inter, poppins } from "./fonts";
 import Header from "@/components/Header";
 import DownloadBanner from "@/components/DownloadBanner";
 import Footer from "@/components/Footer";
+import MobileSideNav from "@/components/AllProducts/MobileSideNav";
 
 export const metadata: Metadata = {
   title: "Farmart - Leading Grocery App",
@@ -17,10 +18,13 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
   <html lang="en" className={`${poppins.className} ${inter.variable}`}>
     <body suppressHydrationWarning={true}>
       <Providers>
-        <Header />
-        {children}
-        <DownloadBanner />
-        <Footer />
+        <div className="relative">
+          <MobileSideNav />
+          <Header />
+          {children}
+          <DownloadBanner />
+          <Footer />
+        </div>
       </Providers>
     </body>
   </html>

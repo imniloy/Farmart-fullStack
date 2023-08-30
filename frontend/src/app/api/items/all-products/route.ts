@@ -5,8 +5,6 @@ import { NextResponse, NextRequest } from "next/server";
 
 export const GET = async (request: NextRequest) => {
   const parameters = request.nextUrl.search;
-  // console.log(request.nextUrl.search);
-  // console.log("aaaaaaaaaaaa");
   const response = await fetch(`${PRIVATE_API_URL}/api/products${parameters}`);
 
   if (!response)
