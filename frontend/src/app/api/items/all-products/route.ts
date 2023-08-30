@@ -4,7 +4,7 @@ import { PRIVATE_API_URL } from "@/urls";
 import { NextResponse } from "next/server";
 
 export const GET = async (request: Request) => {
-  console.log(request);
+  console.log(request.url);
   const response = await fetch(
     `${PRIVATE_API_URL}/api/products?populate=thumbnail&pagination[start]=0&pagination[withCount]=true&pagination[limit]=12`
   );
