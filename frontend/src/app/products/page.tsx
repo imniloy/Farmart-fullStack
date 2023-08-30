@@ -29,7 +29,7 @@ const page = async ({
     page,
   });
   const { data, meta } = ProductsData;
-
+  console.log(ProductsData);
   return (
     <main className="bg-white">
       <section className="py-10 lg:pb-14 bg-gray-50">

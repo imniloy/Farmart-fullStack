@@ -79,9 +79,11 @@ export const getAllProducts = async ({
   }
   //
   if (page) {
-    url = `${url}&page=${page}`;
+    url = `${url}&pagination[page]=${page}&pagination[pageSize]=12`;
+    // url = `${url}&pagination[start]=${}&pagination[withCount]=true&pagination[limit]=12`;
+    // pagination[page]=1&pagination[pageSize]=10
   } else {
-    url = `${url}&page=1`;
+    url = `${url}&pagination[page]=1&pagination[pageSize]=12`;
   }
 
   // console.log(

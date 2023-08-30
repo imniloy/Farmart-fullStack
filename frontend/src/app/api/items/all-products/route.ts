@@ -1,13 +1,13 @@
 import { MetaType } from "@/types/pagination";
 import { product } from "@/types/products";
 import { PRIVATE_API_URL } from "@/urls";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
-export const GET = async (request: Request) => {
-  console.log(request.url);
-  const response = await fetch(
-    `${PRIVATE_API_URL}/api/products?populate=thumbnail&pagination[start]=0&pagination[withCount]=true&pagination[limit]=12`
-  );
+export const GET = async (request: NextRequest) => {
+  const parameters = request.nextUrl.search;
+  // console.log(request.nextUrl.search);
+  // console.log("aaaaaaaaaaaa");
+  const response = await fetch(`${PRIVATE_API_URL}/api/products${parameters}`);
 
   if (!response)
     return NextResponse.json({
