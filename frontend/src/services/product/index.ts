@@ -57,23 +57,42 @@ export const getAllProducts = async ({
   query,
   page,
 }: {
-  [key: string]: string | string[] | undefined;
+  [key: string]: string | undefined;
 }): Promise<ProductsDataType> => {
-  console.log(category);
-  console.log(query);
-  console.log(page);
-  // parameters making...
-  let url = "?";
+  let url: string = "populate=thumbnail";
+  let filterNumber: number = 0;
+  //
   if (query) {
+    url = `${url}&filters[$or][0][name][$containsi]=${query}&filters[$or][1][slug][$containsi]=${query}`;
+    filterNumber = 2;
   }
-
+  //
   if (category) {
+    let newUrl = "";
+    let categories: Array<string> = category.split(",");
+    categories.reduce((prevUrl, word) => {
+      newUrl = `${prevUrl}&filters[$or][${filterNumber}][category][slug][$eqi]=${word}`;
+      filterNumber++;
+      return newUrl;
+    }, url);
+    url = newUrl;
   }
-
+  //
   if (page) {
+    url = `${url}&page=${page}`;
+  } else {
+    url = `${url}&page=1`;
   }
 
-  const response = await fetch(`${PUBLIC_API_URL}/items/all-products`, {
+  // console.log(
+  //   "new URl ----------------------------------------------------------------"
+  // );
+  // console.log("urlString: " + url);
+  // console.log(
+  //   "new URl ----------------------------------------------------------------"
+  // );
+
+  const response = await fetch(`${PUBLIC_API_URL}/items/all-products?${url}`, {
     method: "GET",
     cache: "no-store",
   });

@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 const page = async ({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: { [key: string]: string | undefined };
 }) => {
   const categoriesData: Categories = await getAllCategories();
   const { data: categories, success }: { data: Category[]; success: boolean } =

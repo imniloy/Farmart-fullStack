@@ -17,7 +17,7 @@ const CategoriesSidebar = ({
   const [selectedCategories, setSelectedCategories] = useState<Array<string>>(
     []
   );
-  console.log(window.location.search);
+
   const handleSelectedCategoris = (name: string): void => {
     let url: string;
     // checking whether this name already exists in the selectedCategories state or not...
