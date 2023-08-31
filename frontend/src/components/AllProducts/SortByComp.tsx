@@ -1,11 +1,18 @@
 "use client";
 import React from "react";
 import { MetaType } from "@/types/pagination";
+import { setIsOpen } from "@/redux/features/mobileCategorySlider/slices";
+import { useAppDispatch } from "@/redux/hooks";
 
 const SortByComp = ({ meta }: { meta: MetaType }): React.ReactElement => {
+  const dispatch = useAppDispatch();
+
   return (
     <div className="flex items-center w-full justify-between h-10 mb-4">
-      <button className="flex items-center px-4 py-2 sm:mr-5 text-sm font-semibold transition duration-200 ease-in-out border rounded-md lg:hidden text-brand-dark border-border-base focus:outline-none hover:border-brand hover:text-brand space-x-2">
+      <button
+        onClick={() => dispatch(setIsOpen(true))}
+        className="flex items-center px-4 py-2 sm:mr-5 text-sm font-semibold transition duration-200 ease-in-out border rounded-md lg:hidden text-brand-dark border-border-base focus:outline-none hover:border-brand hover:text-brand space-x-2"
+      >
         {/* icon */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
