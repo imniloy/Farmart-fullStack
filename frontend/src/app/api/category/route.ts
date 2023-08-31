@@ -4,7 +4,10 @@ import { NextResponse } from "next/server";
 
 export const GET = async (request: Request) => {
   const response = await fetch(
-    `${PRIVATE_API_URL}/api/categories?filters[name][$nei]=popular&populate=image`
+    `${PRIVATE_API_URL}/api/categories?filters[name][$nei]=popular&populate=image`,
+    {
+      next: { revalidate: 60 },
+    }
   );
 
   if (!response)

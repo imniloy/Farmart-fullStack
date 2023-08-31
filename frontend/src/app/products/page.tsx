@@ -1,5 +1,6 @@
 import AllProductsSection from "@/components/AllProducts/AllProductsSection";
 import CategoriesSidebar from "@/components/AllProducts/CategoriesSidebar";
+import MobileSideNav from "@/components/AllProducts/MobileSideNav";
 import { getAllCategories } from "@/services/category";
 import { Categories, Category } from "@/types/Categories";
 import { Metadata } from "next";
@@ -22,6 +23,7 @@ const page = async ({
 
   return (
     <main className="bg-white">
+      <MobileSideNav categories={categories} />
       <section className="py-10 lg:pb-14 bg-gray-50">
         <div className="section-container">
           <div className="flex items-start w-full space-x-0 lg:space-x-8">

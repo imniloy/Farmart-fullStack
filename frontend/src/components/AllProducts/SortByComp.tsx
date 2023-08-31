@@ -1,6 +1,5 @@
 "use client";
-import React, { useEffect, useState, ChangeEvent } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import React from "react";
 import { MetaType } from "@/types/pagination";
 
 const SortByComp = ({ meta }: { meta: MetaType }): React.ReactElement => {

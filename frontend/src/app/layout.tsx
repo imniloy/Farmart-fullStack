@@ -5,7 +5,6 @@ import { inter, poppins } from "./fonts";
 import Header from "@/components/Header";
 import DownloadBanner from "@/components/DownloadBanner";
 import Footer from "@/components/Footer";
-import MobileSideNav from "@/components/AllProducts/MobileSideNav";
 
 export const metadata: Metadata = {
   title: "Farmart - Leading Grocery App",
@@ -19,7 +18,6 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
     <body suppressHydrationWarning={true}>
       <Providers>
         <div className="relative">
-          <MobileSideNav />
           <Header />
           {children}
           <DownloadBanner />
