@@ -7,7 +7,11 @@ const nextConfig = {
         protocol: "http",
         hostname: "127.0.0.1",
         port: "",
-        
+      },
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
+        port: "",
       },
     ],
     domains: ["127.0.0.1", "localhost"],

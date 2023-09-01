@@ -4,10 +4,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import FarmartLogo from "./assets/svg/framart-logo-header.svg";
+import { setAuthMadalOpen } from "@/redux/features/uiSlider/slices";
+import { useAppDispatch } from "@/redux/hooks";
 
 function Header() {
   const router = useRouter();
   const [searchText, setSearchText] = useState("");
+  const dispatch = useAppDispatch();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -72,7 +75,7 @@ function Header() {
 
         {/* right Icons */}
         <ul
-          className={`flex items-center space-x-3 500px:space-x-4 xl:space-x-5`}
+          className={`flex items-center space-x-3 500px:space-x-4 lg:space-x-2 xl:space-x-5`}
         >
           <li className="cursor-pointer flex lg:hidden">
             <svg
@@ -92,7 +95,7 @@ function Header() {
           </li>
 
           <li>
-            <a href="wishlist.html" className="flex items-center">
+            <Link href="/wishlist" className="flex items-center">
               <div className="relative lg:ml-1">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -116,7 +119,7 @@ function Header() {
               <span className="lg:pr-3 lg:pl-2 hidden lg:inline-block">
                 Wishlist
               </span>
-            </a>
+            </Link>
           </li>
 
           <li className="flex items-center cursor-pointer">
@@ -144,31 +147,42 @@ function Header() {
           </li>
 
           {/* <!-- sign in button --> */}
-          <li className="flex items-center cursor-pointer">
-            {/* <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
+          <li
+            className="cursor-pointer"
+            onClick={() => {
+              dispatch(setAuthMadalOpen(true));
+            }}
+          >
+            <div className="flex items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
 
-            <span
-              className="text-sm font-normal lg:text-15px text-brand-dark focus:outline-none px-2 hidden lg:inline-block"
-              aria-label="Authentication"
-            >
-              Sign In
-            </span> */}
+              <span
+                className="text-sm font-normal lg:text-15px text-brand-dark focus:outline-none pl-1 xl:px-2 hidden lg:inline-block"
+                aria-label="Authentication"
+              >
+                Sign In
+              </span>
+            </div>
 
-            <div className="w-8 h-8 rounded-full overflow-hidden bg-[url('https://kachabazar-store.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fahossain%2Fimage%2Fupload%2Fv1681765867%2Fbv2qwqmbdhqvslykpniy.jpg&w=32&q=75')]"></div>
-            <span className="font-bold px-2 hidden lg:inline-block">Niloy</span>
+            {/* <div className="flex items-center" onClick={() => {}}>
+              <div className="w-8 h-8 rounded-full overflow-hidden bg-[url('https://kachabazar-store.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fahossain%2Fimage%2Fupload%2Fv1681765867%2Fbv2qwqmbdhqvslykpniy.jpg&w=32&q=75')]"></div>
+              <p className="font-bold px-2 hidden lg:inline-block">
+                Niloy
+              </p>
+            </div> */}
           </li>
         </ul>
       </div>

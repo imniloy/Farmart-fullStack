@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { MetaType } from "@/types/pagination";
-import { setIsOpen } from "@/redux/features/mobileCategorySlider/slices";
+import { setIsOpen } from "@/redux/features/uiSlider/slices";
 import { useAppDispatch } from "@/redux/hooks";
 
 const SortByComp = ({ meta }: { meta: MetaType }): React.ReactElement => {

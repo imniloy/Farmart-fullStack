@@ -2,7 +2,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Category } from "@/types/Categories";
 import { Dialog, Transition } from "@headlessui/react";
-import { setIsOpen } from "@/redux/features/mobileCategorySlider/slices";
+import { setIsOpen } from "@/redux/features/uiSlider/slices";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -12,7 +12,7 @@ const MobileCategoriesSideBar = ({
 }: {
   categories: Category[];
 }): React.ReactElement => {
-  const isOpen = useAppSelector((state) => state.mobileNav.isOpen);
+  const isOpen = useAppSelector((state) => state.mobileSlider.isOpen);
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -89,7 +89,7 @@ const MobileCategoriesSideBar = ({
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
         as="div"
-        className="relative z-[100] min-h-screen bg-red-400"
+        className="relative z-[100] min-h-screen"
         onClose={closeModal}
       >
         <Transition.Child
@@ -101,7 +101,7 @@ const MobileCategoriesSideBar = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black bg-opacity-30 min-h-screen z-[1] block lg:hidden" />
+          <div className="fixed inset-0 bg-black bg-opacity-40 min-h-screen z-[1] block lg:hidden" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto bg-transparent z-[100] block lg:hidden">

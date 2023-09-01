@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
-import mobileCategorySliderSlice from "./features/mobileCategorySlider/slices";
+import mobileSliderSlice from "./features/uiSlider/slices";
 
 export const store = configureStore({
   reducer: {
-    mobileNav: mobileCategorySliderSlice,
+    mobileSlider: mobileSliderSlice,
   },
   devTools: process.env.NODE_ENV !== "production",
   middleware: (getDefaultMiddlewares) => getDefaultMiddlewares(),

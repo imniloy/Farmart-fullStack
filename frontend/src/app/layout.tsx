@@ -5,6 +5,7 @@ import { inter, poppins } from "./fonts";
 import Header from "@/components/Header";
 import DownloadBanner from "@/components/DownloadBanner";
 import Footer from "@/components/Footer";
+import AuthMadal from "@/components/madal/AuthMadal";
 
 export const metadata: Metadata = {
   title: "Farmart - Leading Grocery App",
@@ -18,6 +19,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
     <body suppressHydrationWarning={true}>
       <Providers>
         <div className="relative">
+          <AuthMadal />
           <Header />
           {children}
           <DownloadBanner />
