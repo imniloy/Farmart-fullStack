@@ -41,9 +41,9 @@ function CartSlider(): React.ReactElement {
           >
             <Dialog.Panel
               autoFocus
-              className="min-h-screen transform overflow-hidden bg-white text-left shadow-xl transition-all w-[320px] sm:w-[450px] ml-auto px-4 "
+              className="min-h-screen transform overflow-hidden bg-white text-left shadow-xl transition-all w-[320px] sm:w-[450px] md:w-[480px] ml-auto"
             >
-              <div className="flex items-center w-full py-5 border-b border-gray-200">
+              <div className="flex items-center w-full py-5 px-6  border-b border-gray-200">
                 <div className="flex items-center space-x-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -58,7 +58,7 @@ function CartSlider(): React.ReactElement {
                     />
                   </svg>
 
-                  <p className="text-xl font-medium font-inter">
+                  <p className="text-xl font-medium font-inter text-color-black ">
                     Shopping Cart
                   </p>
                 </div>
@@ -76,68 +76,94 @@ function CartSlider(): React.ReactElement {
               </div>
 
               {/* products */}
-              <ul className="">
-                <li className="w-full group cursor-pointer space-x-4 flex items-center">
-                  <div className="relative h-24 w-24 rounded-lg bg-black overflow-hidden">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      className="transition-all duration-200 w-0 h-0 group-hover:w-6 group-hover:h-6 text-white absolute top-1/2 left-[50%] -translate-x-[50%] -translate-y-[50%] z-10"
+              <ul className="my-3 px-6 ">
+                {Array(5)
+                  .fill(0)
+                  .map((_, i) => (
+                    <li
+                      key={i}
+                      className="w-full py-2 group cursor-pointer flex items-center justify-between"
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                      <div className="flex items-center space-x-4">
+                        <div className="relative h-24 w-24 rounded-lg bg-black overflow-hidden">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            className="transition-all duration-200 w-0 h-0 group-hover:w-6 group-hover:h-6 text-white absolute top-1/2 left-[50%] -translate-x-[50%] -translate-y-[50%] z-10"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
 
-                    <Image
-                      className="group-hover:opacity-70"
-                      src={`https://images.pexels.com/photos/11213759/pexels-photo-11213759.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1`}
-                      alt=""
-                      fill
-                      sizes=""
-                    />
-                  </div>
-                  <div className="">
-                    <p className="w-[220px] truncate hover:text-[#02B290] transition-all font-thin text-base">
-                      Organic Girl Lettuce
-                    </p>
-                    <div className="text-[13px] w-[150px] truncate sm:text-xs text-[#595959] my-1 font-inter">
-                      1 Bag X 3
-                    </div>
-                    <div className="">
-                      <div className="">a</div>
-                      <div className="">a</div>
-                      <div className="">a</div>
-                    </div>
-                    {/* <div className="flex items-center space-x-3 p-1 w-fit ">
-                      <button className="h-6 w-6 rounded-full border border-gray-200 drop-shadow text-sm font-medium flex justify-center items-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                          className="w-5 h-5"
-                        >
-                          <path d="M6.75 9.25a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5z" />
-                        </svg>
-                      </button>
-                      <button className="font-semibold text-sm">1</button>
-                      <button className="h-6 w-6 rounded-full border border-gray-200 drop-shadow text-sm font-medium flex justify-center items-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                          className="w-4 h-4"
-                        >
-                          <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-                        </svg>
-                      </button>
-                    </div> */}
-                  </div>
-                </li>
+                          <Image
+                            className="group-hover:opacity-70"
+                            src={`https://images.pexels.com/photos/11213759/pexels-photo-11213759.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1`}
+                            alt=""
+                            fill
+                            sizes=""
+                          />
+                        </div>
+                        <div className="">
+                          <p className="w-[240px] truncate hover:text-[#02B290] transition-all font-thin text-base">
+                            Organic Girl Lettuce
+                          </p>
+                          <div className="text-[13px] w-[150px] truncate sm:text-xs text-[#595959] mb-2 my-1.5 font-inter">
+                            1 Bag X 3
+                          </div>
+                          <div className="flex items-center space-x-4 w-fit">
+                            <div className="h-6 w-6 rounded border border-gray-200 drop-shadow text-sm font-medium flex justify-center items-center hover:bg-[#02B290] hover:text-white transition-all duration-200 ease-in-out">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                                className="w-5 h-5"
+                              >
+                                <path d="M6.75 9.25a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5z" />
+                              </svg>
+                            </div>
+                            <div className="font-semibold text-sm">1</div>
+                            <div className="h-6 w-6 rounded border border-gray-200 drop-shadow text-sm font-medium flex justify-center items-center hover:bg-[#02B290] hover:text-white transition-all duration-200 ease-in-out">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                                className="w-4 h-4"
+                              >
+                                <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="font-medium font-inter text-base text-gray-700]">
+                        $5.50
+                      </p>
+                    </li>
+                  ))}
               </ul>
+
+              <div className=" mt-8 mb-4 p-6 border-t border-gray-200">
+                <div className="flex justify-between">
+                  <p className="font-medium text-lg text-color-black">
+                    Subtotal:{" "}
+                  </p>
+                  <span className="font-semibold font-inter text-base text-color-black">
+                    $1250
+                  </span>
+                </div>
+                <p className="text-sm text-gray-500 my-2">
+                  Final price and discounts will be determined at the time of
+                  payment processing.
+                </p>
+
+                <div className="w-full mt-6 cursor-pointer p-4 bg-[#02B290] text-white font-semibold text-sm text-center rounded">
+                  Proceed To Checkout
+                </div>
+              </div>
             </Dialog.Panel>
           </Transition.Child>
         </div>
