@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import DownloadBanner from "@/components/DownloadBanner";
 import Footer from "@/components/Footer";
 import AuthMadal from "@/components/madal/AuthMadal";
+import CartSlider from "@/components/madal/Cart";
 
 export const metadata: Metadata = {
   title: "Farmart - Leading Grocery App",
@@ -20,6 +21,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
       <Providers>
         <div className="relative">
           <AuthMadal />
+          <CartSlider />
           <Header />
           {children}
           <DownloadBanner />

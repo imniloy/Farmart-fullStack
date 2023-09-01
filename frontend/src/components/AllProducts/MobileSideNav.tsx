@@ -101,7 +101,7 @@ const MobileCategoriesSideBar = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black bg-opacity-40 min-h-screen z-[1] block lg:hidden" />
+          <div className="fixed inset-0 bg-black bg-opacity-50 min-h-screen z-[1] block lg:hidden" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto bg-transparent z-[100] block lg:hidden">
