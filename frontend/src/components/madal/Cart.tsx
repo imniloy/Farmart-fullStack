@@ -3,15 +3,20 @@ import { Transition, Dialog } from "@headlessui/react";
 import { useState, Fragment } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Image from "next/image";
+import { setIsCartSliderOpen } from "@/redux/features/cart/slice";
 
 function CartSlider(): React.ReactElement {
-  const [isShowing, setIsShowing] = useState(true);
+  const { isCartSliderOpen }: { isCartSliderOpen: boolean } = useAppSelector(
+    (state) => state.cartSlider
+  );
+  const dispatch = useAppDispatch();
+
   const closeModal = () => {
-    setIsShowing(false);
+    dispatch(setIsCartSliderOpen(false));
   };
 
   return (
-    <Transition appear show={isShowing} as={Fragment}>
+    <Transition appear show={isCartSliderOpen} as={Fragment}>
       <Dialog
         as="div"
         className="relative z-[100] min-h-screen"
@@ -62,7 +67,10 @@ function CartSlider(): React.ReactElement {
                     Shopping Cart
                   </p>
                 </div>
-                <div className="ml-auto w-fit flex items-center space-x-[2px] cursor-pointer hover:text-[#02B290]">
+                <div
+                  className="ml-auto w-fit flex items-center space-x-[2px] cursor-pointer hover:text-[#02B290]"
+                  onClick={closeModal}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"

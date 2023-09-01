@@ -6,11 +6,16 @@ import { useRouter } from "next/navigation";
 import FarmartLogo from "./assets/svg/framart-logo-header.svg";
 import { setAuthMadalOpen } from "@/redux/features/uiSlider/slices";
 import { useAppDispatch } from "@/redux/hooks";
+import { setIsCartSliderOpen } from "@/redux/features/cart/slice";
 
 function Header() {
   const router = useRouter();
   const [searchText, setSearchText] = useState("");
   const dispatch = useAppDispatch();
+
+  const openCartModal = () => {
+    dispatch(setIsCartSliderOpen(true));
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -122,7 +127,10 @@ function Header() {
             </Link>
           </li>
 
-          <li className="flex items-center cursor-pointer">
+          <li
+            className="flex items-center cursor-pointer"
+            onClick={openCartModal}
+          >
             <div className="relative lg:ml-1">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
