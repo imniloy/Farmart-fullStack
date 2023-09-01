@@ -2,7 +2,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Category } from "@/types/Categories";
 import { Dialog, Transition } from "@headlessui/react";
-import { setIsOpen } from "@/redux/features/uiSlider/slices";
+import { setIsCategoryOpen } from "@/redux/features/uiSlider/slices";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -12,7 +12,7 @@ const MobileCategoriesSideBar = ({
 }: {
   categories: Category[];
 }): React.ReactElement => {
-  const isOpen = useAppSelector((state) => state.mobileSlider.isOpen);
+  const isOpen = useAppSelector((state) => state.mobileSlider.isCategoryOpen);
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -24,7 +24,7 @@ const MobileCategoriesSideBar = ({
   );
 
   function closeModal() {
-    dispatch(setIsOpen(!isOpen));
+    dispatch(setIsCategoryOpen(!isOpen));
   }
 
   const handleSelectedCategoris = (name: string): void => {

@@ -1,22 +1,17 @@
 import React from "react";
-import { Dialog } from "@headlessui/react";
 import Image from "next/image";
 import RagisterImage from "../assets/images/registration.webp";
+import { useAppDispatch } from "@/redux/hooks";
+import { setIsLoginOpen } from "@/redux/features/uiSlider/slices";
 
 const Ragister = (): React.ReactElement => {
+  const dispatch = useAppDispatch();
+  const openLoginFrom = () => {
+    dispatch(setIsLoginOpen(true));
+  };
+
   return (
     <div className="h-full w-full flex items-center md:h-[500px]">
-      <div className="absolute ring-2 ring-[#02b290] ring-opacity-70 top-2 sm:top-4 right-2 sm:right-4 rounded-full overflow-hidden p-[2px] cursor-pointer">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          className="w-5 h-5 text-gray-700"
-        >
-          <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-        </svg>
-      </div>
-
       <div className="relative hidden md:block md:w-1/2 lg:w-[55%] h-full">
         <Image
           src={RagisterImage}
@@ -164,12 +159,13 @@ const Ragister = (): React.ReactElement => {
             </button>
           </form>
           <div className=" text-sm text-center sm:text-15px text-gray-600 font-normal">
-            Don’t have an account?
+            Do you have an account?
             <button
+              onClick={openLoginFrom}
               type="button"
               className="text-sm font-medium text-brand sm:text-base ml-1  hover:no-underline focus:outline-none text-[#02b290] inline-block"
             >
-              Create Account
+              Sign In
             </button>
           </div>
         </div>

@@ -1,15 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type InitialState = {
-  isOpen: boolean;
+  isCategoryOpen: boolean;
   isAuthMadalOpen: boolean;
   isLoginOpen: boolean;
   isRegisterOpen: boolean;
 };
 
 const initialState = {
-  isOpen: false,
-  isAuthMadalOpen: true,
+  isCategoryOpen: false,
+  isAuthMadalOpen: false,
   isLoginOpen: false,
   isRegisterOpen: false,
 } as InitialState;
@@ -18,13 +18,13 @@ const mobileSliderSlice = createSlice({
   name: "mobileSlider" as string,
   initialState,
   reducers: {
-    setIsOpen: (state, action: PayloadAction<boolean>) => {
-      state.isOpen = action.payload;
+    setIsCategoryOpen: (state, action: PayloadAction<boolean>) => {
+      state.isCategoryOpen = action.payload;
     },
 
     setAuthMadalOpen: (state, action: PayloadAction<boolean>) => {
       state.isAuthMadalOpen = action.payload;
-      // state.isLoginOpen = action.payload;
+      state.isLoginOpen = action.payload;
     },
 
     setIsLoginOpen: (state, action: PayloadAction<boolean>) => {
@@ -41,7 +41,7 @@ const mobileSliderSlice = createSlice({
 
 export default mobileSliderSlice.reducer;
 export const {
-  setIsOpen,
+  setIsCategoryOpen,
   setIsLoginOpen,
   setAuthMadalOpen,
   setIsRegisterOpen,

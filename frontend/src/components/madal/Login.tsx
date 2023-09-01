@@ -1,22 +1,17 @@
 import React from "react";
-import { Dialog } from "@headlessui/react";
 import Image from "next/image";
 import LoginImage from "../assets/images/login.jpeg";
+import { useAppDispatch } from "@/redux/hooks";
+import { setIsRegisterOpen } from "@/redux/features/uiSlider/slices";
 
 const Login = (): React.ReactElement => {
+  const dispatch = useAppDispatch();
+  const openRegisterFrom = () => {
+    dispatch(setIsRegisterOpen(true));
+  };
+
   return (
     <div className="h-full w-full flex items-center md:h-[440px]">
-      <div className="absolute ring-2 ring-[#02b290] ring-opacity-70 top-2 sm:top-4 right-2 sm:right-4 rounded-full overflow-hidden p-[2px] cursor-pointer">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          className="w-5 h-5 text-gray-700"
-        >
-          <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-        </svg>
-      </div>
-
       <div className="relative hidden md:block md:w-1/2 lg:w-[55%] h-full">
         <Image
           src={LoginImage}
@@ -153,6 +148,7 @@ const Login = (): React.ReactElement => {
           <div className=" text-sm text-center sm:text-15px text-gray-600 font-normal">
             Don’t have an account?
             <button
+              onClick={openRegisterFrom}
               type="button"
               className="text-sm font-medium text-brand sm:text-base ml-1  hover:no-underline focus:outline-none text-[#02b290] inline-block"
             >
