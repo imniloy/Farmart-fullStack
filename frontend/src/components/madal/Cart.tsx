@@ -41,9 +41,9 @@ function CartSlider(): React.ReactElement {
           >
             <Dialog.Panel
               autoFocus
-              className="min-h-screen transform overflow-hidden bg-white text-left shadow-xl transition-all w-[320px] sm:w-[450px] md:w-[480px] ml-auto"
+              className="min-h-screen transform overflow-hidden bg-white text-left shadow-xl transition-all w-[320px] 500px:w-[450px] md:w-[480px] ml-auto"
             >
-              <div className="flex items-center w-full py-5 px-6  border-b border-gray-200">
+              <div className="flex items-center w-full p-4 lg:py-5 lg:px-6  border-b border-gray-200">
                 <div className="flex items-center space-x-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -52,13 +52,13 @@ function CartSlider(): React.ReactElement {
                     className="w-6 h-6"
                   >
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M7.5 6v.75H5.513c-.96 0-1.764.724-1.865 1.679l-1.263 12A1.875 1.875 0 004.25 22.5h15.5a1.875 1.875 0 001.865-2.071l-1.263-12a1.875 1.875 0 00-1.865-1.679H16.5V6a4.5 4.5 0 10-9 0zM12 3a3 3 0 00-3 3v.75h6V6a3 3 0 00-3-3zm-3 8.25a3 3 0 106 0v-.75a.75.75 0 011.5 0v.75a4.5 4.5 0 11-9 0v-.75a.75.75 0 011.5 0v.75z"
-                      clip-rule="evenodd"
+                      clipRule="evenodd"
                     />
                   </svg>
 
-                  <p className="text-xl font-medium font-inter text-color-black ">
+                  <p className="text-lg md:text-xl font-medium font-inter text-color-black ">
                     Shopping Cart
                   </p>
                 </div>
@@ -76,7 +76,7 @@ function CartSlider(): React.ReactElement {
               </div>
 
               {/* products */}
-              <ul className="my-3 px-6 ">
+              <ul className="my-3 px-4 500px:px-6 ">
                 {Array(5)
                   .fill(0)
                   .map((_, i) => (
@@ -84,8 +84,8 @@ function CartSlider(): React.ReactElement {
                       key={i}
                       className="w-full py-2 group cursor-pointer flex items-center justify-between"
                     >
-                      <div className="flex items-center space-x-4">
-                        <div className="relative h-24 w-24 rounded-lg bg-black overflow-hidden">
+                      <div className="flex items-center space-x-2 500px:space-x-4">
+                        <div className="relative h-16 w-16 500px:h-20 500px:w-20 md:h-24 md:w-24 rounded-lg bg-black overflow-hidden">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 20 20"
@@ -104,23 +104,23 @@ function CartSlider(): React.ReactElement {
                             src={`https://images.pexels.com/photos/11213759/pexels-photo-11213759.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1`}
                             alt=""
                             fill
-                            sizes=""
+                            sizes="90px"
                           />
                         </div>
                         <div className="">
-                          <p className="w-[240px] truncate hover:text-[#02B290] transition-all font-thin text-base">
+                          <p className="w-[160px] 500px:w-[200px] md:w-[240px] truncate hover:text-[#02B290] transition-all font-thin text-sm sm:text-base">
                             Organic Girl Lettuce
                           </p>
-                          <div className="text-[13px] w-[150px] truncate sm:text-xs text-[#595959] mb-2 my-1.5 font-inter">
+                          <div className="text-xs sm:text-[13px] w-[150px] truncate sm:text-xs text-[#595959] my-1 500px:mb-2 500px:mt-1.5 font-inter">
                             1 Bag X 3
                           </div>
-                          <div className="flex items-center space-x-4 w-fit">
-                            <div className="h-6 w-6 rounded border border-gray-200 drop-shadow text-sm font-medium flex justify-center items-center hover:bg-[#02B290] hover:text-white transition-all duration-200 ease-in-out">
+                          <div className="flex items-center space-x-2 500px:space-x-4 w-fit">
+                            <div className="h-5 w-5 500px:h-6 500px:w-6 rounded border border-gray-200 drop-shadow text-sm font-medium flex justify-center items-center hover:bg-[#02B290] hover:text-white transition-all duration-200 ease-in-out">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 20 20"
                                 fill="currentColor"
-                                className="w-5 h-5"
+                                className="w-4 h-4 500px:w-5 500px:h-5"
                               >
                                 <path d="M6.75 9.25a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5z" />
                               </svg>
@@ -146,7 +146,7 @@ function CartSlider(): React.ReactElement {
                   ))}
               </ul>
 
-              <div className=" mt-8 mb-4 p-6 border-t border-gray-200">
+              <div className="mt-4 500px:mt-8 mb-4 p-4 500px:p-6 border-t border-gray-200">
                 <div className="flex justify-between">
                   <p className="font-medium text-lg text-color-black">
                     Subtotal:{" "}

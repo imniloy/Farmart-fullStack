@@ -35,6 +35,7 @@ const Categories = async () => {
                       src={`${PRIVATE_API_URL}${attributes.image.data.attributes.url}`}
                       alt={`not-found-img`}
                       fill
+                      sizes="60px"
                       className="group-hover:scale-105 transition-all duration-200"
                     />
                   </div>
