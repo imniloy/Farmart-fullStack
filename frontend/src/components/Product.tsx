@@ -57,6 +57,7 @@ const Product = ({ product }: { product: product }): React.ReactNode => {
           price={price}
           originalPrice={originalPrice}
           stock={stock}
+          imageUrl={product.attributes.thumbnail.data.attributes.formats.small.url}
         />
       </li>
     </Link>

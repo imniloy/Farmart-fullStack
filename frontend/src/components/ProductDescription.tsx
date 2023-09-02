@@ -7,12 +7,14 @@ const ProductDescription = ({
   price,
   originalPrice,
   stock,
+  imageUrl,
 }: {
   id: number;
   name: string;
   price: number;
   originalPrice: number | null | undefined;
   stock: number;
+  imageUrl: string;
 }) => {
   const [showCartButton, setShowCartButton] = useState<boolean>(true);
 
