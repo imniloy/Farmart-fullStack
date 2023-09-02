@@ -6,7 +6,6 @@ import ProductDescription from "./ProductDescription";
 import Link from "next/link";
 
 const Product = ({ product }: { product: product }): React.ReactNode => {
-  // console.log(product.attributes.thumbnail.data.attributes.formats.small.url);
   const stock: number = parseInt(product.attributes.stock);
   let discountPercentise: number = 0;
   const price: number = product?.attributes?.price;
@@ -66,6 +65,7 @@ const Product = ({ product }: { product: product }): React.ReactNode => {
         imageUrl={
           product.attributes.thumbnail.data.attributes.formats.small.url
         }
+        slug={product.attributes.slug}
       />
     </li>
   );

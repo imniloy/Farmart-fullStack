@@ -1,8 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addToCart, handleQuantity } from "@/redux/features/cart/slice";
-import { CartProduct } from "@/redux/features/cart/types";
+import { toast } from "react-toastify";
 
 const ProductDescription = ({
   id,
@@ -11,6 +11,7 @@ const ProductDescription = ({
   originalPrice,
   stock,
   imageUrl,
+  slug,
 }: {
   id: number;
   name: string;
@@ -18,6 +19,7 @@ const ProductDescription = ({
   originalPrice: number | null | undefined;
   stock: number;
   imageUrl: string;
+  slug: string;
 }) => {
   const { cartProducts } = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
@@ -25,6 +27,13 @@ const ProductDescription = ({
 
   // dispatch functions...
   const addProductToCart = () => {
+    if (stock <= 0) {
+      toast.error("Insufficient stock!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return;
+    }
+
     dispatch(
       addToCart({
         id,
@@ -34,15 +43,20 @@ const ProductDescription = ({
         stock,
         quantity: 1,
         imageUrl,
+        slug,
       })
     );
   };
 
   const cartProductQuantityHandler = (oparationType: string) => {
-    console.log(oparationType);
+    if (oparationType === "plus" && alreadyAdded?.quantity === stock) {
+      toast.error("Insufficient stock!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return;
+    }
     dispatch(handleQuantity({ id, oparationType }));
   };
-  // console.log(alreadyAdded);
 
   return (
     <div
@@ -72,8 +86,12 @@ const ProductDescription = ({
             {/* <!-- add/delete button --> */}
             <div className="h-full w-auto flex flex-col 500px:flex-row items-center justify-evenly py-[6px] 500px:py-1 px-1 500px:px-2 bg-emerald-500 text-white rounded space-x-[2px] 500px:space-x-[6px]">
               {/* <!-- minus button --> */}
-              <button onClick={() => cartProductQuantityHandler("minus")}>
-                <span className="text-white bg-red-500 text-base">
+              <button
+                className="cursor-pointer"
+                disabled={alreadyAdded?.quantity <= 1}
+                onClick={() => cartProductQuantityHandler("minus")}
+              >
+                <span className="text-white text-base">
                   <svg
                     stroke="currentColor"
                     fill="currentColor"
@@ -97,7 +115,10 @@ const ProductDescription = ({
                 {alreadyAdded.quantity}
               </p>
               {/* <!-- plus button --> */}
-              <button onClick={() => cartProductQuantityHandler("plus")}>
+              <button
+                className="cursor-pointer"
+                onClick={() => cartProductQuantityHandler("plus")}
+              >
                 <span className="text-dark text-base">
                   <svg
                     stroke="currentColor"
@@ -123,6 +144,7 @@ const ProductDescription = ({
         ) : (
           //  add to cart button
           <button
+            // disabled={stock <= 0}
             onClick={addProductToCart}
             aria-label="cart"
             className="h-8 sm:h-10 w-8 sm:w-10 flex items-center justify-center border border-gray-200 rounded text-emerald-500 hover:border-emerald-500 hover:bg-emerald-500 hover:text-white transition-all"

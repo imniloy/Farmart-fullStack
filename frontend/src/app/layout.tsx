@@ -7,6 +7,8 @@ import DownloadBanner from "@/components/DownloadBanner";
 import Footer from "@/components/Footer";
 import AuthMadal from "@/components/madal/AuthMadal";
 import CartSlider from "@/components/madal/Cart";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
   title: "Farmart - Leading Grocery App",
@@ -26,6 +28,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
           {children}
           <DownloadBanner />
           <Footer />
+          <ToastContainer />
         </div>
       </Providers>
     </body>

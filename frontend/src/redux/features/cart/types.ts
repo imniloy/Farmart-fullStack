@@ -6,6 +6,7 @@ export type CartProduct = {
   stock: number;
   quantity: number;
   imageUrl: string;
+  slug: string;
 };
 
 export type ProductQuantity = {

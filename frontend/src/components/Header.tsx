@@ -13,7 +13,7 @@ function Header() {
   const [searchText, setSearchText] = useState("");
   const { cartProducts } = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
-
+  console.log(cartProducts);
   let totalCartProducts: number = cartProducts.reduce(
     (total, product) => total + product.quantity,
     0
