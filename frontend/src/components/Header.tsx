@@ -5,13 +5,19 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import FarmartLogo from "./assets/svg/framart-logo-header.svg";
 import { setAuthMadalOpen } from "@/redux/features/uiSlider/slices";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setIsCartSliderOpen } from "@/redux/features/cart/slice";
 
 function Header() {
   const router = useRouter();
   const [searchText, setSearchText] = useState("");
+  const { cartProducts } = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
+
+  let totalCartProducts: number = cartProducts.reduce(
+    (total, product) => total + product.quantity,
+    0
+  );
 
   const openCartModal = () => {
     dispatch(setIsCartSliderOpen(true));
@@ -148,7 +154,7 @@ function Header() {
               </svg>
 
               <span className="absolute font-bold -top-[10px] -right-3 text-xs h-5 w-5 flex justify-center items-center rounded-lg z-20 bg-[#FFB531]">
-                2
+                {totalCartProducts}
               </span>
             </div>
             <span className="lg:pr-3 lg:pl-2 hidden lg:inline-block">Cart</span>

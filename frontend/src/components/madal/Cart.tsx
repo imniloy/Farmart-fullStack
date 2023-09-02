@@ -1,13 +1,13 @@
 "use client";
 import { Transition, Dialog } from "@headlessui/react";
-import { useState, Fragment } from "react";
+import { Fragment } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Image from "next/image";
 import { setIsCartSliderOpen } from "@/redux/features/cart/slice";
 
 function CartSlider(): React.ReactElement {
   const { isCartSliderOpen }: { isCartSliderOpen: boolean } = useAppSelector(
-    (state) => state.cartSlider
+    (state) => state.cart
   );
   const dispatch = useAppDispatch();
 

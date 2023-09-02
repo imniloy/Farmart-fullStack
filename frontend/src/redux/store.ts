@@ -6,7 +6,7 @@ import cartSliderSlice from "./features/cart/slice";
 export const store = configureStore({
   reducer: {
     mobileSlider: mobileSliderSlice,
-    cartSlider: cartSliderSlice,
+    cart: cartSliderSlice,
   },
   devTools: process.env.NODE_ENV !== "production",
   middleware: (getDefaultMiddlewares) => getDefaultMiddlewares(),

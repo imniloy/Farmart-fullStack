@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CartProduct, ProductQuantity } from "./types";
+import { current } from "@reduxjs/toolkit";
 
 type InitialState = {
   isCartSliderOpen: boolean;
@@ -7,12 +8,12 @@ type InitialState = {
 };
 
 const initialState: InitialState = {
-  isCartSliderOpen: true,
+  isCartSliderOpen: false,
   cartProducts: [],
 };
 
 const cartSliderSlice = createSlice({
-  name: "cartSlider" as string,
+  name: "cart" as string,
   initialState,
   reducers: {
     setIsCartSliderOpen: (state, action: PayloadAction<boolean>) => {
@@ -31,29 +32,38 @@ const cartSliderSlice = createSlice({
 
     handleQuantity: (state, action: PayloadAction<ProductQuantity>) => {
       const { id, oparationType } = action.payload;
+      console.log(action.payload);
 
       switch (oparationType) {
         case "plus":
           state.cartProducts = state.cartProducts.map((product) => {
-            if (product?.id === id) {
+            let draftProduct = JSON.parse(JSON.stringify(product));
+
+            if (draftProduct.id === id) {
+              console.log(draftProduct.quantity);
               return {
-                ...product,
-                quantity: product?.quantity + 1,
+                ...draftProduct,
+                quantity: draftProduct.quantity + 1,
               };
             }
             return product;
           });
+          break;
 
         case "minus":
           state.cartProducts = state.cartProducts.map((product) => {
-            if (product?.id === id) {
+            let draftProduct = JSON.parse(JSON.stringify(product));
+
+            if (draftProduct.id === id) {
+              console.log(draftProduct.quantity);
               return {
-                ...product,
-                quantity: product?.quantity - 1,
+                ...draftProduct,
+                quantity: draftProduct.quantity - 1,
               };
             }
             return product;
           });
+          break;
 
         default:
           return state;
@@ -63,4 +73,5 @@ const cartSliderSlice = createSlice({
 });
 
 export default cartSliderSlice.reducer;
-export const { setIsCartSliderOpen } = cartSliderSlice.actions;
+export const { setIsCartSliderOpen, addToCart, removeToCart, handleQuantity } =
+  cartSliderSlice.actions;
