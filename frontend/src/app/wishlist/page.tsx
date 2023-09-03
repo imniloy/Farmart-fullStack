@@ -1,12 +1,18 @@
+"use client";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 const page = () => {
+  const { wishListProducts } = useAppSelector((state) => state.wish);
+  const dispatch = useAppDispatch();
+
   return (
     <section className="lg:py-12 py-10 bg-white">
       <div className="section-container space-y-4 xl:space-y-8">
         {/* products */}
-        <p className="text-2xl font-inter font-semibold">My Wishlist</p>
+        <p className="text-2xl font-inter font-medium">My Wishlist</p>
         <ul className="space-y-4">
           <li className="w-full h-full flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 bg-gray-100 p-[10px] rounded-lg group overflow-hidden">
             <div className="flex items-center pb-2 border-b border-gray-300 sm:border-none sm:pb-0">

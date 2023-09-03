@@ -12,8 +12,9 @@ function Header() {
   const router = useRouter();
   const [searchText, setSearchText] = useState("");
   const { cartProducts } = useAppSelector((state) => state.cart);
+  const { wishListProducts } = useAppSelector((state) => state.wish);
   const dispatch = useAppDispatch();
-  console.log(cartProducts);
+
   let totalCartProducts: number = cartProducts.reduce(
     (total, product) => total + product.quantity,
     0
@@ -124,7 +125,7 @@ function Header() {
                 </svg>
 
                 <span className="absolute font-bold -top-[10px] -right-[10px] text-xs h-5 w-5 flex justify-center items-center rounded-lg z-20 bg-[#FFB531]">
-                  2
+                  {wishListProducts.length}
                 </span>
               </div>
               <span className="lg:pr-3 lg:pl-2 hidden lg:inline-block">

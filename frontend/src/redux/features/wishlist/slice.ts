@@ -1,21 +1,33 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CartProduct, ProductQuantity } from "./types";
+
+type WishProductType = {
+  id: number;
+  name: string;
+  slug: string;
+  stock: number;
+};
 
 type InitialState = {
-  isCartSliderOpen: boolean;
-  cartProducts: CartProduct[];
+  wishListProducts: WishProductType[];
 };
 
 const initialState: InitialState = {
-  isCartSliderOpen: false,
-  cartProducts: [],
+  wishListProducts: [],
 };
 
-const cartSliderSlice = createSlice({
-  name: "cart" as string,
+const wishListSlice = createSlice({
+  name: "wishlist" as string,
   initialState,
-  reducers: {},
+  reducers: {
+    addToWishList: (state, action: PayloadAction<WishProductType>) => {
+      //   state.cartProducts.push(action.payload);
+    },
+
+    removeToWishList: (state, action: PayloadAction<number>) => {
+      //   state.cartProducts.push(action.payload);
+    },
+  },
 });
 
-export default cartSliderSlice.reducer;
-export const {} = cartSliderSlice.actions;
+export default wishListSlice.reducer;
+export const { addToWishList, removeToWishList } = wishListSlice.actions;
