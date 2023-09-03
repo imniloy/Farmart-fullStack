@@ -10,13 +10,7 @@ const ImageCarousel = ({
   images: any;
 }): React.ReactNode => {
   const [showImage, setShowImage] = useState<string>("");
-
-  console.log(thumbnail);
-  if (images) {
-    console.log(images);
-  }
-
-  console.log(showImage);
+  
   return (
     <div className="lg:col-span-6 xl:col-span-7">
       <div className="w-full space-x-0 xl:space-x-3 flex flex-col xl:flex-row">

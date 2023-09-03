@@ -12,4 +12,5 @@ export type CartProduct = {
 export type ProductQuantity = {
   id: number;
   oparationType: string;
+  counter: number;
 };

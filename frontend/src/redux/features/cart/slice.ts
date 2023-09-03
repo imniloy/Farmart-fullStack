@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CartProduct, ProductQuantity } from "./types";
-import { current } from "@reduxjs/toolkit";
 
 type InitialState = {
   isCartSliderOpen: boolean;
@@ -31,7 +30,7 @@ const cartSliderSlice = createSlice({
     },
 
     handleQuantity: (state, action: PayloadAction<ProductQuantity>) => {
-      const { id, oparationType } = action.payload;
+      const { id, oparationType, counter } = action.payload;
       console.log(action.payload);
 
       switch (oparationType) {
@@ -43,7 +42,7 @@ const cartSliderSlice = createSlice({
               console.log(draftProduct.quantity);
               return {
                 ...draftProduct,
-                quantity: draftProduct.quantity + 1,
+                quantity: draftProduct.quantity + counter,
               };
             }
             return product;
@@ -59,7 +58,7 @@ const cartSliderSlice = createSlice({
 
               return {
                 ...draftProduct,
-                quantity: draftProduct.quantity - 1,
+                quantity: draftProduct.quantity - counter,
               };
             }
             return product;

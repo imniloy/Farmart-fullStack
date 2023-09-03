@@ -55,7 +55,7 @@ const ProductDescription = ({
       });
       return;
     }
-    dispatch(handleQuantity({ id, oparationType }));
+    dispatch(handleQuantity({ id, oparationType, counter: 1 }));
   };
 
   return (

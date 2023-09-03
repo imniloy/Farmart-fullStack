@@ -9,9 +9,8 @@ import {
   setIsCartSliderOpen,
 } from "@/redux/features/cart/slice";
 import { CartProduct } from "@/redux/features/cart/types";
-import Link from "next/link";
 import { toast } from "react-toastify";
-
+import EmptyCartImage from "@/components/assets/images/empty-cart.webp";
 function CartSlider(): React.ReactElement {
   const {
     isCartSliderOpen,
@@ -39,18 +38,36 @@ function CartSlider(): React.ReactElement {
     } else if (oparationType === "minus" && alreadyAdded?.quantity === 1) {
       return;
     }
-    dispatch(handleQuantity({ id, oparationType }));
+    dispatch(handleQuantity({ id, oparationType, counter: 1 }));
   };
 
-  const deleteProduct = (id: number): void => {
-    dispatch(removeToCart(id));
-    toast.success("Product deleted", {
+  const deleteProduct = (product: CartProduct): void => {
+    dispatch(removeToCart(product.id));
+    toast.success(`${product.quantity} ${product.name} deleted`, {
       position: toast.POSITION.TOP_CENTER,
     });
   };
 
   const closeModal = () => {
     dispatch(setIsCartSliderOpen(false));
+  };
+
+  let subtotal = cartProducts.reduce((total, product) => {
+    let value = product.quantity * product.price;
+    return value + total;
+  }, 0);
+  // let singleProductTotalPrice =  {parseFloat(
+  //   product.price * product.quantity.toFixed(2)
+  // )}
+  const calculateSingleProductTotalPrice = ({
+    price,
+    quantity,
+  }: {
+    price: number;
+    quantity: number;
+  }): number => {
+    let totalPrice = price * quantity;
+    return parseFloat(totalPrice.toFixed(2));
   };
 
   return (
@@ -132,7 +149,7 @@ function CartSlider(): React.ReactElement {
                       >
                         <div className="flex items-center space-x-2 500px:space-x-4">
                           <div
-                            onClick={() => deleteProduct(product.id)}
+                            onClick={() => deleteProduct(product)}
                             className="relative h-16 w-16 500px:h-20 500px:w-20 md:h-24 md:w-24 rounded-lg bg-black overflow-hidden"
                           >
                             <svg
@@ -209,7 +226,10 @@ function CartSlider(): React.ReactElement {
                           </div>
                         </div>
                         <p className="font-medium font-inter text-base text-gray-700]">
-                          ${product.price * product.quantity}
+                          {calculateSingleProductTotalPrice({
+                            price: product.price,
+                            quantity: product.quantity,
+                          })}
                         </p>
                       </li>
                     ))}
@@ -218,8 +238,23 @@ function CartSlider(): React.ReactElement {
               </div>
               {/* no product image section */}
               {cartProducts.length === 0 && (
-                <div className="flex items-center justify-center w-full p-4 lg:py-5 lg:px-6">
-                  aa
+                <div className="flex flex-col items-center justify-center w-full p-4 lg:py-5 lg:px-6">
+                  <div className="relative h-[190px] w-[190px]">
+                    <Image
+                      src={EmptyCartImage}
+                      alt="EmptyCartImage"
+                      fill
+                      sizes="190px"
+                    />
+                  </div>
+                  <div className="">
+                    <p className="text-base text-center font-inter font-medium sm:text-lg lg:text-xl pb-1 text-color-black">
+                      Your cart is empty.
+                    </p>
+                    <p className="text-sm text-[#687280]">
+                      Please add product to your cart list
+                    </p>
+                  </div>
                 </div>
               )}
 
@@ -229,7 +264,7 @@ function CartSlider(): React.ReactElement {
                     Subtotal:{" "}
                   </p>
                   <span className="font-semibold font-inter text-base text-color-black">
-                    $1250
+                    {parseFloat(subtotal.toFixed(2))}
                   </span>
                 </div>
                 <p className="text-sm text-gray-500 my-2">
@@ -237,8 +272,19 @@ function CartSlider(): React.ReactElement {
                   payment processing.
                 </p>
 
-                <div className="w-full mt-6 cursor-pointer p-4 bg-[#02B290] text-white font-semibold text-sm text-center rounded">
-                  Proceed To Checkout
+                <div
+                  className={`mt-6 cursor-pointer p-4 ${
+                    cartProducts.length > 0
+                      ? "bg-[#02B290] text-white"
+                      : "bg-[#E5EAF1] text-color-black"
+                  }  font-semibold text-sm text-center rounded`}
+                >
+                  <p
+                    className={`
+                  ${cartProducts.length === 0 && "opacity-50"} text-sm`}
+                  >
+                    Proceed To Checkout
+                  </p>
                 </div>
               </div>
             </Dialog.Panel>

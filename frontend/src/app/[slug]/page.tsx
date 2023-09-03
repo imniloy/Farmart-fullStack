@@ -83,7 +83,7 @@ const page = async ({ params }: { params: Params }) => {
                 )}
               </div>
 
-              <Button />
+              <Button product={data[0]} />
 
               {/* tags */}
               <div className="flex items-center space-x-3">

@@ -1,13 +1,99 @@
 "use client";
-import React from "react";
 
-const Button = () => {
+import React, { useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  addToCart,
+  handleQuantity,
+  removeToCart,
+  setIsCartSliderOpen,
+} from "@/redux/features/cart/slice";
+import { product } from "@/types/products";
+import { CartProduct } from "@/redux/features/cart/types";
+import { toast } from "react-toastify";
+
+const Button = ({ product }: { product: product }) => {
+  const { id, attributes } = product;
+  const { name, slug, stock, price, original_price } = attributes;
+  const imageUrl = attributes.thumbnail.data.attributes.formats.small.url;
+  const [counter, setCounter] = useState<number>(1);
+  const {
+    cartProducts,
+  }: { isCartSliderOpen: boolean; cartProducts: CartProduct[] } =
+    useAppSelector((state) => state.cart);
+
+  const dispatch = useAppDispatch();
+
+  const alreadyAdded = cartProducts.find(
+    (seletedProduct) => seletedProduct.id === id
+  );
+
+  // dispatch functions...
+  const addProductToCart = (): void => {
+    if (parseInt(stock) < counter) {
+      toast.error("Insufficient stock!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return;
+    }
+    dispatch(
+      addToCart({
+        id,
+        name,
+        price,
+        originalPrice: original_price,
+        stock: parseInt(stock),
+        quantity: counter,
+        imageUrl,
+        slug,
+      })
+    );
+
+    toast.success(`${counter} ${name} Added To Cart!`, {
+      position: toast.POSITION.TOP_CENTER,
+    });
+
+    setCounter(1);
+  };
+
+  const cartProductQuantityHandler = (oparationType: string): void => {
+    if (
+      oparationType === "plus" &&
+      parseInt(stock) < counter + alreadyAdded?.quantity
+    ) {
+      toast.error("Insufficient stock!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return;
+    }
+    dispatch(handleQuantity({ id, oparationType, counter }));
+
+    toast.success(`${counter} ${name} Added To Cart!`, {
+      position: toast.POSITION.TOP_CENTER,
+    });
+
+    setCounter(1);
+  };
+
+  // this handleCart is responsible for updating the cart product...
+  const handleCart = (): void => {
+    if (alreadyAdded) {
+      cartProductQuantityHandler("plus");
+      return;
+    }
+    addProductToCart();
+  };
+
   return (
     <div className="space-y-2.5 md:space-y-3 my-6 500px:my-8 lg:my-10 xl:mt-16 mb-8">
       {/* counter button */}
-      <div className="flex justify-center rounded-md w-full space-x-6 border border-gray-300 px-4 md:px-6 lg:px-8 py-3 md:py-3.5 lg:py-4">
+      <div className="flex justify-center items-center rounded-md w-full space-x-6 border border-gray-300 px-4 md:px-6 lg:px-8 py-2">
         {/* minus */}
-        <span className="cursor-pointer text-color-black">
+        <button
+          disabled={counter <= 1}
+          onClick={() => setCounter((prev) => prev - 1)}
+          className="cursor-pointer p-1 text-color-black"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -22,13 +108,16 @@ const Button = () => {
               d="M19.5 12h-15"
             />
           </svg>
-        </span>
+        </button>
         {/* amount */}
         <span className="font-semibold text-color-black text-base">
-          1
+          {counter}
         </span>
         {/* plus */}
-        <span className="cursor-pointer text-color-black">
+        <button
+          onClick={() => setCounter((prev) => prev + 1)}
+          className="cursor-pointer p-1 text-color-black"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -43,10 +132,13 @@ const Button = () => {
               d="M12 4.5v15m7.5-7.5h-15"
             />
           </svg>
-        </span>
+        </button>
       </div>
       {/* add to cart button */}
-      <button className="text-base leading-4 inline-flex items-center cursor-pointer transition ease-in-out duration-300 font-semibold text-center justify-center border-0 border-transparent rounded-md focus-visible:outline-none focus:outline-none text-white hover:text-white bg-brand-color hover:bg-[#06c7a1] w-full space-x-3 px-4 md:px-6 lg:px-8 py-3 md:py-3.5 lg:py-4">
+      <button
+        onClick={handleCart}
+        className="text-base leading-4 inline-flex items-center cursor-pointer transition ease-in-out duration-300 font-semibold text-center justify-center border-0 border-transparent rounded-md focus-visible:outline-none focus:outline-none text-white hover:text-white bg-brand-color hover:bg-[#06c7a1] w-full space-x-3 px-4 md:px-6 lg:px-8 py-3 md:py-3.5 lg:py-4"
+      >
         <span className="inline-block">
           <svg
             xmlns="http://www.w3.org/2000/svg"
