@@ -4,7 +4,8 @@ type WishProductType = {
   id: number;
   name: string;
   slug: string;
-  stock: number;
+  stock: string;
+  image: string;
 };
 
 type InitialState = {
@@ -20,11 +21,13 @@ const wishListSlice = createSlice({
   initialState,
   reducers: {
     addToWishList: (state, action: PayloadAction<WishProductType>) => {
-      //   state.cartProducts.push(action.payload);
+      state.wishListProducts.push(action.payload);
     },
 
     removeToWishList: (state, action: PayloadAction<number>) => {
-      //   state.cartProducts.push(action.payload);
+      state.wishListProducts = state.wishListProducts.filter(
+        (product) => product.id !== action.payload
+      );
     },
   },
 });
