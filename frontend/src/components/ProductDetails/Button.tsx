@@ -2,12 +2,7 @@
 
 import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import {
-  addToCart,
-  handleQuantity,
-  removeToCart,
-  setIsCartSliderOpen,
-} from "@/redux/features/cart/slice";
+import { addToCart, handleQuantity } from "@/redux/features/cart/slice";
 import { product } from "@/types/products";
 import { CartProduct } from "@/redux/features/cart/types";
 import { toast } from "react-toastify";
@@ -15,6 +10,7 @@ import {
   addToWishList,
   removeToWishList,
 } from "@/redux/features/wishlist/slice";
+import ShareOptions from "./ShareOptions";
 
 const Button = ({ product }: { product: product }) => {
   const { id, attributes } = product;
@@ -109,7 +105,7 @@ const Button = ({ product }: { product: product }) => {
   };
 
   return (
-    <div className="space-y-2.5 md:space-y-3 my-6 500px:my-8 lg:my-10 xl:mt-16 mb-8">
+    <div className="relative space-y-2.5 md:space-y-3 my-6 500px:my-8 lg:my-10 xl:mt-16 mb-8">
       {/* counter button */}
       <div className="flex justify-center items-center rounded-md w-full space-x-6 border border-gray-300 px-4 md:px-6 lg:px-8 py-2">
         {/* minus */}
@@ -184,7 +180,7 @@ const Button = ({ product }: { product: product }) => {
         </span>
       </button>
       {/* wishlist&share */}
-      <div className="w-full space-x-4 flex justify-between items-center">
+      <div className="relative w-full space-x-4 flex justify-between items-center">
         {/* wishlist button */}
         <button
           onClick={handleWishList}
@@ -242,8 +238,9 @@ const Button = ({ product }: { product: product }) => {
           <span className="text-base font-medium">Share</span>
         </button>
       </div>
+      {/* share */}
+      <ShareOptions name={name} />
     </div>
   );
 };
-
 export default Button;
