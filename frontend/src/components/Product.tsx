@@ -51,7 +51,7 @@ const Product = ({ product }: { product: product }): React.ReactNode => {
               }}
               alt={`${product.attributes.thumbnail.data.attributes.name}`}
               className="group-hover:scale-110 h-full transition-all duration-200"
-              sizes="180px, (min-width: 600px) 250px, (min-width: 700px) 330px, (min-width: 800px) 280px, (min-width: 900px) 250px, (min-width: 1280px) 240px"
+              sizes="190px, (min-width: 600px) 250px, (min-width: 700px) 330px, (min-width: 800px) 280px, (min-width: 900px) 250px, (min-width: 1280px) 240px"
             />
           </div>
         </div>

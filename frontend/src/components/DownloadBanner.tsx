@@ -1,6 +1,10 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import LeftSideDownloadImage from "./assets/images/app_download_img_left.webp";
+import RightSideDownloadImage from "./assets/images/app_download_img_right.webp";
+import GooglePlayStoreLogo from "./assets/images/google_play_store.avif";
+import AppleAppStoreLogo from "./assets/images/app_store_logo.avif";
 
 const DownloadBanner = () => {
   return (
@@ -9,9 +13,7 @@ const DownloadBanner = () => {
         {/* <!-- left section --> */}
         <div className="h-[300px] xl:h-[350px] 2xl:h-[380px] hidden md:flex relative">
           <Image
-            src={
-              "http://127.0.0.1:1337/uploads/app_download_img_left_4b9ec8aec8.webp"
-            }
+            src={LeftSideDownloadImage}
             fill={true}
             sizes="(min-width: 768px) 48vw, (min-width: 1024px) 32vw"
             quality={100}
@@ -36,7 +38,7 @@ const DownloadBanner = () => {
 
           <div className="flex mx-auto w-fit items-center space-x-2">
             <Link
-              href="https://www.apple.com/app-store/"
+              href={"https://www.apple.com/app-store/"}
               target="_blank"
               className="inline-block"
             >
@@ -45,7 +47,7 @@ const DownloadBanner = () => {
                   fill
                   quality={100}
                   loading="lazy"
-                  src={`http://127.0.0.1:1337/uploads/app_store_logo_9414ec13fe.webp`}
+                  src={AppleAppStoreLogo}
                   alt="app-store.svg"
                   style={{
                     objectFit: "contain",
@@ -68,7 +70,7 @@ const DownloadBanner = () => {
                   style={{
                     objectFit: "contain",
                   }}
-                  src={`http://127.0.0.1:1337/uploads/google_play_store_9ab84d6c66.png`}
+                  src={GooglePlayStoreLogo}
                   alt="google_play_store"
                   sizes="64px (min-width: 1024px) 64px, (min-width: 1280px) 188px"
                 />
@@ -80,7 +82,7 @@ const DownloadBanner = () => {
         {/* <!-- right section --> */}
         <div className="lg:h-[300px] xl:h-[350px] 2xl:h-[380px] hidden lg:flex relative">
           <Image
-            src="http://127.0.0.1:1337/uploads/app_download_img_right_372bb50514.webp"
+            src={RightSideDownloadImage}
             fill={true}
             sizes="(min-width: 1024px) 31vw"
             quality={100}

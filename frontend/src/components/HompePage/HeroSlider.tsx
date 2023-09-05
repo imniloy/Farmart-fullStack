@@ -2,13 +2,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
-import { PRIVATE_API_URL } from "@/urls";
 import { Swiper, SwiperSlide } from "swiper/react";
 // import required modules
 import { Pagination, Autoplay } from "swiper/modules";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
+import HeroImageOne from "../assets/images/farmart_hero_banner_1.avif";
+import HeroImageTwo from "../assets/images/farmart_hero_banner_2.avif";
 
 const HeroSlider = () => {
   return (
@@ -31,7 +32,7 @@ const HeroSlider = () => {
                 fill
                 priority={true}
                 className=""
-                src={`http://127.0.0.1:1337/uploads/farmart_hero_banner_1_0a19eb13bf.png`}
+                src={HeroImageOne}
                 alt="farmart_hero_banner_1"
                 style={{
                   objectFit: "cover",
@@ -64,7 +65,7 @@ const HeroSlider = () => {
                 fill
                 priority={true}
                 className=""
-                src={`http://127.0.0.1:1337/uploads/farmart_hero_banner_2_9b7a16250d.png`}
+                src={HeroImageTwo}
                 alt="farmart_hero_banner_1"
                 style={{
                   objectFit: "cover",

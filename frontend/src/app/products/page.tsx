@@ -29,7 +29,7 @@ const page = async ({
       <section className="py-10 lg:pb-14 bg-gray-50">
         <div className="section-container">
           <div className="flex items-start w-full space-x-0 lg:space-x-8">
-            <CategoriesSidebar categories={categories} />
+            {/* <CategoriesSidebar categories={categories} /> */}
             <AllProductsSection searchParams={searchParams} />
           </div>
         </div>
