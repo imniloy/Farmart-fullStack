@@ -12,7 +12,9 @@ type Params = {
   slug: string;
 };
 
-const page = async ({ params }: { params: Params }) => {
+export const runtime = "edge";
+
+const Page = async ({ params }: { params: Params }) => {
   const { slug } = params;
   let reletedProducts: product[] = [];
   const { success, data }: { success: boolean; data: product[] } =
@@ -146,7 +148,7 @@ const page = async ({ params }: { params: Params }) => {
             {/* products lists */}
             <ul className="w-full h-full grid gap-[10px] 500px:gap-4 grid-cols-2 md:grid-cols-3 980px:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
               {reletedProducts.map((product) => (
-                <Product product={product} />
+                <Product key={product.id} product={product} />
               ))}
             </ul>
           </div>
@@ -156,4 +158,4 @@ const page = async ({ params }: { params: Params }) => {
   );
 };
 
-export default page;
+export default Page;

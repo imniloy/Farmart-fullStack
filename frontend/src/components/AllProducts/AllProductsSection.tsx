@@ -26,7 +26,7 @@ const AllProductsSection = async ({
           <SortByComp meta={meta} />
           <ul className="w-full h-full grid gap-[10px] 500px:gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-3 2xl:grid-cols-4">
             {data.map((product) => (
-              <Product product={product} />
+              <Product key={product.id} product={product} />
             ))}
           </ul>
 

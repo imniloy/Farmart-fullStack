@@ -64,7 +64,7 @@ const Pagination = ({
         <Link key={page} href={`${url}page=${page}`}>
           <div
             className={`h-10 w-10 ${
-              urlPageString == page || currentPage == page
+              Number(urlPageString) === page || currentPage === page
                 ? "text-white bg-brand-color font-bold"
                 : "hover:bg-brand-color hover:text-white font-medium "
             } border border-color-black text-sm transition-all rounded-sm flex justify-center items-center`}

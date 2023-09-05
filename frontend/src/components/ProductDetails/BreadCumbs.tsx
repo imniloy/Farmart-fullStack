@@ -10,8 +10,11 @@ const BreadCumbs = ({
   return (
     <div className="Breadcrumbs-container-element w-full py-4 sm:py-6">
       <ol className="flex items-center space-x-1">
-        {breadcumbs.map((b: BreadCumb) => (
-          <li className="flex items-center text-sm transition duration-200 ease-in cursor-pointer hover:text-emerald-500 font-medium">
+        {breadcumbs.map((b: BreadCumb, i) => (
+          <li
+            key={i}
+            className="flex items-center text-sm transition duration-200 ease-in cursor-pointer hover:text-emerald-500 font-medium"
+          >
             <Link
               href={b.url}
               className="text-xs 500px:text-sm sm:text-base flex items-center space-x-[6px]"

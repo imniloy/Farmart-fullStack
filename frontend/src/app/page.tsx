@@ -3,6 +3,8 @@ import DiscountProducts from "@/components/HompePage/DiscountProducts";
 import HeroSlider from "@/components/HompePage/HeroSlider";
 import Popularproducts from "@/components/HompePage/Popularproducts";
 
+export const runtime = "edge";
+
 const Home = (): React.ReactElement => {
   return (
     <main>

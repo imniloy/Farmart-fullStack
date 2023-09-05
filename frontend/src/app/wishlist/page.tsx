@@ -5,9 +5,12 @@ import React from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { removeToWishList } from "@/redux/features/wishlist/slice";
 
-const page = () => {
+export const runtime = "edge";
+
+const Page = () => {
   const { wishListProducts } = useAppSelector((state) => state.wish);
   const dispatch = useAppDispatch();
+
   // remove whishList...
   const removeWishList = (id: number): void => {
     dispatch(removeToWishList(id));
@@ -20,7 +23,10 @@ const page = () => {
         <p className="text-2xl font-inter font-medium">My Wishlist</p>
         <ul className="space-y-4">
           {wishListProducts.map((product) => (
-            <li className="w-full h-full flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 bg-gray-100 p-[10px] rounded-lg group overflow-hidden">
+            <li
+              key={product.id}
+              className="w-full h-full flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 bg-gray-100 p-[10px] rounded-lg group overflow-hidden"
+            >
               <div className="flex items-center pb-2 border-b border-gray-300 sm:border-none sm:pb-0">
                 <div className="relative w-[80px] h-[80px] md:h-[120px] md:w-[120px] overflow-hidden rounded-lg">
                   <Image
@@ -70,4 +76,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

@@ -63,6 +63,7 @@ const Button = ({ product }: { product: product }) => {
 
   const cartProductQuantityHandler = (oparationType: string): void => {
     if (
+      alreadyAdded &&
       oparationType === "plus" &&
       parseInt(stock) < counter + alreadyAdded?.quantity
     ) {
@@ -71,6 +72,7 @@ const Button = ({ product }: { product: product }) => {
       });
       return;
     }
+
     dispatch(handleQuantity({ id, oparationType, counter }));
 
     toast.success(`${counter} ${name} Added To Cart!`, {

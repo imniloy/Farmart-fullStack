@@ -12,6 +12,8 @@ export const metadata: Metadata = {
     "Farmart - Leading Grocery App in Bangladesh developed by Niloy Kumar Das",
 };
 
+export const runtime = "edge";
+
 const page = async ({
   searchParams,
 }: {
