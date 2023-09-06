@@ -15,7 +15,8 @@ import { BsFacebook } from "react-icons/bs";
 import { AiFillTwitterCircle } from "react-icons/ai";
 
 const ShareOptions = ({ name }: { name: string }) => {
-  const url = window.location.href;
+  // const url = window.location.href;
+  const url = "/";
   return (
     <div className="absolute shadow-lg rounded-md right-0 p-4 bg-white">
       <p className="text-sm text-gray-600 font-inter font-semibold mb-2">

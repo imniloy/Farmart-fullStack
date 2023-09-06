@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addToCart, handleQuantity } from "@/redux/features/cart/slice";

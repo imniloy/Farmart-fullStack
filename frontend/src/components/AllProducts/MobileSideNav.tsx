@@ -78,8 +78,6 @@ const MobileCategoriesSideBar = ({
   // this useEffect will run when our category query[url] will change...
   // here I define categoriesToShow variable to get the category options string..
   useEffect(() => {
-    // if (router.isMounted) {
-    // }
     if (categoriesToShow) {
       setSelectedCategories(categoriesToShow.toLowerCase().split(","));
     } else {

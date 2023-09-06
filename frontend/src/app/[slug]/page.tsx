@@ -1,12 +1,11 @@
+import React from "react";
 import Product from "@/components/Product";
 import BreadCumbs from "@/components/ProductDetails/BreadCumbs";
 import Button from "@/components/ProductDetails/Button";
 import ImageCarousel from "@/components/ProductDetails/ImageCarousel";
 import { getProductDetails, getRelatedProducts } from "@/services/product";
-import { Category } from "@/types/Categories";
 import { BreadCumb } from "@/types/breadCumbs";
 import { attributes, product } from "@/types/products";
-import React from "react";
 
 type Params = {
   slug: string;
