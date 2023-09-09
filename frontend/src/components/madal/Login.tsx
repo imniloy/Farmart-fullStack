@@ -1,14 +1,81 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import LoginImage from "../assets/images/login.jpeg";
 import { useAppDispatch } from "@/redux/hooks";
-import { setIsRegisterOpen } from "@/redux/features/uiSlider/slices";
+import {
+  setAuthMadalOpen,
+  setIsRegisterOpen,
+} from "@/redux/features/uiSlider/slices";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import BeatLoader from "react-spinners/BeatLoader";
 
-const Login = (): React.ReactElement => {
+const Login = (): React.ReactNode => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
   const dispatch = useAppDispatch();
+
   const openRegisterFrom = () => {
     dispatch(setIsRegisterOpen(true));
+  };
+  const HandleLogin = async (
+    event: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    event.preventDefault();
+    if (loading) return;
+    if (email.trim().length === 0 || password.trim().length === 0) return;
+    try {
+      setLoading(true);
+      const payload = { identifier: email, password };
+      const response = await fetch(`/api/auth/login`, {
+        method: "POST",
+        cache: "no-store",
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+
+      if (data.status === 400) {
+        setError(data.message);
+        setEmail("");
+        setPassword("");
+        toast.error("Invalid user or password!", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      } else if (data.status === 200) {
+        const { user } = data;
+        toast.success(`${user.username} successfully logged in!`, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setError(data.message);
+        setEmail("");
+        setPassword("");
+        dispatch(setAuthMadalOpen(false));
+        // router.replace("/");
+      }
+    } catch (e) {
+      if (e instanceof Error) setError(e.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -18,6 +85,7 @@ const Login = (): React.ReactElement => {
           src={LoginImage}
           alt=""
           fill
+          sizes="(min-width: 768px) 400px, (min-width: 1024px) 515px, (min-width: 1550px) 530px"
           style={{
             objectFit: "cover",
           }}
@@ -112,7 +180,11 @@ const Login = (): React.ReactElement => {
             </p>
           </div>
 
-          <form action="" className="mt-8 mb-6 w-full space-y-3 sm:space-y-4">
+          <form
+            action=""
+            className="mt-8 mb-6 w-full space-y-3 sm:space-y-4"
+            onSubmit={HandleLogin}
+          >
             <div className="w-full">
               <label
                 htmlFor="email"
@@ -122,7 +194,9 @@ const Login = (): React.ReactElement => {
               </label>
               <input
                 id="email"
-                type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
                 className="py-3 px-4 w-full appearance-none transition-all  ease-in text-input text-[13px] outline-none lg:text-sm font-body rounded placeholder:font-normal  placeholder-[#B3B3B3] text-color-black focus:outline-none border-2 focus:border-[#02b292] font-normal font-inter"
               />
             </div>
@@ -136,16 +210,23 @@ const Login = (): React.ReactElement => {
               </label>
               <input
                 id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 // type="password"
                 type="text"
                 className="py-3 px-4 w-full appearance-none transition-all  ease-in text-input text-[13px] outline-none lg:text-sm font-body rounded placeholder:font-normal  placeholder-[#B3B3B3] text-color-black focus:outline-none border-2 focus:border-[#02b292] font-normal font-inter"
               />
             </div>
 
-            <button className="bg-[#02b290] py-3 px-4 text-white rounded w-full text-sm md:text-base">
-              Sign In
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-[#02b290] flex justify-center items-center py-3 px-4 text-white rounded w-full text-sm md:text-base"
+            >
+              {loading ? <BeatLoader color="#fff" size={12} /> : "Sign In"}
             </button>
           </form>
+
           <div className=" text-sm text-center sm:text-15px text-gray-600 font-normal">
             Don’t have an account?
             <button

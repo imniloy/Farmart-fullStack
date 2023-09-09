@@ -15,7 +15,6 @@ export const GET = async (request: Request) => {
       success: false,
       message: "Failed to fetch Categories",
     });
-
   const { data }: { data: Category[] } = await response.json();
   return NextResponse.json({
     success: true,

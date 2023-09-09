@@ -13,6 +13,24 @@ type Params = {
 
 export const runtime = "edge";
 
+export async function generateMetadata({ params }: { params: Params }) {
+  const slug = params.slug;
+  try {
+    const { data }: { success: boolean; data: product[] } =
+      await getProductDetails(slug);
+
+    return {
+      title: data[0].attributes.name,
+      description: data[0].attributes.description,
+    };
+  } catch (err) {
+    return {
+      title: "Not Found",
+      description: "Not Found",
+    };
+  }
+}
+
 const Page = async ({ params }: { params: Params }) => {
   const { slug } = params;
   let reletedProducts: product[] = [];

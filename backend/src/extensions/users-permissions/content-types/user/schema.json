@@ -70,6 +70,12 @@
       "required": true,
       "minLength": 1,
       "default": "user"
+    },
+    "orders": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order.order",
+      "mappedBy": "users_permissions_user"
     }
   }
 }
