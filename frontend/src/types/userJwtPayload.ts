@@ -8,3 +8,12 @@ export type userJwtPayload = {
   iat: number;
   exp: number;
 };
+
+export type userDataType = {
+  id: number;
+  email: string;
+  user_type: string;
+  username: string;
+  iat: number;
+  exp: number;
+};

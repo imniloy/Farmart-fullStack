@@ -1,14 +1,95 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import RagisterImage from "../assets/images/registration.webp";
 import { useAppDispatch } from "@/redux/hooks";
-import { setIsLoginOpen } from "@/redux/features/uiSlider/slices";
+import {
+  setAuthMadalOpen,
+  setIsLoginOpen,
+} from "@/redux/features/uiSlider/slices";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import BeatLoader from "react-spinners/BeatLoader";
 
 const Ragister = (): React.ReactElement => {
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
   const dispatch = useAppDispatch();
+  //
   const openLoginFrom = () => {
     dispatch(setIsLoginOpen(true));
+  };
+  //
+  const HandleRegister = async (
+    event: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    event.preventDefault();
+    if (loading) return;
+    if (
+      name.trim().length === 0 ||
+      email.trim().length === 0 ||
+      password.trim().length === 0
+    )
+      return;
+
+    try {
+      setLoading(true);
+      const payload = {
+        username: name,
+        email: email,
+        password,
+        user_type: "user",
+        confirmed: true,
+      };
+      const response = await fetch(`/api/auth/register`, {
+        method: "POST",
+        cache: "no-store",
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+
+      if (data.status === 400) {
+        setError(data.message);
+        setName("");
+        setEmail("");
+        setPassword("");
+        toast.error(data.message, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: true,
+          theme: "light",
+        });
+        return;
+      } else if (data.status === 200) {
+        const { user } = data;
+        toast.success(`${user.username} successfully logged in!`, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: true,
+          theme: "light",
+        });
+        setError(data.message);
+        setName("");
+        setEmail("");
+        setPassword("");
+        dispatch(setAuthMadalOpen(false));
+        // router.replace("/");
+      }
+    } catch (e) {
+      if (e instanceof Error) setError(e.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -18,6 +99,7 @@ const Ragister = (): React.ReactElement => {
           src={RagisterImage}
           alt=""
           fill
+          sizes="(min-width: 768px) 400px, (min-width: 1024px) 515px, (min-width: 1550px) 530px"
           style={{
             objectFit: "cover",
           }}
@@ -112,7 +194,11 @@ const Ragister = (): React.ReactElement => {
             </p>
           </div>
 
-          <form action="" className="mt-8 mb-6 w-full space-y-3 sm:space-y-4">
+          <form
+            onSubmit={HandleRegister}
+            action=""
+            className="mt-8 mb-6 w-full space-y-3 sm:space-y-4"
+          >
             <div className="w-full">
               <label
                 htmlFor="name"
@@ -122,6 +208,9 @@ const Ragister = (): React.ReactElement => {
               </label>
               <input
                 id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
                 type="text"
                 className="py-3 px-4 w-full appearance-none transition-all  ease-in text-input text-[13px] outline-none lg:text-sm font-body rounded placeholder:font-normal  placeholder-[#B3B3B3] text-color-black focus:outline-none border-2 focus:border-[#02b292] font-normal font-inter"
               />
@@ -135,7 +224,10 @@ const Ragister = (): React.ReactElement => {
               </label>
               <input
                 id="email"
-                type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                type="email"
                 className="py-3 px-4 w-full appearance-none transition-all  ease-in text-input text-[13px] outline-none lg:text-sm font-body rounded placeholder:font-normal  placeholder-[#B3B3B3] text-color-black focus:outline-none border-2 focus:border-[#02b292] font-normal font-inter"
               />
             </div>
@@ -149,14 +241,21 @@ const Ragister = (): React.ReactElement => {
               </label>
               <input
                 id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
                 // type="password"
                 type="text"
                 className="py-3 px-4 w-full appearance-none transition-all  ease-in text-input text-[13px] outline-none lg:text-sm font-body rounded placeholder:font-normal  placeholder-[#B3B3B3] text-color-black focus:outline-none border-2 focus:border-[#02b292] font-normal font-inter"
               />
             </div>
 
-            <button className="bg-[#02b290] py-3 px-4 text-white rounded w-full text-sm md:text-base">
-              Sign In
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-[#02b290] py-3 px-4 text-white rounded w-full text-sm md:text-base"
+            >
+              {loading ? <BeatLoader color="#fff" size={12} /> : "Submit"}
             </button>
           </form>
           <div className=" text-sm text-center sm:text-15px text-gray-600 font-normal">

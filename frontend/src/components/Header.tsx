@@ -1,20 +1,24 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Avatar from "react-avatar";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import FarmartLogo from "./assets/svg/framart-logo-header.svg";
 import { setAuthMadalOpen } from "@/redux/features/uiSlider/slices";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setIsCartSliderOpen } from "@/redux/features/cart/slice";
+import { userLoggedIn, userLoggedOut } from "@/redux/features/auth/authSlice";
+import { verifyAuthOnClient } from "@/services/verifyAuth";
 
-function Header() {
+const Header = () => {
   const router = useRouter();
   const [searchText, setSearchText] = useState("");
   const { cartProducts } = useAppSelector((state) => state.cart);
   const { wishListProducts } = useAppSelector((state) => state.wish);
+  const { user: loggedOnUser } = useAppSelector((state) => state.auth);
+  console.log(loggedOnUser);
   const dispatch = useAppDispatch();
-
   let totalCartProducts: number = cartProducts.reduce(
     (total, product) => total + product.quantity,
     0
@@ -33,6 +37,20 @@ function Header() {
 
     setSearchText("");
   };
+
+  useEffect(() => {
+    const userToken = localStorage.getItem("userToken");
+    (async () => {
+      if (userToken) {
+        const verifyUser = userToken && (await verifyAuthOnClient(userToken));
+        if (verifyUser) {
+          dispatch(userLoggedIn({ userToken, user: verifyUser }));
+        } else {
+          dispatch(userLoggedOut());
+        }
+      }
+    })();
+  }, [dispatch]);
 
   return (
     <header className="bg-brand-color w-full py-4 sticky top-0 left-0 right-0 z-20">
@@ -162,47 +180,56 @@ function Header() {
           </li>
 
           {/* <!-- sign in button --> */}
-          <li
-            className="cursor-pointer"
-            onClick={() => {
-              dispatch(setAuthMadalOpen(true));
-            }}
-          >
-            <div className="flex items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+          {loggedOnUser ? (
+            <li className="cursor-pointer ml-8 lg:ml-0">
+              <div className="flex items-center" onClick={() => {}}>
+                <Avatar
+                  size="26"
+                  name={loggedOnUser.username.split(" ")[0]}
+                  textSizeRatio={2}
+                  round={true}
                 />
-              </svg>
+                <p className="font-semibold px-[6px] hidden lg:inline-block">
+                  {loggedOnUser.username.split(" ")[0]}
+                </p>
+              </div>
+            </li>
+          ) : (
+            <li
+              className="cursor-pointer"
+              onClick={() => {
+                dispatch(setAuthMadalOpen(true));
+              }}
+            >
+              <div className="flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
 
-              <span
-                className="text-sm font-normal lg:text-15px text-brand-dark focus:outline-none pl-1 xl:px-2 hidden lg:inline-block"
-                aria-label="Authentication"
-              >
-                Sign In
-              </span>
-            </div>
-
-            {/* <div className="flex items-center" onClick={() => {}}>
-              <div className="w-8 h-8 rounded-full overflow-hidden bg-[url('https://kachabazar-store.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fahossain%2Fimage%2Fupload%2Fv1681765867%2Fbv2qwqmbdhqvslykpniy.jpg&w=32&q=75')]"></div>
-              <p className="font-bold px-2 hidden lg:inline-block">
-                Niloy
-              </p>
-            </div> */}
-          </li>
+                <span
+                  className="text-sm font-normal lg:text-15px text-brand-dark focus:outline-none pl-1 xl:px-2 hidden lg:inline-block"
+                  aria-label="Authentication"
+                >
+                  Sign In
+                </span>
+              </div>
+            </li>
+          )}
         </ul>
       </div>
     </header>
   );
-}
+};
 
 export default Header;

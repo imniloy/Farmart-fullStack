@@ -2,32 +2,34 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import LoginImage from "../assets/images/login.jpeg";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   setAuthMadalOpen,
   setIsRegisterOpen,
 } from "@/redux/features/uiSlider/slices";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
 import BeatLoader from "react-spinners/BeatLoader";
+import { userLoggedIn } from "@/redux/features/auth/authSlice";
+import Cookies from "js-cookie";
+import { verifyAuthOnClient } from "@/services/verifyAuth";
 
 const Login = (): React.ReactNode => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const router = useRouter();
   const dispatch = useAppDispatch();
 
   const openRegisterFrom = () => {
     dispatch(setIsRegisterOpen(true));
   };
+
   const HandleLogin = async (
     event: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     event.preventDefault();
     if (loading) return;
     if (email.trim().length === 0 || password.trim().length === 0) return;
+
     try {
       setLoading(true);
       const payload = { identifier: email, password };
@@ -39,40 +41,52 @@ const Login = (): React.ReactNode => {
       const data = await response.json();
 
       if (data.status === 400) {
-        setError(data.message);
         setEmail("");
         setPassword("");
         toast.error("Invalid user or password!", {
           position: "top-center",
-          autoClose: 5000,
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: false,
-          pauseOnHover: true,
+          pauseOnHover: false,
+          pauseOnFocusLoss: true,
           draggable: true,
-          progress: undefined,
           theme: "light",
         });
         return;
       } else if (data.status === 200) {
         const { user } = data;
+
         toast.success(`${user.username} successfully logged in!`, {
           position: "top-center",
-          autoClose: 5000,
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: false,
-          pauseOnHover: true,
+          pauseOnHover: false,
+          pauseOnFocusLoss: true,
           draggable: true,
-          progress: undefined,
           theme: "light",
         });
-        setError(data.message);
+        const userToken = Cookies.get("farmart_client_token");
+        const verifyUser = userToken && (await verifyAuthOnClient(userToken));
+        verifyUser && dispatch(userLoggedIn({ userToken, user: verifyUser }));
         setEmail("");
         setPassword("");
         dispatch(setAuthMadalOpen(false));
-        // router.replace("/");
       }
     } catch (e) {
-      if (e instanceof Error) setError(e.message);
+      if (e instanceof Error) {
+        toast.error("Something worng happens!", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          pauseOnFocusLoss: true,
+          draggable: true,
+          theme: "light",
+        });
+      }
     } finally {
       setLoading(false);
     }

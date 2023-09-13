@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PRIVATE_API_URL } from "@/urls";
-import { tokenDataType } from "@/types/tokenData";
+import { clientInfoTokenType, tokenDataType } from "@/types/tokenData";
 import * as jose from "jose";
 
 export const POST = async (request: NextRequest) => {
@@ -31,6 +31,11 @@ export const POST = async (request: NextRequest) => {
       },
     });
 
+    // this is for jose token package
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    const alg = "HS256";
+
+    // httpOnly=true token
     const tokenData: tokenDataType = {
       jwt: data.jwt,
       user: {
@@ -40,10 +45,6 @@ export const POST = async (request: NextRequest) => {
         user_type: data.user.user_type,
       },
     };
-
-    // this is for jose token package
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-    const alg = "HS256";
 
     // set 30days for production....
     // For production .setExpirationTime("30 days")
@@ -55,6 +56,24 @@ export const POST = async (request: NextRequest) => {
 
     response.cookies.set("farmart_account_token", token, {
       httpOnly: true,
+      secure: true,
+    });
+
+    const clientInfoToken: clientInfoTokenType = {
+      id: data.user.id,
+      username: data.user.username,
+      email: data.user.email,
+      user_type: data.user.user_type,
+    };
+
+    const clientToken = await new jose.SignJWT(clientInfoToken)
+      .setProtectedHeader({ alg })
+      .setIssuedAt()
+      .setExpirationTime("1m")
+      .sign(secret);
+
+    response.cookies.set("farmart_client_token", clientToken, {
+      httpOnly: false,
       secure: true,
     });
 

@@ -19,22 +19,24 @@ export const metadata: Metadata = {
   icons: "./favicon.ico",
 };
 
-const RootLayout = ({ children }: { children: React.ReactNode }) => (
-  <html lang="en" className={`${poppins.className} ${inter.variable}`}>
-    <body suppressHydrationWarning={true}>
-      <Providers>
-        <div className="relative">
-          <AuthMadal />
-          <CartSlider />
-          <Header />
-          {children}
-          <DownloadBanner />
-          <Footer />
-          <ToastContainer />
-        </div>
-      </Providers>
-    </body>
-  </html>
-);
+const RootLayout = async ({ children }: { children: React.ReactNode }) => {
+  return (
+    <html lang="en" className={`${poppins.className} ${inter.variable}`}>
+      <body suppressHydrationWarning={true}>
+        <Providers>
+          <div className="relative">
+            <AuthMadal />
+            <CartSlider />
+            <Header />
+            {children}
+            <DownloadBanner />
+            <Footer />
+            <ToastContainer />
+          </div>
+        </Providers>
+      </body>
+    </html>
+  );
+};
 
 export default RootLayout;
