@@ -1,4 +1,4 @@
-import { userDataType, userJwtPayload } from "@/types/userJwtPayload";
+import { userJwtPayload } from "@/types/userJwtPayload";
 import { jwtVerify } from "jose";
 
 const serverSecret = new TextEncoder().encode(process.env.JWT_SECRET);
@@ -26,7 +26,7 @@ export const verifyAuthOnClient = async (token: string) => {
       return;
     }
     const verified = await jwtVerify(token, clientSecret);
-    return verified.payload as userDataType;
+    return verified.payload as userJwtPayload;
   } catch (error) {
     console.log("verifyAuthOnClient error: " + error);
   }

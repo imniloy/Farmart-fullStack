@@ -17,7 +17,7 @@ const Header = () => {
   const { cartProducts } = useAppSelector((state) => state.cart);
   const { wishListProducts } = useAppSelector((state) => state.wish);
   const { user: loggedOnUser } = useAppSelector((state) => state.auth);
-  console.log(loggedOnUser);
+
   const dispatch = useAppDispatch();
   let totalCartProducts: number = cartProducts.reduce(
     (total, product) => total + product.quantity,
@@ -44,7 +44,17 @@ const Header = () => {
       if (userToken) {
         const verifyUser = userToken && (await verifyAuthOnClient(userToken));
         if (verifyUser) {
-          dispatch(userLoggedIn({ userToken, user: verifyUser }));
+          dispatch(
+            userLoggedIn({
+              userToken,
+              user: {
+                id: verifyUser.user.id,
+                username: verifyUser.user.username,
+                email: verifyUser.user.email,
+                user_type: verifyUser.user.user_type,
+              },
+            })
+          );
         } else {
           dispatch(userLoggedOut());
         }

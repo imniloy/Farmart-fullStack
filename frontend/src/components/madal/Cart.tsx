@@ -1,6 +1,6 @@
 "use client";
 import { Transition, Dialog } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Image from "next/image";
 import {
@@ -11,7 +11,20 @@ import {
 import { CartProduct } from "@/redux/features/cart/types";
 import { toast } from "react-toastify";
 import EmptyCartImage from "@/components/assets/images/empty-cart.webp";
+import { loadStripe } from "@stripe/stripe-js";
+import ScaleLoader from "react-spinners/ScaleLoader";
+import Cookies from "js-cookie";
+import { jwtVerify } from "jose";
+import { userJwtPayload } from "@/types/userJwtPayload";
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
+);
+
 function CartSlider(): React.ReactElement {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>("");
+  const userToken = Cookies.get("farmart_client_token");
+
   const {
     isCartSliderOpen,
     cartProducts,
@@ -70,6 +83,59 @@ function CartSlider(): React.ReactElement {
     return parseFloat(totalPrice.toFixed(2));
   };
 
+  // handle payment...
+
+  const handlePayment = async () => {
+    if (cartProducts.length <= 0 || loading) return;
+    console.log("Purchasing 1");
+    console.log(userToken);
+    console.log(Cookies.get("farmart_client_token"));
+    if (!userToken) {
+      setError("User Must be authenticated to purchase");
+      return;
+    }
+    console.log("Purchasing 2");
+
+    // const stripePromise = await loadStripe(
+    //   "pk_test_51NptrESIxJWQCNK2U5POGoI2J5Vl8jEy0rgmbrRxolpENvsAhniEjsDqYCtPMnwh2uSoezYBiyHYVK22EPX5XEwM00GY7mTqIj"
+    // );
+
+    try {
+      setLoading(true);
+      const clientSecret = new TextEncoder().encode(
+        process.env.NEXT_PUBLIC_JWT_SECRET
+      );
+      if (clientSecret.length <= 0) {
+        setError("User Must be authenticated to purchase");
+        return;
+      }
+
+      const verified = await jwtVerify(userToken, clientSecret);
+      const { jwt: userJwt, user } = verified.payload as userJwtPayload;
+
+      const stripe = await stripePromise;
+      const response = await fetch(`http://127.0.0.1:1337/api/orders`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + userJwt,
+        },
+        body: JSON.stringify({ products: cartProducts }),
+      });
+
+      const data = await response.json();
+      stripe &&
+        (await stripe.redirectToCheckout({
+          sessionId: data.stripeId,
+        }));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  console.log(cartProducts);
   return (
     <Transition appear show={isCartSliderOpen} as={Fragment}>
       <Dialog
@@ -278,13 +344,29 @@ function CartSlider(): React.ReactElement {
                       ? "bg-[#02B290] text-white"
                       : "bg-[#E5EAF1] text-color-black"
                   }  font-semibold text-sm text-center rounded`}
+                  onClick={handlePayment}
                 >
-                  <p
-                    className={`
+                  {!loading && (
+                    <p
+                      className={`
                   ${cartProducts.length === 0 && "opacity-50"} text-sm`}
-                  >
-                    Proceed To Checkout
-                  </p>
+                    >
+                      Proceed To Checkout
+                    </p>
+                  )}
+
+                  {loading && (
+                    <ScaleLoader
+                      loading={loading}
+                      color="#fff"
+                      height={18}
+                      width={5}
+                      speedMultiplier={1.5}
+                      radius={10}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
+                    />
+                  )}
                 </div>
               </div>
             </Dialog.Panel>

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PRIVATE_API_URL } from "@/urls";
-import { clientInfoTokenType, tokenDataType } from "@/types/tokenData";
 import * as jose from "jose";
+import { userJwtPayload } from "@/types/userJwtPayload";
 
 export const POST = async (request: NextRequest) => {
   const payload = await request.json();
@@ -11,8 +11,6 @@ export const POST = async (request: NextRequest) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      // "Access-Control-Allow-Origin": "*",
-      // "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
     },
     body: JSON.stringify(payload),
   });
@@ -36,7 +34,7 @@ export const POST = async (request: NextRequest) => {
     const alg = "HS256";
 
     // httpOnly=true token
-    const tokenData: tokenDataType = {
+    const tokenData: Partial<userJwtPayload> = {
       jwt: data.jwt,
       user: {
         id: data.user.id,
@@ -51,7 +49,7 @@ export const POST = async (request: NextRequest) => {
     const token = await new jose.SignJWT(tokenData)
       .setProtectedHeader({ alg })
       .setIssuedAt()
-      .setExpirationTime("1m")
+      .setExpirationTime("30 days")
       .sign(secret);
 
     response.cookies.set("farmart_account_token", token, {
@@ -59,20 +57,7 @@ export const POST = async (request: NextRequest) => {
       secure: true,
     });
 
-    const clientInfoToken: clientInfoTokenType = {
-      id: data.user.id,
-      username: data.user.username,
-      email: data.user.email,
-      user_type: data.user.user_type,
-    };
-
-    const clientToken = await new jose.SignJWT(clientInfoToken)
-      .setProtectedHeader({ alg })
-      .setIssuedAt()
-      .setExpirationTime("1m")
-      .sign(secret);
-
-    response.cookies.set("farmart_client_token", clientToken, {
+    response.cookies.set("farmart_client_token", token, {
       httpOnly: false,
       secure: true,
     });

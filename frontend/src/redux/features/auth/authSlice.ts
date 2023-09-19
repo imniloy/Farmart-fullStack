@@ -1,20 +1,29 @@
-import { userDataType } from "@/types/userJwtPayload";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type InitialState = {
+type userDataType = {
   userToken: string | undefined;
-  user: null | userDataType;
+  user: {
+    id: number;
+    username: string;
+    email: string;
+    user_type: string;
+  } | null;
 };
 
 type Payload = {
   userToken: string;
-  user: userDataType;
+  user: {
+    id: number;
+    username: string;
+    email: string;
+    user_type: string;
+  };
 };
 
 const initialState = {
   userToken: undefined,
   user: null,
-} as InitialState;
+} as userDataType;
 
 const authSlice = createSlice({
   name: "auth" as string,

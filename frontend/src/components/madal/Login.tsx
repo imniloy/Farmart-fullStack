@@ -69,7 +69,18 @@ const Login = (): React.ReactNode => {
         });
         const userToken = Cookies.get("farmart_client_token");
         const verifyUser = userToken && (await verifyAuthOnClient(userToken));
-        verifyUser && dispatch(userLoggedIn({ userToken, user: verifyUser }));
+        verifyUser &&
+          dispatch(
+            userLoggedIn({
+              userToken,
+              user: {
+                id: verifyUser.user.id,
+                username: verifyUser.user.username,
+                email: verifyUser.user.email,
+                user_type: verifyUser.user.user_type,
+              },
+            })
+          );
         setEmail("");
         setPassword("");
         dispatch(setAuthMadalOpen(false));

@@ -12,6 +12,7 @@
     "@headlessui/react": "^1.7.17",
     "@next/font": "^13.4.12",
     "@reduxjs/toolkit": "^1.9.5",
+    "@stripe/react-stripe-js": "^2.3.0",
     "@types/js-cookie": "^3.0.3",
     "@types/node": "20.4.5",
     "@types/react": "18.2.17",
