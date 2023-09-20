@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setIsCartSliderOpen } from "@/redux/features/cart/slice";
 import { userLoggedIn, userLoggedOut } from "@/redux/features/auth/authSlice";
 import { verifyAuthOnClient } from "@/services/verifyAuth";
+import Cookies from "js-cookie";
 
 const Header = () => {
   const router = useRouter();
@@ -40,8 +41,9 @@ const Header = () => {
 
   useEffect(() => {
     const userToken = localStorage.getItem("userToken");
+    const userCookie = Cookies.get("farmart_client_token");
     (async () => {
-      if (userToken) {
+      if (userToken && userCookie) {
         const verifyUser = userToken && (await verifyAuthOnClient(userToken));
         if (verifyUser) {
           dispatch(

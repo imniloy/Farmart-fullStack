@@ -16,6 +16,8 @@ import ScaleLoader from "react-spinners/ScaleLoader";
 import Cookies from "js-cookie";
 import { jwtVerify } from "jose";
 import { userJwtPayload } from "@/types/userJwtPayload";
+
+//
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
 );
@@ -69,9 +71,7 @@ function CartSlider(): React.ReactElement {
     let value = product.quantity * product.price;
     return value + total;
   }, 0);
-  // let singleProductTotalPrice =  {parseFloat(
-  //   product.price * product.quantity.toFixed(2)
-  // )}
+
   const calculateSingleProductTotalPrice = ({
     price,
     quantity,
@@ -88,6 +88,7 @@ function CartSlider(): React.ReactElement {
   const handlePayment = async () => {
     if (cartProducts.length <= 0 || loading) return;
     console.log("Purchasing 1");
+    // if userToken not found but user have localstorge value it should be fixed ...
     console.log(userToken);
     console.log(Cookies.get("farmart_client_token"));
     if (!userToken) {
@@ -95,11 +96,7 @@ function CartSlider(): React.ReactElement {
       return;
     }
     console.log("Purchasing 2");
-
-    // const stripePromise = await loadStripe(
-    //   "pk_test_51NptrESIxJWQCNK2U5POGoI2J5Vl8jEy0rgmbrRxolpENvsAhniEjsDqYCtPMnwh2uSoezYBiyHYVK22EPX5XEwM00GY7mTqIj"
-    // );
-
+    console.log(error);
     try {
       setLoading(true);
       const clientSecret = new TextEncoder().encode(
@@ -121,10 +118,11 @@ function CartSlider(): React.ReactElement {
           "Content-Type": "application/json",
           Authorization: "Bearer " + userJwt,
         },
-        body: JSON.stringify({ products: cartProducts }),
+        body: JSON.stringify({ products: cartProducts, userId: user.id }),
       });
 
       const data = await response.json();
+
       stripe &&
         (await stripe.redirectToCheckout({
           sessionId: data.stripeId,
