@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PRIVATE_API_URL } from "@/urls";
-import { tokenDataType } from "@/types/tokenData";
 import * as jose from "jose";
+import { userJwtPayload } from "@/types/userJwtPayload";
 
 export const POST = async (request: NextRequest) => {
   const payload = await request.json();
@@ -30,7 +30,7 @@ export const POST = async (request: NextRequest) => {
       },
     });
 
-    const tokenData: tokenDataType = {
+    const tokenData: Partial<userJwtPayload> = {
       jwt: data.jwt,
       user: {
         id: data.user.id,

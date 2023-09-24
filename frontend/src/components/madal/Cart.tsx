@@ -1,7 +1,8 @@
 "use client";
 import { Transition, Dialog } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   handleQuantity,
@@ -16,6 +17,7 @@ import ScaleLoader from "react-spinners/ScaleLoader";
 import Cookies from "js-cookie";
 import { jwtVerify } from "jose";
 import { userJwtPayload } from "@/types/userJwtPayload";
+import Link from "next/link";
 
 //
 const stripePromise = loadStripe(
@@ -23,16 +25,13 @@ const stripePromise = loadStripe(
 );
 
 function CartSlider(): React.ReactElement {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>("");
-  const userToken = Cookies.get("farmart_client_token");
-
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   const {
     isCartSliderOpen,
     cartProducts,
   }: { isCartSliderOpen: boolean; cartProducts: CartProduct[] } =
     useAppSelector((state) => state.cart);
-  const dispatch = useAppDispatch();
 
   const cartProductQuantityHandler = ({
     id,
@@ -85,55 +84,57 @@ function CartSlider(): React.ReactElement {
 
   // handle payment...
 
-  const handlePayment = async () => {
-    if (cartProducts.length <= 0 || loading) return;
-    console.log("Purchasing 1");
-    // if userToken not found but user have localstorge value it should be fixed ...
-    console.log(userToken);
-    console.log(Cookies.get("farmart_client_token"));
-    if (!userToken) {
-      setError("User Must be authenticated to purchase");
-      return;
-    }
-    console.log("Purchasing 2");
-    console.log(error);
-    try {
-      setLoading(true);
-      const clientSecret = new TextEncoder().encode(
-        process.env.NEXT_PUBLIC_JWT_SECRET
-      );
-      if (clientSecret.length <= 0) {
-        setError("User Must be authenticated to purchase");
-        return;
-      }
+  // const handlePayment = async () => {
+  //   if (cartProducts.length <= 0 || loading) return;
 
-      const verified = await jwtVerify(userToken, clientSecret);
-      const { jwt: userJwt, user } = verified.payload as userJwtPayload;
+  //   // if userToken not found but user have localstorge value it should be fixed ...
+  //   console.log(userToken);
+  //   console.log(Cookies.get("farmart_client_token"));
+  //   if (!userToken) {
+  //     setError("User Must be authenticated to purchase");
+  //     return;
+  //   }
+  //   console.log("Purchasing 2");
+  //   console.log(error);
+  //   try {
+  //     setLoading(true);
+  //     const clientSecret = new TextEncoder().encode(
+  //       process.env.NEXT_PUBLIC_JWT_SECRET
+  //     );
+  //     if (clientSecret.length <= 0) {
+  //       setError("User Must be authenticated to purchase");
+  //       return;
+  //     }
 
-      const stripe = await stripePromise;
-      const response = await fetch(`http://127.0.0.1:1337/api/orders`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + userJwt,
-        },
-        body: JSON.stringify({ products: cartProducts, userId: user.id }),
-      });
+  //     const verified = await jwtVerify(userToken, clientSecret);
+  //     const { jwt: userJwt, user } = verified.payload as userJwtPayload;
 
-      const data = await response.json();
+  //     const stripe = await stripePromise;
+  //     const response = await fetch(`http://127.0.0.1:1337/api/orders`, {
+  //       method: "POST",
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json",
+  //         Authorization: "Bearer " + userJwt,
+  //       },
+  //       body: JSON.stringify({ products: cartProducts, userId: user.id }),
+  //     });
 
-      stripe &&
-        (await stripe.redirectToCheckout({
-          sessionId: data.stripeId,
-        }));
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  console.log(cartProducts);
+  //     const data = await response.json();
+  //     console.log(data);
+  //     stripe &&
+  //       (await stripe.redirectToCheckout({
+  //         sessionId: data.stripeId,
+  //       }));
+
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   return (
     <Transition appear show={isCartSliderOpen} as={Fragment}>
       <Dialog
@@ -342,18 +343,20 @@ function CartSlider(): React.ReactElement {
                       ? "bg-[#02B290] text-white"
                       : "bg-[#E5EAF1] text-color-black"
                   }  font-semibold text-sm text-center rounded`}
-                  onClick={handlePayment}
+                  onClick={() => {
+                    router.push("/order/checkout");
+                    closeModal();
+                  }}
                 >
-                  {!loading && (
-                    <p
-                      className={`
+                  <p
+                    className={`
                   ${cartProducts.length === 0 && "opacity-50"} text-sm`}
-                    >
-                      Proceed To Checkout
-                    </p>
-                  )}
+                  >
+                    Proceed To Checkout
+                  </p>
+                </div>
 
-                  {loading && (
+                {/* {loading && (
                     <ScaleLoader
                       loading={loading}
                       color="#fff"
@@ -364,8 +367,7 @@ function CartSlider(): React.ReactElement {
                       aria-label="Loading Spinner"
                       data-testid="loader"
                     />
-                  )}
-                </div>
+                  )} */}
               </div>
             </Dialog.Panel>
           </Transition.Child>

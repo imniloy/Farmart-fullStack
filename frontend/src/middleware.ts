@@ -4,7 +4,6 @@ import { verifyAuth } from "./services/verifyAuth";
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
-  const path = request.nextUrl.pathname;
   const token: string =
     request.cookies.get("farmart_account_token")?.value || "";
 
@@ -14,22 +13,26 @@ export async function middleware(request: NextRequest) {
       console.log(error);
     }));
 
-  // protect admin route...
+  const adminPath = ["/farmart/admin"];
+  // protect admin authorize route...
+  if (
+    verifiedToken &&
+    verifiedToken.user.user_type === "admin" &&
+    !adminPath.includes(request.nextUrl.pathname)
+  ) {
+    return NextResponse.redirect(new URL("/farmart/admin", request.url));
+  }
+
+  // protect user authorize route...
+  if (!verifiedToken && request.nextUrl.pathname.startsWith("/users/account")) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
   if (
     (!verifiedToken && request.nextUrl.pathname.startsWith("/farmart/admin")) ||
     (verifiedToken &&
       verifiedToken.user.user_type !== "admin" &&
       request.nextUrl.pathname.startsWith("/farmart/admin"))
-  ) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
-
-  // protect user route...
-  if (
-    (!verifiedToken && request.nextUrl.pathname.startsWith("/users/account")) ||
-    (verifiedToken &&
-      verifiedToken.user.user_type !== "user" &&
-      request.nextUrl.pathname.startsWith("/users/account"))
   ) {
     return NextResponse.redirect(new URL("/", request.url));
   }
