@@ -12,8 +12,10 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "stripeId": {
-      "type": "string"
+    "paymentID": {
+      "type": "string",
+      "required": true,
+      "unique": true
     },
     "products": {
       "type": "json",
@@ -22,14 +24,25 @@
     "status": {
       "type": "string",
       "required": true,
-      "default": "pending",
-      "minLength": 1
+      "default": "Pending"
     },
     "users_permissions_user": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
       "inversedBy": "orders"
+    },
+    "uid": {
+      "type": "uid",
+      "targetField": "paymentID"
+    },
+    "method": {
+      "type": "string",
+      "default": "Cash"
+    },
+    "shipping_address": {
+      "type": "json",
+      "required": true
     }
   }
 }
