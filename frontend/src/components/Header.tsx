@@ -193,7 +193,12 @@ const Header = () => {
 
           {/* <!-- sign in button --> */}
           {loggedOnUser ? (
-            <li className="cursor-pointer ml-8 lg:ml-0">
+            <li
+              className="cursor-pointer ml-8 lg:ml-0"
+              onClick={() => {
+                router.replace(`/users/account/${loggedOnUser.id}`);
+              }}
+            >
               <div className="flex items-center" onClick={() => {}}>
                 <Avatar
                   size="26"
