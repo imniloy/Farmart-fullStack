@@ -10,8 +10,6 @@ export const POST = async (request: NextRequest) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      // "Access-Control-Allow-Origin": "*",
-      // "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
     },
     body: JSON.stringify(payload),
   });
@@ -49,7 +47,7 @@ export const POST = async (request: NextRequest) => {
     const token = await new jose.SignJWT(tokenData)
       .setProtectedHeader({ alg })
       .setIssuedAt()
-      .setExpirationTime("1m")
+      .setExpirationTime("30 days")
       .sign(secret);
 
     response.cookies.set("farmart_account_token", token, {

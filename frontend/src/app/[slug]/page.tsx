@@ -40,7 +40,7 @@ const Page = async ({ params }: { params: Params }) => {
   const { id, attributes }: { id: number; attributes: attributes } = data[0];
 
   if (success && data.length > 0) {
-    const categoryId: number = data[0].attributes?.category.data.id;
+    const categoryId: number = data[0].attributes?.category?.data.id;
     const productId: number = id;
 
     const {

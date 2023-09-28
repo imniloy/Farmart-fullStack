@@ -6,14 +6,16 @@ import React, { useEffect, useState } from "react";
 import { IoReturnUpBackOutline } from "react-icons/io5";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { verifyAuthOnClient } from "@/services/verifyAuth";
+import { toast } from "react-toastify";
+import { ProductsData } from "@/types/products";
+import { payloadType } from "@/types/checkoutProducts";
+import ScaleLoader from "react-spinners/ScaleLoader";
 
 const Page = (): React.ReactNode => {
+  const { cartProducts } = useAppSelector((state) => state.cart);
+  console.log(cartProducts);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>("");
-  const userToken = Cookies.get("farmart_client_token");
-
   const [state, setState] = useState({
     firstName: "",
     lastName: "",
@@ -26,15 +28,195 @@ const Page = (): React.ReactNode => {
     shippingMedium: "",
     shippingCost: 0,
     paymentMethod: "",
+    deliveryIn: "",
   });
-
-  const { cartProducts } = useAppSelector((state) => state.cart);
 
   const inputTextHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setState((prev) => ({
       ...prev,
       [event.target.name]: event.target.value,
     }));
+  };
+
+  // const handlePayment...
+  const handlePayment = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (loading) return;
+    if (
+      state.paymentMethod === "" ||
+      state.shippingMedium === "" ||
+      state.paymentMethod === ""
+    ) {
+      toast.error("Fill up the form to checkout!", {
+        position: "top-right",
+      });
+      return;
+    }
+
+    if (cartProducts.length == 0) return;
+
+    const paymentID: string = crypto.randomUUID();
+    const products = cartProducts;
+    const shipping_address = {
+      street: state.streetAddress,
+      city: state.city,
+      country: state.country,
+      zipCode: state.zipCode,
+    };
+    const user_personal_details = {
+      firstName: state.firstName,
+      lastName: state.lastName,
+      email: state.email,
+      phoneNumber: state.phoneNumber,
+    };
+    const payload: payloadType = {
+      paymentID,
+      products,
+      status: "pending",
+      method: state.paymentMethod,
+      user_personal_details,
+      shipping_address,
+      shipping_method_and_cost: {
+        shippingCost: state.shippingCost,
+        shippingMedium: state.shippingMedium,
+        deliveryIn: state.deliveryIn,
+      },
+    };
+
+    try {
+      setLoading(true);
+      let url = "";
+      cartProducts.forEach((product) => {
+        url = url + `&filters[id][$eqi]=${product.id}`;
+      });
+
+      // fetch all products that this user added to his cart list to checkout ...
+      // so that we can check this product current status...
+      const userSelectedProducts = await fetch(
+        `/api/order/products?populate=category${url}`,
+        {
+          method: "GET",
+          cache: "no-store",
+        }
+      );
+
+      const getAllSelectedProducts: Partial<ProductsData> =
+        await userSelectedProducts.json();
+
+      // if successful to fetch all selected products...
+      if (getAllSelectedProducts.success) {
+        // distracture getAllSelectedProducts value...
+        const { data: cartSelectedProducts } = getAllSelectedProducts;
+        // If any products stock is less than the quantity that the user selected we will store that product to this veriable based on this veriable status we will perform some actions in future...
+        let insufficientStockProduct: any = {};
+        // we need the quantity to update products stock status so we make this array...
+        const updatedProductsArray: Array<{ id: number; stock: string }> = [];
+
+        cartSelectedProducts &&
+          cartSelectedProducts?.length > 0 &&
+          cartSelectedProducts.forEach((dataItem) => {
+            cartProducts.forEach((cartItem) => {
+              if (dataItem.id === cartItem.id) {
+                if (
+                  Number(dataItem.attributes.stock) < Number(cartItem.quantity)
+                ) {
+                  insufficientStockProduct = cartItem;
+                  toast.error(`${cartItem.name} Insufficient stock`, {
+                    position: "top-center",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: false,
+                    pauseOnFocusLoss: true,
+                    draggable: true,
+                    theme: "light",
+                  });
+                  return;
+                }
+                const updatedStock =
+                  Number(dataItem.attributes.stock) - Number(cartItem.quantity);
+                updatedProductsArray.push({
+                  id: cartItem.id,
+                  stock: `${updatedStock}`,
+                });
+              }
+            });
+          });
+        // if any product quantity is less than the current user selected quantity against this perticular quantity we will break this checkout function...
+        if (insufficientStockProduct.id) return;
+        // if everything is ok then checkout the order
+        const response = await fetch(`/api/order/checkout`, {
+          method: "POST",
+          cache: "no-store",
+          body: JSON.stringify(payload),
+        });
+
+        const checkoutedProducts = await response.json();
+        // if checkout is successful then update the product in out products list api...
+        if (checkoutedProducts.status === 200) {
+          const response = await fetch(`/api/order/products`, {
+            method: "PUT",
+            cache: "no-store",
+            body: JSON.stringify(updatedProductsArray),
+          });
+          const { success, error } = await response.json();
+          if (!success) {
+            toast.error(`${error}`, {
+              position: "top-center",
+              autoClose: 1000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: false,
+              pauseOnFocusLoss: true,
+              draggable: true,
+              theme: "light",
+            });
+            return;
+          } else {
+            toast.success(`Order successful. Thank you For being with us!`, {
+              position: "top-center",
+              autoClose: 1000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: false,
+              pauseOnFocusLoss: true,
+              draggable: true,
+              theme: "light",
+            });
+
+            setState({
+              firstName: "",
+              lastName: "",
+              email: "",
+              phoneNumber: "",
+              streetAddress: "",
+              city: "",
+              country: "",
+              zipCode: "",
+              shippingMedium: "",
+              shippingCost: 0,
+              paymentMethod: "",
+              deliveryIn: "",
+            });
+
+            router.replace("/");
+          }
+        }
+      }
+    } catch (error) {
+      toast.error(`Order failed! Something wrong Happened`, {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        pauseOnFocusLoss: true,
+        draggable: true,
+        theme: "light",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -47,7 +229,10 @@ const Page = (): React.ReactNode => {
     <section className="relative bg-[#f9fafb]">
       <div className="section-container">
         <div className="px-2 lg:px-0 py-8 md:py-10 lg:py-12 2xl:max-w-screen-2xl w-full xl:max-w-screen-xl flex flex-col lg:space-y-0 lg:flex-row">
-          <div className="md:w-full lg:w-3/5 flex h-full flex-col order-2 lg:order-1 space-y-8 md:space-y-10 lg:space-y-12">
+          <form
+            onSubmit={handlePayment}
+            className="md:w-full lg:w-3/5 flex h-full flex-col order-2 lg:order-1 space-y-8 md:space-y-10 lg:space-y-12"
+          >
             {/* personal information */}
             <div className="personal_Information_Form">
               <h2 className="font-semibold text-gray-700 pb-4 text-base">
@@ -63,9 +248,10 @@ const Page = (): React.ReactNode => {
                       First Name
                     </label>
                     <input
-                      type="email"
+                      type="text"
                       id="firstName"
                       name="firstName"
+                      required
                       value={state.firstName}
                       onChange={inputTextHandler}
                       className="py-2 px-4 md:px-5 w-full appearance-none border text-sm opacity-75 text-input rounded-md placeholder-body min-h-12 transition duration-200 focus:ring-0 ease-in-out bg-white border-gray-200 focus:outline-none focus:border-emerald-500 h-11 md:h-12"
@@ -83,6 +269,7 @@ const Page = (): React.ReactNode => {
                     <input
                       type="text"
                       id="lastName"
+                      required
                       name="lastName"
                       value={state.lastName}
                       onChange={inputTextHandler}
@@ -104,6 +291,7 @@ const Page = (): React.ReactNode => {
                       type="text"
                       id="email"
                       name="email"
+                      required
                       value={state.email}
                       onChange={inputTextHandler}
                       className="py-2 px-4 md:px-5 w-full appearance-none border text-sm opacity-75 text-input rounded-md placeholder-body min-h-12 transition duration-200 focus:ring-0 ease-in-out bg-white border-gray-200 focus:outline-none focus:border-emerald-500 h-11 md:h-12"
@@ -123,6 +311,7 @@ const Page = (): React.ReactNode => {
                       id="phoneNumber"
                       name="phoneNumber"
                       value={state.phoneNumber}
+                      required
                       onChange={inputTextHandler}
                       className="py-2 px-4 md:px-5 w-full appearance-none border text-sm opacity-75 text-input rounded-md placeholder-body min-h-12 transition duration-200 focus:ring-0 ease-in-out bg-white border-gray-200 focus:outline-none focus:border-emerald-500 h-11 md:h-12"
                       placeholder="+880-1300100100"
@@ -147,6 +336,7 @@ const Page = (): React.ReactNode => {
                   <input
                     type="text"
                     id="streetAddress"
+                    required
                     name="streetAddress"
                     value={state.streetAddress}
                     onChange={inputTextHandler}
@@ -165,6 +355,7 @@ const Page = (): React.ReactNode => {
                     </label>
                     <input
                       type="text"
+                      required
                       id="city"
                       name="city"
                       value={state.city}
@@ -184,6 +375,7 @@ const Page = (): React.ReactNode => {
                     <input
                       type="text"
                       id="country"
+                      required
                       name="country"
                       value={state.country}
                       onChange={inputTextHandler}
@@ -202,6 +394,7 @@ const Page = (): React.ReactNode => {
                     <input
                       type="text"
                       id="zipCode"
+                      required
                       name="zipCode"
                       value={state.zipCode}
                       onChange={inputTextHandler}
@@ -217,13 +410,14 @@ const Page = (): React.ReactNode => {
                   </label>
 
                   <div className="grid grid-cols-1 grid-rows-2 lg:grid-cols-2 lg:grid-rows-1 gap-4 lg:gap-6">
-                    <button
+                    <div
                       className="cursor-pointer p-3 border border-gray-200 bg-white rounded-md flex items-center justify-between"
                       onClick={() =>
                         setState((prev) => ({
                           ...prev,
                           shippingMedium: "FedEx",
                           shippingCost: 20,
+                          deliveryIn: "7 days",
                         }))
                       }
                     >
@@ -262,15 +456,16 @@ const Page = (): React.ReactNode => {
                             : "border-gray-400"
                         } rounded-full`}
                       ></div>
-                    </button>
+                    </div>
 
-                    <button
+                    <div
                       className="cursor-pointer p-3 border border-gray-200 bg-white rounded-md flex items-center justify-between"
                       onClick={() =>
                         setState((prev) => ({
                           ...prev,
                           shippingMedium: "UPS",
                           shippingCost: 40,
+                          deliveryIn: "1 day",
                         }))
                       }
                     >
@@ -309,7 +504,7 @@ const Page = (): React.ReactNode => {
                             : "border-gray-400"
                         } rounded-full`}
                       ></div>
-                    </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -366,25 +561,41 @@ const Page = (): React.ReactNode => {
                 </div>
               </Link>
               <button
+                type="submit"
                 disabled={cartProducts.length === 0}
                 className=" disabled:bg-indigo-50 disabled:text-gray-700 space-x-3 cursor-pointer bg-[#02b290] border rounded py-3 text-center text-sm font-medium text-white transition-all flex justify-center w-full"
               >
-                <span>Confirm Order</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M2 10a.75.75 0 01.75-.75h12.59l-2.1-1.95a.75.75 0 111.02-1.1l3.5 3.25a.75.75 0 010 1.1l-3.5 3.25a.75.75 0 11-1.02-1.1l2.1-1.95H2.75A.75.75 0 012 10z"
-                    clipRule="evenodd"
+                {loading ? (
+                  <ScaleLoader
+                    loading={loading}
+                    color="#fff"
+                    height={18}
+                    width={5}
+                    speedMultiplier={1.5}
+                    radius={10}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
                   />
-                </svg>
+                ) : (
+                  <>
+                    <span>Confirm Order</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="w-5 h-5"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M2 10a.75.75 0 01.75-.75h12.59l-2.1-1.95a.75.75 0 111.02-1.1l3.5 3.25a.75.75 0 010 1.1l-3.5 3.25a.75.75 0 11-1.02-1.1l2.1-1.95H2.75A.75.75 0 012 10z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </>
+                )}
               </button>
             </div>
-          </div>
+          </form>
 
           <CartContainer shippingCost={state.shippingCost} />
         </div>

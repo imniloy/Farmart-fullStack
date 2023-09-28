@@ -24,24 +24,31 @@
     "status": {
       "type": "string",
       "required": true,
-      "default": "Pending"
+      "default": "pending"
     },
-    "users_permissions_user": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "plugin::users-permissions.user",
-      "inversedBy": "orders"
-    },
-    "uid": {
+    "uuid": {
       "type": "uid",
       "targetField": "paymentID"
     },
     "method": {
       "type": "string",
-      "default": "Cash"
+      "default": "cash",
+      "required": true
     },
     "shipping_address": {
       "type": "json",
+      "required": true
+    },
+    "shipping_method_and_cost": {
+      "type": "json",
+      "required": true
+    },
+    "user_personal_details": {
+      "type": "json",
+      "required": true
+    },
+    "userId": {
+      "type": "string",
       "required": true
     }
   }

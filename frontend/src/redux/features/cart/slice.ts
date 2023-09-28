@@ -31,7 +31,6 @@ const cartSliderSlice = createSlice({
 
     handleQuantity: (state, action: PayloadAction<ProductQuantity>) => {
       const { id, oparationType, counter } = action.payload;
-      console.log(action.payload);
 
       switch (oparationType) {
         case "plus":
@@ -39,7 +38,6 @@ const cartSliderSlice = createSlice({
             let draftProduct = JSON.parse(JSON.stringify(product));
 
             if (draftProduct.id === id) {
-              console.log(draftProduct.quantity);
               return {
                 ...draftProduct,
                 quantity: draftProduct.quantity + counter,
