@@ -12,7 +12,7 @@ import {
 import { CartProduct } from "@/redux/features/cart/types";
 import { toast } from "react-toastify";
 import EmptyCartImage from "@/components/assets/images/empty-cart.webp";
-import { loadStripe } from "@stripe/stripe-js";
+// import { loadStripe } from "@stripe/stripe-js";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import Cookies from "js-cookie";
 import { jwtVerify } from "jose";
@@ -20,9 +20,9 @@ import { userJwtPayload } from "@/types/userJwtPayload";
 import Link from "next/link";
 
 //
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
-);
+// const stripePromise = loadStripe(
+//   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
+// );
 
 function CartSlider(): React.ReactElement {
   const router = useRouter();

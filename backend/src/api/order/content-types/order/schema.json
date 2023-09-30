@@ -26,10 +26,6 @@
       "required": true,
       "default": "pending"
     },
-    "uuid": {
-      "type": "uid",
-      "targetField": "paymentID"
-    },
     "method": {
       "type": "string",
       "default": "cash",
