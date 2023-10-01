@@ -35,3 +35,12 @@ export type ordersDataType = {
   data: orderObjectType[];
   meta: MetaType;
 };
+
+export type orderDataResponseType = {
+  success: boolean;
+  status: number;
+  data: ordersDataType;
+  message: string;
+};
+
+

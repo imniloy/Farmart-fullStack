@@ -198,8 +198,11 @@ const Page = (): React.ReactNode => {
               paymentMethod: "",
               deliveryIn: "",
             });
+            console.log(checkoutedProducts);
 
-            router.replace("/");
+            router.push(
+              `/order/${checkoutedProducts?.data?.attributes?.paymentID}`
+            );
           }
         }
       }

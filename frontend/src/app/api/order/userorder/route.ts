@@ -27,7 +27,7 @@ export const GET = async (request: NextRequest) => {
         match[2] === "all"
           ? `filters[userId][$eqi]=${user.id}&pagination[start]=${match[3]}&pagination[limit]=${match[4]}`
           : `filters[userId][$eqi]=2&filters[status][$eqi]=${match[2]}&pagination[start]=${match[3]}&pagination[limit]=${match[4]}`;
-      
+
       const response = await fetch(
         `${PRIVATE_API_URL}/api/orders?${searchQuery}`,
         {
@@ -58,6 +58,11 @@ export const GET = async (request: NextRequest) => {
         });
       }
     }
+    return NextResponse.json({
+      status: 404,
+      success: false,
+      message: "Page is not found!",
+    });
   }
   return NextResponse.json({
     status: 500,
