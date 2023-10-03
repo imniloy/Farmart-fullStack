@@ -15,6 +15,8 @@ import { CartProduct } from "@/redux/features/cart/types";
 import NotFoundComp from "@/components/notFound";
 import CustomError from "@/components/notFound/CustomError";
 
+// export const runtime = "edge";
+
 const Page = async ({
   params,
   searchParams,
@@ -60,8 +62,6 @@ const Page = async ({
       headers: { Cookie: cookies().toString() },
     })
   ).json();
-
-  console.log(response);
 
   if (response.success) {
     const { data }: { data: ordersDataType } = response;
@@ -178,7 +178,7 @@ const Page = async ({
           </tbody>
         </table>
       ) : (
-        <p></p>
+        <p>No order</p>
       );
     pageContent = (
       <section className="py-10 lg:pb-14 bg-gray-50">

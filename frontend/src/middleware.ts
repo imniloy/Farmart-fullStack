@@ -28,6 +28,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
+  if (!verifiedToken && request.nextUrl.pathname.startsWith("/order")) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
   if (
     (!verifiedToken && request.nextUrl.pathname.startsWith("/farmart/admin")) ||
     (verifiedToken &&
@@ -40,5 +44,12 @@ export async function middleware(request: NextRequest) {
 
 // See "Matching Paths"...
 export const config = {
-  matcher: ["/", "/farmart/admin", "/users/account/", `/users/account/:path*`],
+  matcher: [
+    "/",
+    "/farmart/admin",
+    "/users/account/",
+    `/users/account/:path*`,
+    "/order/",
+    "/order/:path*",
+  ],
 };

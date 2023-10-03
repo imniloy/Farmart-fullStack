@@ -222,11 +222,11 @@ const Page = (): React.ReactNode => {
     }
   };
 
-  useEffect(() => {
-    const userToken = localStorage.getItem("userToken");
-    const userCookie = Cookies.get("farmart_client_token");
-    if (!userToken || !userCookie) router.replace("/");
-  }, [router]);
+  // useEffect(() => {
+  //   const userToken = localStorage.getItem("userToken");
+  //   const userCookie = Cookies.get("farmart_client_token");
+  //   if (!userToken || !userCookie) router.replace("/");
+  // }, [router]);
 
   return (
     <section className="relative bg-[#f9fafb]">
