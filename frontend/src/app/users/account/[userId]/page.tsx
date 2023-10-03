@@ -13,6 +13,7 @@ import {
 import { MetaType } from "@/types/pagination";
 import { CartProduct } from "@/redux/features/cart/types";
 import NotFoundComp from "@/components/notFound";
+import CustomError from "@/components/notFound/CustomError";
 
 const Page = async ({
   params,
@@ -329,10 +330,9 @@ const Page = async ({
     if (status === 404) {
       pageContent = <NotFoundComp />;
     } else {
-      pageContent = <div className=""></div>
+      pageContent = <CustomError status={status} message={message} />;
     }
   }
-  // console.log(response);
 
   return <>{pageContent}</>;
 };
