@@ -11,6 +11,23 @@ import { CartProduct } from "@/redux/features/cart/types";
 const Page = async ({ params }: { params: { paymentID: string } }) => {
   const { paymentID } = params;
   let pageContent: React.ReactElement = <></>;
+  const calculateSingleProductTotalPrice = ({
+    price,
+    quantity,
+  }: {
+    price: number;
+    quantity: number;
+  }): number => {
+    let totalPrice = price * quantity;
+    return parseFloat(totalPrice.toFixed(2));
+  };
+
+  // let subtotal = cartProducts.reduce((total, product) => {
+  //   let value = product.quantity * product.price;
+  //   return value + total;
+  // }, 0);
+
+  // const totalPriceWithShippingCost = subtotal + shippingCost;
 
   const response = await (
     await fetch(
@@ -28,7 +45,6 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
   if (success) {
     const { data }: { data: orderObjectType[] } = response;
     if (data && data.length > 0) {
-      console.log(data);
       const order: orderObjectType = data[0];
       const { id, attributes } = order;
       const {
@@ -143,7 +159,10 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
                     </td>
                     <td className="px-5 py-3 leading-6 text-center whitespace-nowrap">
                       <span className="text-sm font-bold">
-                        {product.price * product.quantity}
+                        {/* {product.price * product.quantity} */}
+                        {parseFloat(
+                          (product.price * product.quantity).toFixed(2)
+                        )}
                       </span>
                     </td>
                   </tr>
@@ -184,7 +203,10 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
                   </td>
                   <td className="px-5 py-3 leading-6 text-center whitespace-nowrap">
                     <span className="text-sm font-bold">
-                      {shipping_method_and_cost.shippingCost}
+                      {products?.reduce((total, product) => {
+                        let value = product.quantity * product.price;
+                        return value + total;
+                      }, shipping_method_and_cost?.shippingCost)}
                     </span>
                   </td>
                 </tr>
@@ -193,11 +215,14 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
           </div>
         </div>
       );
+    } else {
+      pageContent = <>No Product found!</>;
     }
   } else {
-    pageContent = <></>;
+    const { message } = response;
+    pageContent = <div className="text-lg font-bold">{message}</div>;
   }
-  // console.log(response.data);
+
   return (
     <section className="py-10 lg:pb-14 bg-gray-50">
       <div className="section-container">

@@ -4,7 +4,6 @@ import { useAppSelector } from "@/redux/hooks";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { IoReturnUpBackOutline } from "react-icons/io5";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { ProductsData } from "@/types/products";
@@ -221,12 +220,6 @@ const Page = (): React.ReactNode => {
       setLoading(false);
     }
   };
-
-  // useEffect(() => {
-  //   const userToken = localStorage.getItem("userToken");
-  //   const userCookie = Cookies.get("farmart_client_token");
-  //   if (!userToken || !userCookie) router.replace("/");
-  // }, [router]);
 
   return (
     <section className="relative bg-[#f9fafb]">

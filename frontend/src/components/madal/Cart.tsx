@@ -12,17 +12,11 @@ import {
 import { CartProduct } from "@/redux/features/cart/types";
 import { toast } from "react-toastify";
 import EmptyCartImage from "@/components/assets/images/empty-cart.webp";
-// import { loadStripe } from "@stripe/stripe-js";
-import ScaleLoader from "react-spinners/ScaleLoader";
 import Cookies from "js-cookie";
-import { jwtVerify } from "jose";
-import { userJwtPayload } from "@/types/userJwtPayload";
-import Link from "next/link";
-
-//
-// const stripePromise = loadStripe(
-//   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
-// );
+import {
+  setAuthMadalOpen,
+  setIsLoginOpen,
+} from "@/redux/features/uiSlider/slices";
 
 function CartSlider(): React.ReactElement {
   const router = useRouter();
@@ -32,6 +26,8 @@ function CartSlider(): React.ReactElement {
     cartProducts,
   }: { isCartSliderOpen: boolean; cartProducts: CartProduct[] } =
     useAppSelector((state) => state.cart);
+
+  const { user, userToken } = useAppSelector((state) => state.auth);
 
   const cartProductQuantityHandler = ({
     id,
@@ -81,59 +77,6 @@ function CartSlider(): React.ReactElement {
     let totalPrice = price * quantity;
     return parseFloat(totalPrice.toFixed(2));
   };
-
-  // handle payment...
-
-  // const handlePayment = async () => {
-  //   if (cartProducts.length <= 0 || loading) return;
-
-  //   // if userToken not found but user have localstorge value it should be fixed ...
-  //   console.log(userToken);
-  //   console.log(Cookies.get("farmart_client_token"));
-  //   if (!userToken) {
-  //     setError("User Must be authenticated to purchase");
-  //     return;
-  //   }
-  //   console.log("Purchasing 2");
-  //   console.log(error);
-  //   try {
-  //     setLoading(true);
-  //     const clientSecret = new TextEncoder().encode(
-  //       process.env.NEXT_PUBLIC_JWT_SECRET
-  //     );
-  //     if (clientSecret.length <= 0) {
-  //       setError("User Must be authenticated to purchase");
-  //       return;
-  //     }
-
-  //     const verified = await jwtVerify(userToken, clientSecret);
-  //     const { jwt: userJwt, user } = verified.payload as userJwtPayload;
-
-  //     const stripe = await stripePromise;
-  //     const response = await fetch(`http://127.0.0.1:1337/api/orders`, {
-  //       method: "POST",
-  //       headers: {
-  //         Accept: "application/json",
-  //         "Content-Type": "application/json",
-  //         Authorization: "Bearer " + userJwt,
-  //       },
-  //       body: JSON.stringify({ products: cartProducts, userId: user.id }),
-  //     });
-
-  //     const data = await response.json();
-  //     console.log(data);
-  //     stripe &&
-  //       (await stripe.redirectToCheckout({
-  //         sessionId: data.stripeId,
-  //       }));
-
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   return (
     <Transition appear show={isCartSliderOpen} as={Fragment}>
@@ -344,8 +287,16 @@ function CartSlider(): React.ReactElement {
                       : "bg-[#E5EAF1] text-color-black"
                   }  font-semibold text-sm text-center rounded`}
                   onClick={() => {
-                    router.push("/order/checkout");
-                    closeModal();
+                    const getCookie = Cookies.get("farmart_client_token");
+                    console.log(getCookie);
+                    console.log(user);
+                    if (getCookie && user && user.id) {
+                      router.push("/order/checkout");
+                      closeModal();
+                      return;
+                    } else {
+                      dispatch(setAuthMadalOpen(true));
+                    }
                   }}
                 >
                   <p
@@ -355,19 +306,6 @@ function CartSlider(): React.ReactElement {
                     Proceed To Checkout
                   </p>
                 </div>
-
-                {/* {loading && (
-                    <ScaleLoader
-                      loading={loading}
-                      color="#fff"
-                      height={18}
-                      width={5}
-                      speedMultiplier={1.5}
-                      radius={10}
-                      aria-label="Loading Spinner"
-                      data-testid="loader"
-                    />
-                  )} */}
               </div>
             </Dialog.Panel>
           </Transition.Child>
