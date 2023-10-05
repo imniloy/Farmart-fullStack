@@ -40,6 +40,7 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
         user_personal_details,
         userId,
         status,
+        shipping_method_and_cost,
       } = attributes;
 
       pageContent = (
@@ -147,42 +148,44 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
                     </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
 
-            <table className="font-inter my-4 table-auto min-w-full border border-gray-100 divide-y divide-gray-200">
-              <tbody>
-                <tr>
+                <tr className="">
                   <td className="px-5 py-3 leading-6 whitespace-nowrap">
                     <span className="uppercase text-sm font-medium">
-                      Shipping Method
+                      SHIPPING METHOD:{" "}
+                      <span className="text-brand-color font-medium capitalize">
+                        {shipping_method_and_cost.shippingMedium}
+                      </span>
                     </span>
                   </td>
-                  <td className="px-5 py-3 leading-6 text-center whitespace-nowrap font-medium text-sm">
-                    <span className="text-emerald-500 font-bold"></span>
+                  <td className="px-5 py-3 leading-6 text-center whitespace-nowrap">
+                    <span className="text-sm">{`     `}</span>
                   </td>
-                  <td className="px-5 py-3 leading-6 whitespace-nowrap text-center">
-                    <span className="uppercase text-sm font-medium">7 </span>
+                  <td className="px-5 py-3 leading-6 text-center whitespace-nowrap font-medium text-sm">
+                    <span className="font-bold">{`     `}</span>
                   </td>
                   <td className="px-5 py-3 leading-6 text-center whitespace-nowrap">
-                    <span className="text-sm font-bold">20</span>
+                    <span className="text-sm font-bold">
+                      {shipping_method_and_cost.shippingCost}
+                    </span>
                   </td>
                 </tr>
-
-                <tr>
+                <tr className="">
                   <td className="px-5 py-3 leading-6 whitespace-nowrap">
                     <span className="uppercase text-sm font-medium">
-                      Total Price
+                      Total price:
                     </span>
                   </td>
-                  <td className="px-5 py-3 leading-6 text-center whitespace-nowrap font-medium text-sm">
-                    <span className="text-emerald-500 font-bold"></span>
+                  <td className="px-5 py-3 leading-6 text-center whitespace-nowrap">
+                    <span className="text-sm">{`     `}</span>
                   </td>
-                  <td className="px-5 py-3 leading-6 whitespace-nowrap text-center">
-                    <span className="uppercase text-sm font-medium"></span>
+                  <td className="px-5 py-3 leading-6 text-center whitespace-nowrap font-medium text-sm">
+                    <span className="font-bold">{`     `}</span>
                   </td>
                   <td className="px-5 py-3 leading-6 text-center whitespace-nowrap">
-                    <span className="text-sm font-bold">20</span>
+                    <span className="text-sm font-bold">
+                      {shipping_method_and_cost.shippingCost}
+                    </span>
                   </td>
                 </tr>
               </tbody>
@@ -197,7 +200,11 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
   // console.log(response.data);
   return (
     <section className="py-10 lg:pb-14 bg-gray-50">
-      <div className="section-container">{pageContent}</div>
+      <div className="section-container">
+        <div className="p-2 sm:p-[10px] md:p-4 lg:p-6 bg-white">
+          {pageContent}
+        </div>
+      </div>
     </section>
   );
 };
