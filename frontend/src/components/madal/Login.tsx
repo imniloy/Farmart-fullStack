@@ -12,12 +12,14 @@ import BeatLoader from "react-spinners/BeatLoader";
 import { userLoggedIn } from "@/redux/features/auth/authSlice";
 import Cookies from "js-cookie";
 import { verifyAuthOnClient } from "@/services/verifyAuth";
+import { useRouter } from "next/navigation";
 
 const Login = (): React.ReactNode => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const openRegisterFrom = () => {
     dispatch(setIsRegisterOpen(true));
@@ -84,6 +86,9 @@ const Login = (): React.ReactNode => {
         setEmail("");
         setPassword("");
         dispatch(setAuthMadalOpen(false));
+        verifyUser &&
+          verifyUser.user.user_type === "admin" &&
+          router.push(`/farmart/admin`);
       }
     } catch (e) {
       if (e instanceof Error) {
