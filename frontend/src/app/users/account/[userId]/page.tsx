@@ -14,6 +14,7 @@ import { MetaType } from "@/types/pagination";
 import { CartProduct } from "@/redux/features/cart/types";
 import NotFoundComp from "@/components/notFound";
 import CustomError from "@/components/notFound/CustomError";
+import Pagination from "@/components/Pagination";
 
 // export const runtime = "edge";
 
@@ -25,14 +26,14 @@ const Page = async ({
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
   const { userId } = params;
-  const { orders, page } = searchParams || {};
+  const { orders: orderParams, page } = searchParams || {};
   let offset: number = 0;
-  let limit: number = 25;
+  let limit: number = 1;
   let searchUrl: string = `?userId=${userId}&orders=all&offset=${offset}&limit=${limit}`;
   let pageContent: React.ReactNode;
   let ordersContent: React.ReactNode;
 
-  switch (orders) {
+  switch (orderParams) {
     case "":
       searchUrl = `?userId=${userId}&orders=all&offset=${offset}&limit=${limit}`;
       break;
@@ -52,9 +53,14 @@ const Page = async ({
   // work left...
   if (page) {
     offset = (Number(page) - 1) * limit;
-    searchUrl = `?userId=${userId}&orders=all&offset=${offset}&limit=${limit}`;
+    if (orderParams) {
+      searchUrl = `?userId=${userId}&orders=${orderParams}&offset=${offset}&limit=${limit}`;
+    } else {
+      searchUrl = `?userId=${userId}&orders=all&offset=${offset}&limit=${limit}`;
+    }
   }
 
+  // console.log(orderParams);
   const response = await (
     await fetch(`${PUBLIC_API_URL}/order/userorder${searchUrl}`, {
       method: "GET",
@@ -67,7 +73,7 @@ const Page = async ({
     const { data }: { data: ordersDataType } = response;
     const { data: orders, meta }: { data: orderObjectType[]; meta: MetaType } =
       data;
-
+    // console.log(meta);
     ordersContent =
       orders.length > 0 ? (
         <table className="font-inter table-auto min-w-full border border-gray-100 divide-y divide-gray-200">
@@ -180,6 +186,7 @@ const Page = async ({
       ) : (
         <p>No order</p>
       );
+
     pageContent = (
       <section className="py-10 lg:pb-14 bg-gray-50">
         <div className="section-container">
@@ -195,7 +202,13 @@ const Page = async ({
                 <div className="grid gap-4 mb-8 md:grid-cols-2 xl:grid-cols-4">
                   {/* <!-- total order --> */}
                   <Link href={`?orders=all`}>
-                    <div className="flex items-center border border-gray-200 bg-brand-color w-full rounded-lg p-3 md:p-4 cursor-pointer">
+                    <div
+                      className={`flex items-center border  ${
+                        orderParams == "all" || orderParams == undefined
+                          ? "bg-brand-color  border-transparent"
+                          : "bg-white border-gray-200"
+                      } w-full rounded-lg p-3 md:p-4 cursor-pointer`}
+                    >
                       <div className="flex items-center justify-center p-2 rounded-full w-8 h-8 lg:h-10 lg:w-10 text-xl text-center mr-[10px] text-red-600 bg-red-200">
                         <svg
                           stroke="currentColor"
@@ -213,14 +226,26 @@ const Page = async ({
                           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                         </svg>
                       </div>
-                      <h5 className="leading-none text-sm sm:text-base font-medium font-inter text-white">
+                      <h5
+                        className={`leading-none text-sm sm:text-base font-medium font-inter ${
+                          orderParams == "all" || orderParams == undefined
+                            ? "text-white"
+                            : "text-gray-700"
+                        }`}
+                      >
                         Total Order
                       </h5>
                     </div>
                   </Link>
                   {/* <!-- pending order --> */}
                   <Link href={`?orders=pending`}>
-                    <div className="flex items-center border border-gray-200 w-full rounded-lg p-3 md:p-4 cursor-pointer">
+                    <div
+                      className={`flex items-center border  ${
+                        orderParams == "pending"
+                          ? "bg-brand-color  border-transparent"
+                          : "bg-white border-gray-200"
+                      } w-full rounded-lg p-3 md:p-4 cursor-pointer`}
+                    >
                       <div className="flex items-center justify-center p-2 rounded-full w-8 h-8 lg:h-10 lg:w-10 text-xl text-center mr-[10px] text-orange-600 bg-orange-200">
                         <svg
                           stroke="currentColor"
@@ -238,7 +263,13 @@ const Page = async ({
                           <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
                         </svg>
                       </div>
-                      <h5 className="leading-none mb-2 text-sm sm:text-base font-medium font-inter text-gray-700">
+                      <h5
+                        className={`leading-none mb-2 text-sm sm:text-base font-medium font-inter text-gray-700 ${
+                          orderParams == "pending"
+                            ? "text-white"
+                            : "text-gray-700"
+                        }`}
+                      >
                         Pending Order
                       </h5>
                     </div>
@@ -246,7 +277,13 @@ const Page = async ({
 
                   {/* <!-- Processing Order --> */}
                   <Link href={`?orders=processing`}>
-                    <div className="flex items-center border border-gray-200 w-full rounded-lg p-3 md:p-4 cursor-pointer">
+                    <div
+                      className={`flex items-center border  ${
+                        orderParams == "processing"
+                          ? "bg-brand-color  border-transparent"
+                          : "bg-white border-gray-200"
+                      } w-full rounded-lg p-3 md:p-4 cursor-pointer`}
+                    >
                       <div className="flex items-center justify-center p-2 rounded-full w-8 h-8 lg:h-10 lg:w-10 text-xl text-center mr-[10px]  text-indigo-600 bg-indigo-200">
                         <svg
                           stroke="currentColor"
@@ -265,7 +302,13 @@ const Page = async ({
                           <circle cx="18.5" cy="18.5" r="2.5"></circle>
                         </svg>
                       </div>
-                      <h5 className="leading-none mb-2 text-sm sm:text-base font-medium font-inter text-gray-700">
+                      <h5
+                        className={`leading-none text-sm sm:text-base font-medium font-inter ${
+                          orderParams == "processing"
+                            ? "text-white"
+                            : "text-gray-700"
+                        }`}
+                      >
                         Processing Order
                       </h5>
                     </div>
@@ -273,7 +316,13 @@ const Page = async ({
 
                   {/* <!-- Complete Order --> */}
                   <Link href={`?orders=complete`}>
-                    <div className="flex items-center border border-gray-200 w-full rounded-lg p-3 md:p-4 cursor-pointer">
+                    <div
+                      className={`flex items-center border  ${
+                        orderParams == "complete"
+                          ? "bg-brand-color  border-transparent"
+                          : "bg-white border-gray-200"
+                      } w-full rounded-lg p-3 md:p-4 cursor-pointer`}
+                    >
                       <div className="flex items-center justify-center p-2 rounded-full w-8 h-8 lg:h-10 lg:w-10 text-xl text-center mr-[10px] text-emerald-600 bg-emerald-200">
                         <svg
                           stroke="currentColor"
@@ -289,7 +338,13 @@ const Page = async ({
                           <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                       </div>
-                      <h5 className="leading-none mb-2 text-sm sm:text-base font-medium font-inter text-gray-700">
+                      <h5
+                        className={`leading-none text-sm sm:text-base font-medium font-inter ${
+                          orderParams == "complete"
+                            ? "text-white"
+                            : "text-gray-700"
+                        }`}
+                      >
                         Complete Order
                       </h5>
                     </div>
@@ -313,6 +368,13 @@ const Page = async ({
                     </div>
                   </div>
                 </div>
+              </div>
+              <div className="w-full mx-auto">
+                <Pagination
+                  currentWebPageView="user_dashboard"
+                  searchParams={searchParams}
+                  pagination={meta.pagination}
+                />
               </div>
             </div>
           </div>

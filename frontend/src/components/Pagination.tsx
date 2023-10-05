@@ -5,12 +5,14 @@ import React from "react";
 const Pagination = ({
   pagination,
   searchParams,
+  currentWebPageView,
 }: {
   pagination: PaginationType;
   searchParams: { [key: string]: string | string[] | undefined };
+  currentWebPageView: string;
 }): React.ReactElement => {
   const { start, limit, total } = pagination;
-  let { category, query, page: urlPageString } = searchParams;
+  let { category, query, page: urlPageString, orders } = searchParams;
   if (!urlPageString) urlPageString = "1";
 
   let currentPage: number = 1;
@@ -18,7 +20,17 @@ const Pagination = ({
   const totalPage: number = Math.ceil(total / limit);
   let offset: number = (currentPage - 1) * limit;
 
-  let url = "?";
+  // here i am making initial url ..
+  // if (currentWebPageView === "user_dashboard") then check another condition that is if(orders) string exits then url will be *** `?orders=${orders}&` *** else url will be `?*** orders=all&` ***
+  // if (currentWebPageView !== "user_dashboard") then url will be *** `?` ***...
+
+  let url: string =
+    currentWebPageView === "user_dashboard"
+      ? orders
+        ? `?orders=${orders}&`
+        : `?orders=all&`
+      : `?`;
+
   if (query) {
     url = `${url}query=${query}&`;
   }
@@ -35,7 +47,13 @@ const Pagination = ({
   }
 
   return (
-    <div className="mt-10 flex items-center justify-center space-x-1 sm:space-x-2">
+    <div
+      className={`mt-10 flex items-center ${
+        currentWebPageView === "user_dashboard" && "justify-start"
+      } ${
+        currentWebPageView === "user_products_page" && "justify-center"
+      } space-x-1 sm:space-x-2`}
+    >
       {/* previous-button */}
       {currentPage > 1 && (
         <Link

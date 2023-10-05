@@ -32,6 +32,7 @@ const AllProductsSection = async ({
 
           <div className="w-full mx-auto">
             <Pagination
+              currentWebPageView="user_products_page"
               searchParams={searchParams}
               pagination={meta.pagination}
             />
