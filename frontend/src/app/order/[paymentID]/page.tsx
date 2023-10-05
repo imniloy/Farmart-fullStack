@@ -3,12 +3,14 @@ import React from "react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import moment from "moment";
+import { orderObjectType } from "@/types/ordersData";
+import { CartProduct } from "@/redux/features/cart/types";
 
 // export const runtime = "edge";
 
 const Page = async ({ params }: { params: { paymentID: string } }) => {
   const { paymentID } = params;
-  let pageContent: React.ReactElement;
+  let pageContent: React.ReactElement = <></>;
 
   const response = await (
     await fetch(
@@ -24,23 +26,40 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
   const { status, success } = response;
 
   if (success) {
-    if (response.data && response.data.length > 0) {
+    const { data }: { data: orderObjectType[] } = response;
+    if (data && data.length > 0) {
+      console.log(data);
+      const order: orderObjectType = data[0];
+      const { id, attributes } = order;
+      const {
+        paymentID,
+        createdAt,
+        products,
+        shipping_address,
+        method,
+        user_personal_details,
+        userId,
+        status,
+      } = attributes;
+
       pageContent = (
         <div>
           <div className="user_info_section text-gray-600 text-sm space-y-[6px] mb-8">
             <h3 className="">
-              <span className="font-semibold">First Name : </span> Niloy
+              <span className="font-semibold">First Name : </span>{" "}
+              {user_personal_details.firstName}
             </h3>
             <h3 className="">
-              <span className="font-semibold">Last Name : </span> Das
+              <span className="font-semibold">Last Name : </span>{" "}
+              {user_personal_details.lastName}
             </h3>
             <h3 className="">
               <span className="font-semibold">Email : </span>
-              imniloy8@gmail.com
+              {user_personal_details.email}
             </h3>
             <h3 className="">
               <span className="font-semibold">Phone Number : </span>
-              01307065475
+              {user_personal_details.phoneNumber}
             </h3>
 
             <p className="text-sm text-gray-600">
@@ -50,21 +69,27 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
 
             <p className="text-sm my-6 text-gray-600">
               <span className="font-semibold">USER ID : </span>{" "}
-              <span className="">{paymentID}</span>
+              <span className="">{userId}</span>
             </p>
             <p className="text-sm my-6 text-gray-600">
               <span className="font-semibold">Created At:</span>{" "}
-              <span className="">{paymentID}</span>
+              <span className="">
+                {moment(createdAt).format("Do MMMM YYYY, h:mm:ss a")}
+              </span>
             </p>
 
             <p className="text-sm my-6 text-gray-600">
               <span className="font-semibold">Delivery Status:</span>{" "}
-              <span className="">Pending</span>
+              <span className="">{status}</span>
             </p>
 
             <p className="text-sm my-6 text-gray-600">
               <span className="font-semibold">Shipping Address:</span>{" "}
-              <span className=""> {paymentID}</span>
+              <span className="">
+                {" "}
+                {shipping_address.street}, {shipping_address.city},{" "}
+                {shipping_address.country}
+              </span>
             </p>
           </div>
 
@@ -100,24 +125,33 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
                 </tr>
               </thead>
 
+              {/* {products.map((product) => )} */}
               <tbody className="bg-white divide-y divide-gray-200">
-                <tr>
-                  <td className="px-5 py-3 leading-6 whitespace-nowrap">
-                    <span className="uppercase text-sm font-medium">
-                      Strawberries Package
-                    </span>
-                  </td>
-                  <td className="px-5 py-3 leading-6 text-center whitespace-nowrap">
-                    <span className="text-sm">10 </span>
-                  </td>
-                  <td className="px-5 py-3 leading-6 text-center whitespace-nowrap font-medium text-sm">
-                    <span className="text-orange-500">10</span>
-                  </td>
-                  <td className="px-5 py-3 leading-6 text-center whitespace-nowrap">
-                    <span className="text-sm font-bold">100</span>
-                  </td>
-                </tr>
+                {products.map((product: CartProduct, i) => (
+                  <tr key={i}>
+                    <td className="px-5 py-3 leading-6 whitespace-nowrap">
+                      <span className="uppercase text-sm font-medium">
+                        {product.name}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3 leading-6 text-center whitespace-nowrap">
+                      <span className="text-sm">{product.quantity}</span>
+                    </td>
+                    <td className="px-5 py-3 leading-6 text-center whitespace-nowrap font-medium text-sm">
+                      <span className="font-bold">{product.price}</span>
+                    </td>
+                    <td className="px-5 py-3 leading-6 text-center whitespace-nowrap">
+                      <span className="text-sm font-bold">
+                        {product.price * product.quantity}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
 
+            <table className="font-inter my-4 table-auto min-w-full border border-gray-100 divide-y divide-gray-200">
+              <tbody>
                 <tr>
                   <td className="px-5 py-3 leading-6 whitespace-nowrap">
                     <span className="uppercase text-sm font-medium">
@@ -125,7 +159,7 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
                     </span>
                   </td>
                   <td className="px-5 py-3 leading-6 text-center whitespace-nowrap font-medium text-sm">
-                    <span className="text-emerald-500 font-bold">UPS</span>
+                    <span className="text-emerald-500 font-bold"></span>
                   </td>
                   <td className="px-5 py-3 leading-6 whitespace-nowrap text-center">
                     <span className="uppercase text-sm font-medium">7 </span>
@@ -160,7 +194,7 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
   } else {
     pageContent = <></>;
   }
-  console.log(response.data);
+  // console.log(response.data);
   return (
     <section className="py-10 lg:pb-14 bg-gray-50">
       <div className="section-container">{pageContent}</div>
