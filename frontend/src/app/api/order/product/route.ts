@@ -6,7 +6,7 @@ export const GET = async (request: NextRequest, res: NextResponse) => {
   const paymentId = request.nextUrl.search;
   const token = request.cookies.get("farmart_account_token") || "";
 
-  if (token && paymentId && paymentId.length > 24) {
+  if (token && paymentId) {
     const verifyToken = await verifyAuth(token.value);
     const {
       jwt,
@@ -21,9 +21,11 @@ export const GET = async (request: NextRequest, res: NextResponse) => {
       };
     } = verifyToken;
 
+    console.log(paymentId);
+    // `${PRIVATE_API_URL}/api/orders?filters[paymentID][$eq]=e242ad8a-c9e1-44a4-87c9-a300e9078a10&filters[userId][$eqi]=${user.id}`,
     if (verifyToken && user.id) {
       const response = await fetch(
-        `${PRIVATE_API_URL}/api/orders?${paymentId}&filters[userId][$eqi]=${user.id}`,
+        `${PRIVATE_API_URL}/api/orders${paymentId}&filters[userId][$eqi]=${user.id}`,
         {
           method: "GET",
           headers: {
@@ -34,9 +36,9 @@ export const GET = async (request: NextRequest, res: NextResponse) => {
         }
       );
       if (response.ok) {
-        const data = await response.json();
+        const { data } = await response.json();
         return NextResponse.json({
-          status: 200,
+          status: response.status,
           success: true,
           data,
         });
