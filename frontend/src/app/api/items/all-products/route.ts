@@ -16,5 +16,5 @@ export const GET = async (request: NextRequest) => {
   const { data, meta }: { data: product[]; meta: MetaType } =
     await response.json();
 
-  return NextResponse.json({ data, meta });
+  return NextResponse.json({ success: true, data, meta });
 };

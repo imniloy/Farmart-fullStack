@@ -1,4 +1,5 @@
 import { Category } from "./Categories";
+import { MetaType } from "./pagination";
 export type attributes = {
   name: string;
   description: string;
@@ -24,4 +25,10 @@ export type product = {
 export type ProductsData = {
   success: boolean;
   data: product[];
+};
+
+export type AllProductsResponse = {
+  success: boolean;
+  data: product[];
+  meta: MetaType;
 };

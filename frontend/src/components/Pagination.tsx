@@ -12,7 +12,7 @@ const Pagination = ({
   currentWebPageView: string;
 }): React.ReactElement => {
   const { start, limit, total } = pagination;
-  let { category, query, page: urlPageString, orders } = searchParams;
+  let { category, query, page: urlPageString, orders, products } = searchParams;
   if (!urlPageString) urlPageString = "1";
 
   let currentPage: number = 1;
@@ -24,18 +24,26 @@ const Pagination = ({
   // if (currentWebPageView === "user_dashboard") then check another condition that is if(orders) string exits then url will be *** `?orders=${orders}&` *** else url will be `?*** orders=all&` ***
   // if (currentWebPageView !== "user_dashboard") then url will be *** `?` ***...
 
-  let url: string =
+  let url: string = "?";
+  url =
     currentWebPageView === "user_dashboard"
       ? orders
         ? `?orders=${orders}&`
         : `?orders=all&`
       : `?`;
 
-  if (query) {
+  url =
+    currentWebPageView === "admin_dashboard"
+      ? products
+        ? `?products=${products}&`
+        : "?products=all&"
+      : "?";
+
+  if (query && currentWebPageView === "user_products_page") {
     url = `${url}query=${query}&`;
   }
 
-  if (category) {
+  if (category && currentWebPageView === "user_products_page") {
     url = `${url}category=${category}&`;
   }
 
@@ -49,7 +57,10 @@ const Pagination = ({
   return (
     <div
       className={`mt-10 flex items-center ${
-        currentWebPageView === "user_dashboard" && "justify-start"
+        (currentWebPageView === "user_dashboard" ||
+          "admin_dashboard" ||
+          "admin_orders_information") &&
+        "justify-start"
       } ${
         currentWebPageView === "user_products_page" && "justify-center"
       } space-x-1 sm:space-x-2`}
@@ -58,13 +69,13 @@ const Pagination = ({
       {currentPage > 1 && (
         <Link
           href={`${url}page=${Number(urlPageString) - 1}`}
-          className="flex items-center border border-black h-10 hover:bg-brand-color hover:text-white transition-all p-2 rounded-sm"
+          className="flex items-center border border-black h-8 500px:h-10 hover:bg-brand-color hover:text-white transition-all p-2 rounded-sm"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
-            className="w-5 h-5"
+            className="w-4 h-4 500px:w-5 500px:h-5"
           >
             <path
               fillRule="evenodd"
@@ -81,7 +92,7 @@ const Pagination = ({
       {paginationContent.map((page) => (
         <Link key={page} href={`${url}page=${page}`}>
           <div
-            className={`h-10 w-10 ${
+            className={`h-8 w-8 500px:h-10 500px:w-10 ${
               Number(urlPageString) === page || currentPage === page
                 ? "text-white bg-brand-color font-bold"
                 : "hover:bg-brand-color hover:text-white font-medium "
@@ -95,7 +106,7 @@ const Pagination = ({
       {currentPage < totalPage && (
         <Link
           href={`${url}page=${Number(urlPageString) + 1}`}
-          className="flex items-center border border-color-black h-10 hover:bg-brand-color hover:text-white transition-all p-2 rounded-sm"
+          className="flex items-center border border-color-black h-8 500px:h-10 hover:bg-brand-color hover:text-white transition-all p-2 rounded-sm"
         >
           <span className="text-sm font-medium ml-2  hidden sm:block">
             Next
@@ -104,7 +115,7 @@ const Pagination = ({
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
-            className="w-5 h-5"
+            className="w-4 h-4 500px:w-5 500px:h-5"
           >
             <path
               fillRule="evenodd"

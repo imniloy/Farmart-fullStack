@@ -1,5 +1,5 @@
 import { ProductsDataType } from "@/types/pagination";
-import { ProductsData } from "@/types/products";
+import { AllProductsResponse, ProductsData } from "@/types/products";
 import { PUBLIC_API_URL } from "@/urls";
 
 export const getAllPopularProducts = async (): Promise<ProductsData> => {
@@ -58,10 +58,10 @@ export const getAllProducts = async ({
   page,
 }: {
   [key: string]: string | undefined;
-}): Promise<ProductsDataType> => {
+}): Promise<AllProductsResponse> => {
   let url: string = "populate=thumbnail";
   let filterNumber: number = 0;
-  let limit: number = 12;
+  let limit: number = 2;
 
   //
   if (query) {
