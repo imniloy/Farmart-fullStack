@@ -6,7 +6,7 @@ export const GET = async (request: Request) => {
   const response = await fetch(
     `${PRIVATE_API_URL}/api/categories?filters[name][$nei]=popular&populate=image`,
     {
-      next: { revalidate: 60 },
+      // next: { revalidate: 60 },
     }
   );
 

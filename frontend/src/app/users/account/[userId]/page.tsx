@@ -28,7 +28,7 @@ const Page = async ({
   const { userId } = params;
   const { orders: orderParams, page } = searchParams || {};
   let offset: number = 0;
-  let limit: number = 15;
+  let limit: number = 1;
   let searchUrl: string = `?userId=${userId}&orders=all&offset=${offset}&limit=${limit}`;
   let pageContent: React.ReactNode;
   let ordersContent: React.ReactNode;

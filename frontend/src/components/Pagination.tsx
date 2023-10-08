@@ -25,19 +25,22 @@ const Pagination = ({
   // if (currentWebPageView !== "user_dashboard") then url will be *** `?` ***...
 
   let url: string = "?";
-  url =
-    currentWebPageView === "user_dashboard"
-      ? orders
-        ? `?orders=${orders}&`
-        : `?orders=all&`
-      : `?`;
 
-  url =
-    currentWebPageView === "admin_dashboard"
-      ? products
-        ? `?products=${products}&`
-        : "?products=all&"
-      : "?";
+  if (currentWebPageView === "user_dashboard") {
+    if (orders) {
+      url = `?orders=${orders}&`;
+    } else {
+      url = `?orders=all&`;
+    }
+  }
+
+  if (currentWebPageView === "admin_dashboard") {
+    if (products) {
+      url = `?products=${products}&`;
+    } else {
+      url = "?products=all&";
+    }
+  }
 
   if (query && currentWebPageView === "user_products_page") {
     url = `${url}query=${query}&`;
