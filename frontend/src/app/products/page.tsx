@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export const runtime = "edge";
 
-const page = async ({
+const Page = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
@@ -38,4 +38,4 @@ const page = async ({
   );
 };
 
-export default page;
+export default Page;

@@ -64,7 +64,6 @@ const Header = () => {
     })();
   }, [dispatch]);
 
-  console.log(loggedOnUser);
   return (
     <header className="bg-brand-color w-full py-4 sticky top-0 left-0 right-0 z-20">
       <div className="flex mx-2 500px:mx-6 xl:mx-auto xl:max-w-[1200px] 2xl:max-w-[1420px] items-center justify-between">

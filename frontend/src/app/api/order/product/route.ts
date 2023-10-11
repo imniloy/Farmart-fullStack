@@ -57,3 +57,14 @@ export const GET = async (request: NextRequest, res: NextResponse) => {
     message: "No Order found!",
   });
 };
+
+export const PUT = async (request: NextRequest, res: NextResponse) => {
+  const id: string = request.nextUrl.search.replace("?", "");
+  const token = request.cookies.get("farmart_account_token") || "";
+  if (token) {
+    const response = fetch(`${PRIVATE_API_URL}/api/orders/${id}`, {
+      method: "PUT",
+      cache: "no-cache",
+    });
+  }
+};

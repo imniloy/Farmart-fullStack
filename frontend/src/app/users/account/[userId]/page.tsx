@@ -6,7 +6,6 @@ import { cookies } from "next/headers";
 import moment from "moment/moment";
 import {
   orderAttributes,
-  orderDataResponseType,
   orderObjectType,
   ordersDataType,
 } from "@/types/ordersData";

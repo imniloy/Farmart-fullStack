@@ -22,12 +22,6 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
     return parseFloat(totalPrice.toFixed(2));
   };
 
-  // let subtotal = cartProducts.reduce((total, product) => {
-  //   let value = product.quantity * product.price;
-  //   return value + total;
-  // }, 0);
-
-  // const totalPriceWithShippingCost = subtotal + shippingCost;
 
   const response = await (
     await fetch(
@@ -142,7 +136,6 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
                 </tr>
               </thead>
 
-              {/* {products.map((product) => )} */}
               <tbody className="bg-white divide-y divide-gray-200">
                 {products.map((product: CartProduct, i) => (
                   <tr key={i}>
@@ -159,7 +152,6 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
                     </td>
                     <td className="px-5 py-3 leading-6 text-center whitespace-nowrap">
                       <span className="text-sm font-bold">
-                        {/* {product.price * product.quantity} */}
                         {parseFloat(
                           (product.price * product.quantity).toFixed(2)
                         )}

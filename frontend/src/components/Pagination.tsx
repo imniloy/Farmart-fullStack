@@ -26,7 +26,10 @@ const Pagination = ({
 
   let url: string = "?";
 
-  if (currentWebPageView === "user_dashboard") {
+  if (
+    currentWebPageView === "user_dashboard" ||
+    currentWebPageView === "admin_order_page"
+  ) {
     if (orders) {
       url = `?orders=${orders}&`;
     } else {
