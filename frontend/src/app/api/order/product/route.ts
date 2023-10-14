@@ -58,6 +58,10 @@ export const GET = async (request: NextRequest, res: NextResponse) => {
   });
 };
 
+
+
+
+// product db
 export const PUT = async (request: NextRequest, res: NextResponse) => {
   const id: string = request.nextUrl.search.replace("?", "");
   const token = request.cookies.get("farmart_account_token") || "";

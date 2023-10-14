@@ -7,10 +7,11 @@ import React from "react";
 
 const Page = async ({ params }: { params: { id: string } }) => {
   if (!params.id) return <>Bad Request</>;
+  
   let pageContent: React.ReactNode;
   const cookieStore = cookies();
   let searchUrl: string = params.id;
-  console.log(searchUrl);
+
   const token = cookieStore.get("farmart_account_token");
   if (token && params.id) {
     const verifyToken = await verifyAuth(token.value);
@@ -40,9 +41,8 @@ const Page = async ({ params }: { params: { id: string } }) => {
     if (response.ok) {
       const { data: order }: { data: orderObjectType } = await response.json();
 
-      pageContent = <OrderEditComp order={order} />;
+      pageContent = <OrderEditComp jwt={jwt} order={order} />;
     } else {
-      console.log("a");
       pageContent = (
         <div className="w-full">
           <div className="w-fit my-auto h-fit mx-auto">

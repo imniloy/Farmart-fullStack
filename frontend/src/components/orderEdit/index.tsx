@@ -1,26 +1,93 @@
 "use client";
 import { CartProduct } from "@/redux/features/cart/types";
 import { orderAttributes, orderObjectType } from "@/types/ordersData";
+import PulseLoader from "react-spinners/PulseLoader";
 import moment from "moment";
-import React, { FormEvent, useState } from "react";
-
-const OrderEditComp = ({ order }: { order: orderObjectType }) => {
+import React, { useState } from "react";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+const OrderEditComp = ({
+  jwt,
+  order,
+}: {
+  jwt: string;
+  order: orderObjectType;
+}) => {
   const { id, attributes }: { id: number; attributes: orderAttributes } = order;
   const [editMode, setEditMode] = useState(false);
   const [deliveryStatus, setDeliveryStatus] = useState<string>(
     attributes?.status ? attributes.status : ""
   );
-
+  const [loading, setLoading] = useState<Boolean>(false);
+  const router = useRouter();
   const handleOrderStatusUpdate = async (
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
+    
+    const allowedstatusValue = ["pending", "complete", "processing"];
+    if (loading) return;
+    if (!allowedstatusValue.includes(deliveryStatus.trim().toLowerCase())) {
+      toast.error(`Only Pending | Complete | Processing value is allowed`, {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        pauseOnFocusLoss: true,
+        draggable: true,
+        theme: "light",
+      });
+      return;
+    }
 
-      try {
-        const response = await fetch(``)
-    } catch (err) {}
+    try {
+      setLoading(true);
+      const response = await fetch(`http://127.0.0.1:1337/api/orders/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
+        body: JSON.stringify({
+          data: {
+            status: deliveryStatus.toLowerCase(),
+          },
+        }),
+      });
+
+      const { data } = await response.json();
+      if (data.id) {
+        toast.success(`Status updated`, {
+          position: "top-center",
+          autoClose: 500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          pauseOnFocusLoss: true,
+          draggable: true,
+          theme: "light",
+        });
+        setEditMode(false);
+      }
+      router.refresh();
+    } catch (err: any) {
+      toast.error(`Something wrong happends!`, {
+        position: "top-center",
+        autoClose: 500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        pauseOnFocusLoss: true,
+        draggable: true,
+        theme: "light",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
-  console.log(attributes);
+
   return (
     <div className="">
       <div className="space-y-[3px]">
@@ -70,7 +137,7 @@ const OrderEditComp = ({ order }: { order: orderObjectType }) => {
           </div>
 
           <div className={`${editMode ? "block" : "hidden"} my-2 sm:mt-0`}>
-            <form onClick={handleOrderStatusUpdate}>
+            <form onSubmit={handleOrderStatusUpdate}>
               <input
                 type="text"
                 value={deliveryStatus}
@@ -82,9 +149,18 @@ const OrderEditComp = ({ order }: { order: orderObjectType }) => {
               />
               <button
                 type="submit"
-                className="ml-4 bg-emerald-600 px-2 py-1 sm:px-4 sm:py-2 text-white"
+                className={`ml-4  bg-emerald-600 px-2 py-1 sm:px-4 sm:py-2 text-white`}
               >
-                Update
+                {loading ? (
+                  <PulseLoader
+                    size={12}
+                    color={"#FFF"}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                  />
+                ) : (
+                  "Update"
+                )}
               </button>
             </form>
           </div>

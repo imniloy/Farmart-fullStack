@@ -52,7 +52,7 @@ const cartSliderSlice = createSlice({
             let draftProduct = JSON.parse(JSON.stringify(product));
 
             if (draftProduct.id === id) {
-              console.log(draftProduct);
+              // console.log(draftProduct);
 
               return {
                 ...draftProduct,

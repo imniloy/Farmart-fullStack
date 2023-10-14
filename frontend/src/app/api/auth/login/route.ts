@@ -52,14 +52,17 @@ export const POST = async (request: NextRequest) => {
       .setExpirationTime("30 days")
       .sign(secret);
 
+    const oneMonth = 24 * 60 * 60 * 1000 * 30;
     response.cookies.set("farmart_account_token", token, {
       httpOnly: true,
       secure: true,
+      expires: Date.now() + oneMonth,
     });
 
     response.cookies.set("farmart_client_token", token, {
       httpOnly: false,
       secure: true,
+      expires: Date.now() + oneMonth,
     });
 
     return response;

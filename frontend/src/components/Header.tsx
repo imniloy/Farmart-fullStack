@@ -200,7 +200,12 @@ const Header = () => {
           )}
 
           {loggedOnUser && loggedOnUser.user_type === "admin" && (
-            <li className="flex items-center cursor-pointer space-x-1 bg-emerald-300 text-color-black px-2 sm:px-4 py-2 rounded-md">
+            <li
+              onClick={() => {
+                router.push("/farmart/admin/add-product");
+              }}
+              className="flex items-center cursor-pointer space-x-1 bg-emerald-300 text-color-black px-2 sm:px-4 py-2 rounded-md"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
