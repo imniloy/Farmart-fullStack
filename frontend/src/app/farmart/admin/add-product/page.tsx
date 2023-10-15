@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { AiFillCaretDown } from "react-icons/ai";
 import { BsImages } from "react-icons/bs";
+import { toast } from "react-toastify";
 
 type State = {
   name: string;
@@ -20,14 +21,15 @@ const AddProduct = () => {
     stock: "",
   });
 
-  const [thumbnailImageFiles, setThumbnailImageFiles] = useState<Array<any>>(
+  const [thumbnailImageFiles, setThumbnailImageFiles] = useState<File[] | File>(
     []
   );
-  const [showThumbnailImage, setShowThumbnailImage] = useState<Boolean>(false);
-  const [imageFiles, setImageFiles] = useState<Array<any>>([]);
-  const [showImageFiles, setShowImagesFiles] = useState<Boolean>(false);
-  const [showCategories, setShowCategories] = useState<Boolean>(false);
+  const [showThumbnailImage, setShowThumbnailImage] = useState<string>("");
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [showImagesFiles, setShowImagesFiles] = useState<string[]>([]);
+  const [showCategories, setShowCategories] = useState<boolean>(false);
   const [categories, setCategories] = useState<Number>(0);
+  const [err, setErr] = useState<string>("");
 
   const inputHandle = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -44,14 +46,32 @@ const AddProduct = () => {
 
   // imageHandler is responsible for handling slide images...
   const imageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("imageHandler");
-    console.log(e.target.files);
+    let images: File[] = [];
+    let imagesUrl: string[] = [];
+    let length = e.target.files?.length ? e.target.files.length : 0;
+
+    for (let i = 0; i < length; i++) {
+      if ((i == 0 || i == 1) && e.target.files?.length) {
+        let img = e.target.files[i];
+        let url = URL.createObjectURL(img);
+        images.push(img);
+        imagesUrl.push(url);
+      }
+    }
+
+    // if()
+    console.log(imagesUrl);
+    console.log(images);
   };
 
   // thumbNailHandler is responsible for handling thumbNail image...
   const thumbNailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("thumbNailHandler");
-    console.log(e.target.files);
+    if (e.target.files?.length) {
+      let imgFile = e.target.files[0];
+      let imgUrl = URL.createObjectURL(imgFile);
+      setThumbnailImageFiles(imgFile);
+      setShowThumbnailImage(imgUrl);
+    }
   };
 
   return (
@@ -106,51 +126,83 @@ const AddProduct = () => {
 
                 {/* images */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 grid-rows-2 lg:grid-rows-1 gap-4 lg:gap-6 auto-rows-min">
-                  <div>
-                    <p className="block text-gray-500 text-sm leading-none mb-3">
-                      Thumbnail Image <span className="text-red-500">*</span>
-                    </p>
-                    <label
-                      htmlFor="thubmnail"
-                      className="flex justify-center items-center flex-col h-[220px] cursor-pointer border border-dashed border-gray-500 text-[#6b7280] w-full"
-                    >
-                      <span>
-                        <BsImages />
-                      </span>
-                      <span className="mt-1">Select image</span>
-                    </label>
-                    <input
-                      hidden
-                      accept="image/png, image/WebP, image/jpeg, image/avif"
-                      type="file"
-                      id="thubmnail"
-                      name="thubmnail"
-                      onChange={thumbNailHandler}
-                    />
+                  <div className="space-y-4">
+                    <div>
+                      <p className="block text-gray-500 text-sm leading-none mb-3">
+                        Thumbnail Image <span className="text-red-500">*</span>
+                      </p>
+                      <label
+                        htmlFor="thubmnail"
+                        className="flex justify-center items-center flex-col h-[220px] cursor-pointer border border-dashed border-gray-500 text-[#6b7280] w-full"
+                      >
+                        <span>
+                          <BsImages />
+                        </span>
+                        <span className="mt-1">Select image</span>
+                      </label>
+                      <input
+                        hidden
+                        accept="image/png, image/WebP, image/jpeg, image/avif"
+                        type="file"
+                        id="thubmnail"
+                        name="thubmnail"
+                        onChange={thumbNailHandler}
+                      />
+                    </div>
+                    {showThumbnailImage && (
+                      <div className="relative h-[180px] lg:h-[220px]">
+                        <label htmlFor="0">
+                          <img
+                            src={showThumbnailImage}
+                            className="w-full h-full absolute object-cover"
+                            alt=""
+                            id="0"
+                          />
+                        </label>
+                      </div>
+                    )}
                   </div>
 
-                  <div className="h-fit">
-                    <p className="block text-gray-500 text-sm leading-none mb-3">
-                      Select Silder images
-                    </p>
-                    <label
-                      htmlFor="images"
-                      className="flex justify-center items-center flex-col h-[220px] cursor-pointer border border-dashed border-gray-500 text-[#6b7280] w-full"
-                    >
-                      <span>
-                        <BsImages />
-                      </span>
-                      <span className="mt-1">Select image</span>
-                    </label>
-                    <input
-                      hidden
-                      multiple
-                      accept="image/png, image/WebP, image/jpeg, image/avif"
-                      type="file"
-                      name="images"
-                      id="images"
-                      onChange={imageHandler}
-                    />
+                  <div className="space-y-4">
+                    <div className="h-fit">
+                      <p className="block text-gray-500 text-sm leading-none mb-3">
+                        Select Silder images (Maximum first two images will be
+                        shown)
+                      </p>
+                      <label
+                        htmlFor="images"
+                        className="flex justify-center items-center flex-col h-[220px] cursor-pointer border border-dashed border-gray-500 text-[#6b7280] w-full"
+                      >
+                        <span>
+                          <BsImages />
+                        </span>
+                        <span className="mt-1">Select image</span>
+                      </label>
+                      <input
+                        hidden
+                        multiple
+                        accept="image/png, image/WebP, image/jpeg, image/avif"
+                        type="file"
+                        name="images"
+                        id="images"
+                        onChange={imageHandler}
+                      />
+                    </div>
+                    <div className="space-x-4">
+                      {showImagesFiles.length > 0 && (
+                        <div
+                          className={`relative grid grid-cols-[${showImagesFiles.length}]`}
+                        >
+                          {showImagesFiles.map((img) => (
+                            <img
+                              src={img}
+                              className="w-1/2 object-cover h-[180px] lg:h-[220px]"
+                              alt=""
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
