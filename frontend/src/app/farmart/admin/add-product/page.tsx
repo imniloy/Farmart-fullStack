@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { AiFillCaretDown } from "react-icons/ai";
 import { BsImages } from "react-icons/bs";
 import { toast } from "react-toastify";
+import { MdDelete } from "react-icons/md";
 
 type State = {
   name: string;
@@ -21,10 +22,8 @@ const AddProduct = () => {
     stock: "",
   });
 
-  const [thumbnailImageFiles, setThumbnailImageFiles] = useState<File[] | File>(
-    []
-  );
-  const [showThumbnailImage, setShowThumbnailImage] = useState<string>("");
+  const [thumbnailImageFiles, setThumbnailImageFiles] = useState<File[]>([]);
+  const [showThumbnailImage, setShowThumbnailImage] = useState<string[]>([]);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [showImagesFiles, setShowImagesFiles] = useState<string[]>([]);
   const [showCategories, setShowCategories] = useState<boolean>(false);
@@ -46,22 +45,49 @@ const AddProduct = () => {
 
   // imageHandler is responsible for handling slide images...
   const imageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return;
     let images: File[] = [];
     let imagesUrl: string[] = [];
-    let length = e.target.files?.length ? e.target.files.length : 0;
+    let length = e.target.files?.length;
 
     for (let i = 0; i < length; i++) {
-      if ((i == 0 || i == 1) && e.target.files?.length) {
+      if (e.target.files?.length) {
         let img = e.target.files[i];
         let url = URL.createObjectURL(img);
         images.push(img);
         imagesUrl.push(url);
+      } else {
+        return;
       }
     }
+    setImageFiles([...imageFiles, ...images]);
+    setShowImagesFiles([...showImagesFiles, ...imagesUrl]);
+  };
 
-    // if()
-    console.log(imagesUrl);
-    console.log(images);
+  const imageUpdateHandler = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    i: number
+  ) => {
+    if (!e.target.files?.length) return;
+    const file: File = e.target.files[0];
+    const updatedFileUrl = URL.createObjectURL(file);
+    const imgFiles = [...imageFiles];
+    const imgUrls = [...showImagesFiles];
+    const findImgFileIndex = imgFiles.findIndex((_, index) => index === i);
+    const findImgUrlIndex = imgUrls.findIndex((_, index) => index === i);
+    imgFiles[findImgFileIndex] = file;
+    imgUrls[findImgUrlIndex] = updatedFileUrl;
+    setImageFiles(imgFiles);
+    setShowImagesFiles(imgUrls);
+  };
+
+  const removeImages = (i: number) => {
+    const imgFiles = [...imageFiles];
+    const imgUrls = [...showImagesFiles];
+    const updatedimgFiles = imgFiles.filter((_, index) => index !== i);
+    const updatedimgUrls = imgUrls.filter((_, index) => index !== i);
+    setImageFiles(updatedimgFiles);
+    setShowImagesFiles(updatedimgUrls);
   };
 
   // thumbNailHandler is responsible for handling thumbNail image...
@@ -69,9 +95,14 @@ const AddProduct = () => {
     if (e.target.files?.length) {
       let imgFile = e.target.files[0];
       let imgUrl = URL.createObjectURL(imgFile);
-      setThumbnailImageFiles(imgFile);
-      setShowThumbnailImage(imgUrl);
+      setThumbnailImageFiles([imgFile]);
+      setShowThumbnailImage([imgUrl]);
     }
+  };
+  // remove thambnail...
+  const removeThumbnail = () => {
+    setThumbnailImageFiles([]);
+    setShowThumbnailImage([]);
   };
 
   return (
@@ -149,16 +180,27 @@ const AddProduct = () => {
                         onChange={thumbNailHandler}
                       />
                     </div>
-                    {showThumbnailImage && (
-                      <div className="relative h-[180px] lg:h-[220px]">
-                        <label htmlFor="0">
+                    {showThumbnailImage.length > 0 && (
+                      <div className="relative h-[180px] lg:h-[220px] cursor-pointer">
+                        <MdDelete
+                          onClick={() => removeThumbnail()}
+                          className="h-8 w-8 absolute cursor-pointer top-2 right-2 text-black shadow-lg"
+                        />
+                        <label htmlFor="thubmnail">
                           <img
-                            src={showThumbnailImage}
-                            className="w-full h-full absolute object-cover"
-                            alt=""
-                            id="0"
+                            src={showThumbnailImage[0]}
+                            className="h-full w-full object-cover"
+                            alt="thubmnail"
                           />
                         </label>
+                        <input
+                          type="file"
+                          hidden
+                          id="thubmnail"
+                          name="thubmnail"
+                          accept="image/png, image/WebP, image/jpeg, image/avif"
+                          onChange={thumbNailHandler}
+                        />
                       </div>
                     )}
                   </div>
@@ -166,8 +208,10 @@ const AddProduct = () => {
                   <div className="space-y-4">
                     <div className="h-fit">
                       <p className="block text-gray-500 text-sm leading-none mb-3">
-                        Select Silder images (Maximum first two images will be
-                        shown)
+                        Select Silder images{" "}
+                        <span className="text-red-500">
+                          (First two images will be uploaded)
+                        </span>
                       </p>
                       <label
                         htmlFor="images"
@@ -178,9 +222,13 @@ const AddProduct = () => {
                         </span>
                         <span className="mt-1">Select image</span>
                       </label>
+
                       <input
-                        hidden
                         multiple
+                        hidden
+                        className={`${
+                          imageFiles?.length <= 2 ? "cursor-none" : ""
+                        }`}
                         accept="image/png, image/WebP, image/jpeg, image/avif"
                         type="file"
                         name="images"
@@ -190,15 +238,34 @@ const AddProduct = () => {
                     </div>
                     <div className="space-x-4">
                       {showImagesFiles.length > 0 && (
-                        <div
-                          className={`relative grid grid-cols-[${showImagesFiles.length}]`}
-                        >
-                          {showImagesFiles.map((img) => (
-                            <img
-                              src={img}
-                              className="w-1/2 object-cover h-[180px] lg:h-[220px]"
-                              alt=""
-                            />
+                        <div className={`relative grid grid-cols-2 gap-4`}>
+                          {showImagesFiles.map((img, i) => (
+                            <div
+                              className="relative w-full h-[180px] lg:h-[220px] overflow-hidden rounded-lg"
+                              key={i}
+                            >
+                              <MdDelete
+                                onClick={() => removeImages(i)}
+                                className="h-8 w-8 absolute cursor-pointer top-2 right-2 text-black"
+                              />
+
+                              <label htmlFor={`${i}`}>
+                                <img
+                                  src={img}
+                                  className="w-full h-full object-cover rounded-lg"
+                                  alt=""
+                                />
+                              </label>
+                              <input
+                                type="file"
+                                id={`${i}`}
+                                hidden
+                                accept="image/png, image/WebP, image/jpeg, image/avif"
+                                onChange={(
+                                  e: React.ChangeEvent<HTMLInputElement>
+                                ) => imageUpdateHandler(e, i)}
+                              />
+                            </div>
                           ))}
                         </div>
                       )}
