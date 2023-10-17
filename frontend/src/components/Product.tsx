@@ -6,6 +6,7 @@ import ProductDescription from "./ProductDescription";
 import Link from "next/link";
 
 const Product = ({ product }: { product: product }): React.ReactNode => {
+  console.log(product.attributes.slug);
   const stock: number = parseInt(product.attributes.stock);
   let discountPercentise: number = 0;
   const price: number = product?.attributes?.price;
@@ -44,7 +45,7 @@ const Product = ({ product }: { product: product }): React.ReactNode => {
           {/* <!-- image Section --> */}
           <div className="relative  flex items-center justify-center w-full min-w-[120px] h-[180px] sm:min-w-[190px] sm:h-[190px] overflow-hidden">
             <Image
-              src={`${PRIVATE_API_URL}${product.attributes.thumbnail.data.attributes.formats.small.url}`}
+              src={`${PRIVATE_API_URL}${product.attributes?.thumbnail?.data.attributes?.formats?.thumbnail?.url}`}
               fill
               style={{
                 objectFit: "contain",
@@ -63,7 +64,7 @@ const Product = ({ product }: { product: product }): React.ReactNode => {
         originalPrice={originalPrice}
         stock={stock}
         imageUrl={
-          product.attributes.thumbnail.data.attributes.formats.small.url
+          product.attributes.thumbnail.data.attributes.formats.thumbnail.url
         }
         slug={product.attributes.slug}
       />

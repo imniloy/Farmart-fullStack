@@ -3,7 +3,11 @@ import { NextResponse } from "next/server";
 
 export const GET = async (request: Request) => {
   const response = await fetch(
-    `${PRIVATE_API_URL}/api/products?populate=thumbnail&filters[category][name][$nei]=popular&filters[original_price][$nei]=null&sort[0]=stock:desc&pagination[limit]=12`
+    `${PRIVATE_API_URL}/api/products?populate=thumbnail&filters[category][name][$nei]=popular&filters[original_price][$nei]=null&sort[0]=stock:desc&pagination[limit]=12`,
+    {
+      method: "GET",
+      cache: "no-store",
+    }
   );
 
   if (!response)

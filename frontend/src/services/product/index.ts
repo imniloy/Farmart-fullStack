@@ -12,10 +12,7 @@ export const getAllPopularProducts = async (): Promise<ProductsData> => {
 };
 
 export const getAllDiscountedProducts = async (): Promise<ProductsData> => {
-  const response = await fetch(`${PUBLIC_API_URL}/items/discounted-products`, {
-    method: "GET",
-    cache: "no-store",
-  });
+  const response = await fetch(`${PUBLIC_API_URL}/items/discounted-products`);
 
   return response.json();
 };

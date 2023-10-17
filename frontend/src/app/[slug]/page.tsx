@@ -33,6 +33,7 @@ export async function generateMetadata({ params }: { params: Params }) {
 
 const Page = async ({ params }: { params: Params }) => {
   const { slug } = params;
+  console.log(slug);
   let reletedProducts: product[] = [];
   const { success, data }: { success: boolean; data: product[] } =
     await getProductDetails(slug);

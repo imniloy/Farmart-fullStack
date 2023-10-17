@@ -14,7 +14,7 @@ import ShareOptions from "./ShareOptions";
 const Button = ({ product }: { product: product }) => {
   const { id, attributes } = product;
   const { name, slug, stock, price, original_price } = attributes;
-  const imageUrl = attributes.thumbnail.data.attributes.formats.small.url;
+  const imageUrl = attributes.thumbnail.data.attributes.url;
   const [counter, setCounter] = useState<number>(1);
   const {
     cartProducts,

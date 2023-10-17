@@ -5,6 +5,7 @@ import { BsImages } from "react-icons/bs";
 import { toast } from "react-toastify";
 import { MdDelete } from "react-icons/md";
 import { Categories, Category } from "@/types/Categories";
+import { product } from "@/types/products";
 
 type State = {
   name: string;
@@ -103,9 +104,78 @@ const AddProduct = () => {
     setShowThumbnailImage([]);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const resetState = () => {
+    setState({
+      name: "",
+      description: "",
+      price: "",
+      original_price: "",
+      stock: "",
+    });
+    setImageFiles([]);
+    setShowImagesFiles([]);
+    setShowThumbnailImage([]);
+    setThumbnailImageFiles([]);
+    setCat(undefined);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(state);
+    if (!cat) {
+      toast.error("Product must have a category");
+      return;
+    }
+    if (imageFiles?.length > 2) {
+      toast.error("Only two images are allowed to be uploaded");
+      return;
+    }
+
+    const formData = new FormData();
+    const data = {
+      name: state.name,
+      description: state.description,
+      price: Number(state.price),
+      original_price: state.original_price?.length
+        ? state.original_price
+        : null,
+      stock: state.stock,
+      category: cat.id,
+      slug: crypto.randomUUID(),
+    };
+
+    formData.append("data", JSON.stringify(data));
+
+    for (let i = 0; i < thumbnailImageFiles.length; i++) {
+      formData.append(
+        "files.thumbnail",
+        thumbnailImageFiles[i],
+        thumbnailImageFiles[i].name
+      );
+    }
+
+    const length = imageFiles.length > 2 ? 2 : imageFiles.length;
+    for (let i = 0; i < length; i++) {
+      formData.append("files.images", imageFiles[i], imageFiles[i].name);
+    }
+
+    try {
+      const response = await fetch("http://localhost:1337/api/products", {
+        method: "POST",
+        cache: "no-cache",
+        body: formData,
+      });
+
+      const { data }: { data: product } = await response.json();
+
+      if (data?.id) {
+        toast.success(`${data.attributes.name} added successfully`);
+
+        resetState();
+      }
+      console.log(data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
@@ -119,7 +189,6 @@ const AddProduct = () => {
         if (response.ok) {
           const { data }: { data: Category[] } = await response.json();
           // You can now use the 'data' variable with the response data.
-          console.log(data);
           setCategories(data);
         } else {
           console.error("Failed to fetch data");
@@ -202,7 +271,6 @@ const AddProduct = () => {
                         hidden
                         accept="image/png, image/WebP, image/jpeg, image/avif"
                         type="file"
-                        required
                         id="thubmnail"
                         name="thubmnail"
                         onChange={thumbNailHandler}
@@ -217,7 +285,7 @@ const AddProduct = () => {
                         <label htmlFor="thubmnail">
                           <img
                             src={showThumbnailImage[0]}
-                            className="h-full w-full object-cover"
+                            className="h-full w-full object-contain"
                             alt="thubmnail"
                           />
                         </label>
@@ -413,3 +481,5 @@ const AddProduct = () => {
 };
 
 export default AddProduct;
+
+// https://youtu.be/54_SKMmrJkA
