@@ -1,8 +1,8 @@
 import { Categories, Category } from "@/types/Categories";
 import { PRIVATE_API_URL } from "@/urls";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async (request: Request) => {
+export const GET = async (request: NextRequest) => {
   const response = await fetch(
     `${PRIVATE_API_URL}/api/categories?filters[name][$nei]=popular&populate=image`,
     {

@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiFillCaretDown } from "react-icons/ai";
 import { BsImages } from "react-icons/bs";
 import { toast } from "react-toastify";
 import { MdDelete } from "react-icons/md";
+import { Categories, Category } from "@/types/Categories";
 
 type State = {
   name: string;
@@ -27,7 +28,8 @@ const AddProduct = () => {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [showImagesFiles, setShowImagesFiles] = useState<string[]>([]);
   const [showCategories, setShowCategories] = useState<boolean>(false);
-  const [categories, setCategories] = useState<Number>(0);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [cat, setCat] = useState<Category>();
   const [err, setErr] = useState<string>("");
 
   const inputHandle = (
@@ -37,10 +39,6 @@ const AddProduct = () => {
       ...state,
       [e.target.name]: e.target.value,
     });
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
   };
 
   // imageHandler is responsible for handling slide images...
@@ -104,6 +102,35 @@ const AddProduct = () => {
     setThumbnailImageFiles([]);
     setShowThumbnailImage([]);
   };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(state);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:1337/api/categories?`, {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        if (response.ok) {
+          const { data }: { data: Category[] } = await response.json();
+          // You can now use the 'data' variable with the response data.
+          console.log(data);
+          setCategories(data);
+        } else {
+          console.error("Failed to fetch data");
+        }
+      } catch (error) {
+        console.log("An error occurred while fetching categories data", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <section className="relative bg-[#f9fafb]">
@@ -175,6 +202,7 @@ const AddProduct = () => {
                         hidden
                         accept="image/png, image/WebP, image/jpeg, image/avif"
                         type="file"
+                        required
                         id="thubmnail"
                         name="thubmnail"
                         onChange={thumbNailHandler}
@@ -304,7 +332,6 @@ const AddProduct = () => {
                     <input
                       type="text"
                       id="original_price"
-                      required
                       name="original_price"
                       value={state.original_price}
                       onChange={inputHandle}
@@ -345,16 +372,25 @@ const AddProduct = () => {
                       className="py-2 px-4 md:px-5 w-full appearance-none border text-sm opacity-75 text-input rounded-md placeholder-body min-h-12 transition duration-200 focus:ring-0 ease-in-out bg-white border-gray-200 focus:outline-none focus:border-emerald-500 h-11 md:h-12 cursor-pointer"
                     >
                       <div className="w-full h-full flex justify-between items-center">
-                        {categories === 0 ? "Select Category" : `${categories}`}
+                        {categories.length > 0 && cat
+                          ? `${cat.attributes.name}`
+                          : "Select Category"}
                         <AiFillCaretDown className="text-gray-500" />
                       </div>
                     </div>
 
                     {showCategories && (
                       <div className="shadow-lg absolute w-full h-fit max-h-[200px] overflow-y-auto ">
-                        {[1, 2, 3, 4, 5, 6, 7]?.map((value) => (
-                          <div className="w-full px-4 md:px-6 py-3 bg-white border-gray-100 flex items-center justify-start cursor-pointer  border">
-                            {value}
+                        {categories?.map((c) => (
+                          <div
+                            key={c.id}
+                            className="w-full px-4 md:px-6 py-3 bg-white border-gray-100 flex items-center justify-start cursor-pointer  border"
+                            onClick={() => {
+                              setCat(c);
+                              setShowCategories(false);
+                            }}
+                          >
+                            {c.attributes.name}
                           </div>
                         ))}
                       </div>
