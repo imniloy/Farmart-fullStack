@@ -172,7 +172,7 @@ const AddProduct = () => {
 
         resetState();
       }
-      console.log(data);
+      // console.log(data);
     } catch (err) {
       console.error(err);
     }

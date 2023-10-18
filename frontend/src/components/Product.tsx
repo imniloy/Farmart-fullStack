@@ -6,7 +6,7 @@ import ProductDescription from "./ProductDescription";
 import Link from "next/link";
 
 const Product = ({ product }: { product: product }): React.ReactNode => {
-  console.log(product.attributes.slug);
+  // console.log(product.attributes.slug);
   const stock: number = parseInt(product.attributes.stock);
   let discountPercentise: number = 0;
   const price: number = product?.attributes?.price;

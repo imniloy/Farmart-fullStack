@@ -1,7 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiFillCaretDown } from "react-icons/ai";
 import { BsImages } from "react-icons/bs";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
+import { product } from "@/types/products";
+import { Category } from "@/types/Categories";
+import { MdDelete } from "react-icons/md";
 
 type State = {
   name: string;
@@ -12,6 +17,8 @@ type State = {
 };
 
 const UpdateProduct = () => {
+  const { id } = useParams();
+
   const [state, setState] = useState<State>({
     name: "",
     description: "",
@@ -20,14 +27,14 @@ const UpdateProduct = () => {
     stock: "",
   });
 
-  const [thumbnailImageFiles, setThumbnailImageFiles] = useState<Array<any>>(
-    []
-  );
-  const [showThumbnailImage, setShowThumbnailImage] = useState<boolean>(false);
-  const [imageFiles, setImageFiles] = useState<Array<any>>([]);
-  const [showImageFiles, setShowImagesFiles] = useState<Boolean>(false);
-  const [showCategories, setShowCategories] = useState<Boolean>(false);
-  const [categories, setCategories] = useState<Number>(0);
+  const [thumbnailImageFiles, setThumbnailImageFiles] = useState<File[]>([]);
+  const [showThumbnailImage, setShowThumbnailImage] = useState<string[]>([]);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [showImagesFiles, setShowImagesFiles] = useState<string[]>([]);
+  const [showCategories, setShowCategories] = useState<boolean>(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [cat, setCat] = useState<Category>();
+  const [err, setErr] = useState<string>("");
 
   const inputHandle = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -37,6 +44,79 @@ const UpdateProduct = () => {
       [e.target.name]: e.target.value,
     });
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:1337/api/products/${id}?populate=*`,
+          {
+            method: "GET",
+            cache: "no-cache",
+          }
+        );
+        if (response.ok) {
+          const { data }: { data: product } = await response.json();
+          const oldData: State = {
+            name: data.attributes.name,
+            description: data.attributes.description,
+            price: String(data.attributes.price),
+            original_price: String(data.attributes.original_price),
+            stock: data.attributes.stock,
+          };
+          setState(oldData);
+          // setCa
+          console.log(data);
+        } else {
+        }
+      } catch (error) {
+        console.log("Inside catch");
+
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  // fetch categories data...
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:1337/api/categories?`, {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        if (response.ok) {
+          const { data }: { data: Category[] } = await response.json();
+          // You can now use the 'data' variable with the response data.
+          setCategories(data);
+        } else {
+          console.error("Failed to fetch data");
+        }
+      } catch (error) {
+        console.log("An error occurred while fetching categories data", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const imageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {};
+
+  const imageUpdateHandler = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    i: number
+  ) => {};
+
+  const removeImages = (i: number) => {};
+
+  const thumbNailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {};
+
+  const removeThumbnail = () => {};
+
+  const resetState = () => {};
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -48,7 +128,7 @@ const UpdateProduct = () => {
         <div className="px-2 lg:px-0 py-8 md:py-10 lg:py-12 2xl:max-w-screen-2xl w-full xl:max-w-screen-xl flex flex-col lg:space-y-0">
           <div className="personal_Information_Form space-y-4">
             <h2 className="font-semibold text-gray-700 pb-4 text-lg">
-              Add New Product
+              Edit Product
             </h2>
             <form onSubmit={handleSubmit}>
               <div className="space-y-4 md:space-y-6">
@@ -94,49 +174,119 @@ const UpdateProduct = () => {
 
                 {/* images */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 grid-rows-2 lg:grid-rows-1 gap-4 lg:gap-6 auto-rows-min">
-                  <div>
-                    <p className="block text-gray-500 text-sm leading-none mb-3">
-                      Thumbnail Image <span className="text-red-500">*</span>
-                    </p>
-                    <label
-                      htmlFor="thubmnail"
-                      className="flex justify-center items-center flex-col h-[220px] cursor-pointer border border-dashed border-gray-500 text-[#6b7280] w-full"
-                    >
-                      <span>
-                        <BsImages />
-                      </span>
-                      <span className="mt-1">Select image</span>
-                    </label>
-                    <input
-                      hidden
-                      accept="image/png, image/WebP, image/jpeg, image/avif"
-                      type="file"
-                      id="thubmnail"
-                      name="thubmnail"
-                    />
+                  <div className="space-y-4">
+                    <div>
+                      <p className="block text-gray-500 text-sm leading-none mb-3">
+                        Thumbnail Image <span className="text-red-500">*</span>
+                      </p>
+                      <label
+                        htmlFor="thubmnail"
+                        className="flex justify-center items-center flex-col h-[220px] cursor-pointer border border-dashed border-gray-500 text-[#6b7280] w-full"
+                      >
+                        <span>
+                          <BsImages />
+                        </span>
+                        <span className="mt-1">Select image</span>
+                      </label>
+                      <input
+                        hidden
+                        accept="image/png, image/WebP, image/jpeg, image/avif"
+                        type="file"
+                        id="thubmnail"
+                        name="thubmnail"
+                        onChange={thumbNailHandler}
+                      />
+                    </div>
+                    {showThumbnailImage.length > 0 && (
+                      <div className="relative h-[180px] lg:h-[220px] cursor-pointer">
+                        <MdDelete
+                          onClick={() => removeThumbnail()}
+                          className="h-8 w-8 absolute cursor-pointer top-2 right-2 text-black shadow-lg"
+                        />
+                        <label htmlFor="thubmnail">
+                          <img
+                            src={showThumbnailImage[0]}
+                            className="h-full w-full object-contain"
+                            alt="thubmnail"
+                          />
+                        </label>
+                        <input
+                          type="file"
+                          hidden
+                          id="thubmnail"
+                          name="thubmnail"
+                          accept="image/png, image/WebP, image/jpeg, image/avif"
+                          onChange={thumbNailHandler}
+                        />
+                      </div>
+                    )}
                   </div>
 
-                  <div className="h-fit">
-                    <p className="block text-gray-500 text-sm leading-none mb-3">
-                      Select Silder images
-                    </p>
-                    <label
-                      htmlFor="images"
-                      className="flex justify-center items-center flex-col h-[220px] cursor-pointer border border-dashed border-gray-500 text-[#6b7280] w-full"
-                    >
-                      <span>
-                        <BsImages />
-                      </span>
-                      <span className="mt-1">Select image</span>
-                    </label>
-                    <input
-                      hidden
-                      multiple
-                      accept="image/png, image/WebP, image/jpeg, image/avif"
-                      type="file"
-                      name="images"
-                      id="images"
-                    />
+                  <div className="space-y-4">
+                    <div className="h-fit">
+                      <p className="block text-gray-500 text-sm leading-none mb-3">
+                        Select Silder images{" "}
+                        <span className="text-red-500">
+                          (First two images will be uploaded)
+                        </span>
+                      </p>
+                      <label
+                        htmlFor="images"
+                        className="flex justify-center items-center flex-col h-[220px] cursor-pointer border border-dashed border-gray-500 text-[#6b7280] w-full"
+                      >
+                        <span>
+                          <BsImages />
+                        </span>
+                        <span className="mt-1">Select image</span>
+                      </label>
+
+                      <input
+                        multiple
+                        hidden
+                        className={`${
+                          imageFiles?.length <= 2 ? "cursor-none" : ""
+                        }`}
+                        accept="image/png, image/WebP, image/jpeg, image/avif"
+                        type="file"
+                        name="images"
+                        id="images"
+                        onChange={imageHandler}
+                      />
+                    </div>
+                    <div className="space-x-4">
+                      {showImagesFiles.length > 0 && (
+                        <div className={`relative grid grid-cols-2 gap-4`}>
+                          {showImagesFiles.map((img, i) => (
+                            <div
+                              className="relative w-full h-[180px] lg:h-[220px] overflow-hidden rounded-lg"
+                              key={i}
+                            >
+                              <MdDelete
+                                onClick={() => removeImages(i)}
+                                className="h-8 w-8 absolute cursor-pointer top-2 right-2 text-black"
+                              />
+
+                              <label htmlFor={`${i}`}>
+                                <img
+                                  src={img}
+                                  className="w-full h-full object-cover rounded-lg"
+                                  alt=""
+                                />
+                              </label>
+                              <input
+                                type="file"
+                                id={`${i}`}
+                                hidden
+                                accept="image/png, image/WebP, image/jpeg, image/avif"
+                                onChange={(
+                                  e: React.ChangeEvent<HTMLInputElement>
+                                ) => imageUpdateHandler(e, i)}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -171,7 +321,6 @@ const UpdateProduct = () => {
                     <input
                       type="text"
                       id="original_price"
-                      required
                       name="original_price"
                       value={state.original_price}
                       onChange={inputHandle}
@@ -212,25 +361,25 @@ const UpdateProduct = () => {
                       className="py-2 px-4 md:px-5 w-full appearance-none border text-sm opacity-75 text-input rounded-md placeholder-body min-h-12 transition duration-200 focus:ring-0 ease-in-out bg-white border-gray-200 focus:outline-none focus:border-emerald-500 h-11 md:h-12 cursor-pointer"
                     >
                       <div className="w-full h-full flex justify-between items-center">
-                        <p className="">
-                          {categories === 0
-                            ? "Select Category"
-                            : `${categories}`}
-                        </p>
+                        {categories.length > 0 && cat
+                          ? `${cat.attributes.name}`
+                          : "Select Category"}
                         <AiFillCaretDown className="text-gray-500" />
                       </div>
                     </div>
 
                     {showCategories && (
                       <div className="shadow-lg absolute w-full h-fit max-h-[200px] overflow-y-auto ">
-                        {[1, 2, 3, 4, 5, 6, 7]?.map((value) => (
+                        {categories?.map((c) => (
                           <div
-                            onClick={() => {
-                              setCategories(value);
-                            }}
+                            key={c.id}
                             className="w-full px-4 md:px-6 py-3 bg-white border-gray-100 flex items-center justify-start cursor-pointer  border"
+                            onClick={() => {
+                              setCat(c);
+                              setShowCategories(false);
+                            }}
                           >
-                            {value}
+                            {c.attributes.name}
                           </div>
                         ))}
                       </div>
