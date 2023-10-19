@@ -2,11 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { AiFillCaretDown } from "react-icons/ai";
 import { BsImages } from "react-icons/bs";
-import { usePathname, useSearchParams } from "next/navigation";
 import { useParams } from "next/navigation";
 import { product } from "@/types/products";
 import { Category } from "@/types/Categories";
 import { MdDelete } from "react-icons/md";
+import { toast } from "react-toastify";
+import PulseLoader from "react-spinners/PulseLoader";
 
 type State = {
   name: string;
@@ -34,8 +35,7 @@ const UpdateProduct = () => {
   const [showCategories, setShowCategories] = useState<boolean>(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [cat, setCat] = useState<Category>();
-  const [err, setErr] = useState<string>("");
-
+  const [loading, setLoading] = useState<boolean>(false);
   const inputHandle = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -45,6 +45,7 @@ const UpdateProduct = () => {
     });
   };
 
+  // fetch products data based on id...
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -57,6 +58,25 @@ const UpdateProduct = () => {
         );
         if (response.ok) {
           const { data }: { data: product } = await response.json();
+          const { thumbnail, images } = data.attributes;
+          console.log(thumbnail.data);
+          console.log(images.data);
+          if (thumbnail.data) {
+            setShowThumbnailImage([
+              `http://127.0.0.1:1337${thumbnail.data.attributes.url}`,
+            ]);
+          }
+
+          if (images.data) {
+            let urls = [];
+            for (let i = 0; i < images.data.length; i++) {
+              urls.push(
+                `http://127.0.0.1:1337${images?.data[i]?.attributes?.url}`
+              );
+            }
+            setShowImagesFiles(urls);
+          }
+
           const oldData: State = {
             name: data.attributes.name,
             description: data.attributes.description,
@@ -65,8 +85,8 @@ const UpdateProduct = () => {
             stock: data.attributes.stock,
           };
           setState(oldData);
-          // setCa
-          console.log(data);
+          setCat(data.attributes.category.data);
+          // console.log(data);
         } else {
         }
       } catch (error) {
@@ -103,23 +123,121 @@ const UpdateProduct = () => {
     fetchData();
   }, []);
 
-  const imageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {};
+  // imageHandler is responsible for handling slide images...
+  const imageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return;
+    let images: File[] = [];
+    let imagesUrl: string[] = [];
+    let length = e.target.files?.length;
+
+    for (let i = 0; i < length; i++) {
+      if (e.target.files?.length) {
+        let img = e.target.files[i];
+        let url = URL.createObjectURL(img);
+        images.push(img);
+        imagesUrl.push(url);
+      } else {
+        return;
+      }
+    }
+    setImageFiles([...imageFiles, ...images]);
+    setShowImagesFiles([...showImagesFiles, ...imagesUrl]);
+  };
 
   const imageUpdateHandler = (
     e: React.ChangeEvent<HTMLInputElement>,
     i: number
-  ) => {};
+  ) => {
+    if (!e.target.files?.length) return;
+    const file: File = e.target.files[0];
+    const updatedFileUrl = URL.createObjectURL(file);
+    const imgFiles = [...imageFiles];
+    const imgUrls = [...showImagesFiles];
+    const findImgFileIndex = imgFiles.findIndex((_, index) => index === i);
+    const findImgUrlIndex = imgUrls.findIndex((_, index) => index === i);
+    imgFiles[findImgFileIndex] = file;
+    imgUrls[findImgUrlIndex] = updatedFileUrl;
+    setImageFiles(imgFiles);
+    setShowImagesFiles(imgUrls);
+  };
 
-  const removeImages = (i: number) => {};
+  const removeImages = (i: number) => {
+    const imgFiles = [...imageFiles];
+    const imgUrls = [...showImagesFiles];
+    const updatedimgFiles = imgFiles.filter((_, index) => index !== i);
+    const updatedimgUrls = imgUrls.filter((_, index) => index !== i);
+    setImageFiles(updatedimgFiles);
+    setShowImagesFiles(updatedimgUrls);
+  };
 
-  const thumbNailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {};
+  // thumbNailHandler is responsible for handling thumbNail image...
+  const thumbNailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.length) {
+      let imgFile = e.target.files[0];
+      let imgUrl = URL.createObjectURL(imgFile);
+      setThumbnailImageFiles([imgFile]);
+      setShowThumbnailImage([imgUrl]);
+    }
+  };
 
-  const removeThumbnail = () => {};
+  const removeThumbnail = () => {
+    setThumbnailImageFiles([]);
+    setShowThumbnailImage([]);
+  };
 
-  const resetState = () => {};
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (showImagesFiles?.length > 2) {
+      toast.error("Only two images are allowed to be uploaded");
+      return;
+    }
+
+    const formData = new FormData();
+    const data = {
+      name: state.name,
+      description: state.description,
+      price: Number(state.price),
+      original_price: state.original_price?.length
+        ? Number(state.original_price)
+        : null,
+      stock: state.stock,
+      category: cat,
+    };
+    formData.append("data", JSON.stringify(data));
+
+    for (let i = 0; i < thumbnailImageFiles.length; i++) {
+      formData.append(
+        "files.thumbnail",
+        thumbnailImageFiles[i],
+        thumbnailImageFiles[i].name
+      );
+    }
+
+    // const length = imageFiles.length > 2 ? 2 : imageFiles.length;
+    // for (let i = 0; i < length; i++) {
+    //   formData.append("files.images", imageFiles[i], imageFiles[i].name);
+    // }
+
+    try {
+      const response = await fetch(`http://localhost:1337/api/products/${id}`, {
+        method: "PUT",
+        cache: "no-cache",
+        body: formData,
+      });
+
+      const { data }: { data: product } = await response.json();
+
+      if (data?.id) {
+        toast.success(`${data.attributes.name} edited successfully`);
+
+        // resetState();
+      } {
+        console.error('');
+      }
+      console.log(data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -172,8 +290,8 @@ const UpdateProduct = () => {
                   ></textarea>
                 </div>
 
-                {/* images */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 grid-rows-2 lg:grid-rows-1 gap-4 lg:gap-6 auto-rows-min">
+                {/*you can edit only thumbnail images... */}
+                <div className="">
                   <div className="space-y-4">
                     <div>
                       <p className="block text-gray-500 text-sm leading-none mb-3">
@@ -222,7 +340,7 @@ const UpdateProduct = () => {
                     )}
                   </div>
 
-                  <div className="space-y-4">
+                  {/* <div className="space-y-4">
                     <div className="h-fit">
                       <p className="block text-gray-500 text-sm leading-none mb-3">
                         Select Silder images{" "}
@@ -269,7 +387,7 @@ const UpdateProduct = () => {
                               <label htmlFor={`${i}`}>
                                 <img
                                   src={img}
-                                  className="w-full h-full object-cover rounded-lg"
+                                  className="w-full h-full object-contain rounded-lg"
                                   alt=""
                                 />
                               </label>
@@ -287,7 +405,7 @@ const UpdateProduct = () => {
                         </div>
                       )}
                     </div>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* price and original price */}
@@ -389,9 +507,10 @@ const UpdateProduct = () => {
               </div>
               <button
                 type="submit"
-                className="ml-auto w-full md:w-fit mt-10 block px-10 py-3 bg-emerald-500 font-bold text-white"
+                className="ml-auto w-full md:w-fit mt-10 px-10 py-3 bg-emerald-500 font-bold text-white flex justify-center items-center"
               >
-                Update
+                {/* <PulseLoader color="#FFF" size={12} /> */}
+                {loading ? <PulseLoader color="#FFF" size={12} /> : "Update"}
               </button>
             </form>
           </div>
