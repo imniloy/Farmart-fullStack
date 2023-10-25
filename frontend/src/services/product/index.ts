@@ -58,7 +58,7 @@ export const getAllProducts = async ({
 }): Promise<AllProductsResponse> => {
   let url: string = "populate=thumbnail";
   let filterNumber: number = 0;
-  let limit: number = 2;
+  let limit: number = 12;
 
   //
   if (query) {
