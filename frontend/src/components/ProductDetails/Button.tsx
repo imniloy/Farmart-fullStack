@@ -240,7 +240,7 @@ const Button = ({ product }: { product: product }) => {
         </button>
       </div>
       {/* share */}
-      <ShareOptions name={name} />
+      {/* <ShareOptions name={name} /> */}
     </div>
   );
 };

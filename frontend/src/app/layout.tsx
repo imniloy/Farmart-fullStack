@@ -8,8 +8,6 @@ import Footer from "@/components/Footer";
 import AuthMadal from "@/components/madal/AuthMadal";
 import CartSlider from "@/components/madal/Cart";
 import { ToastContainer } from "react-toastify";
-// if the react-toastify gives any error just comment out ReactToastify.css file and comment the ReactToastify.min.css file ...
-// import "react-toastify/dist/ReactToastify.css";
 import "react-toastify/dist/ReactToastify.min.css";
 
 export const metadata: Metadata = {
