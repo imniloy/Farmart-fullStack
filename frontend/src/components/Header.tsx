@@ -18,6 +18,7 @@ const Header = () => {
   const { cartProducts } = useAppSelector((state) => state.cart);
   const { wishListProducts } = useAppSelector((state) => state.wish);
   const { user: loggedOnUser } = useAppSelector((state) => state.auth);
+  const [mobileNav, setMobileNav] = useState(false);
 
   const dispatch = useAppDispatch();
   let totalCartProducts: number = cartProducts.reduce(
@@ -65,7 +66,7 @@ const Header = () => {
   }, [dispatch]);
 
   return (
-    <header className="relative bg-brand-color w-full py-4 sticky top-0 left-0 right-0 z-20">
+    <header className="bg-brand-color w-full py-4 sticky top-0 left-0 right-0 z-20">
       <div className="flex mx-2 500px:mx-6 xl:mx-auto xl:max-w-[1200px] 2xl:max-w-[1420px] items-center justify-between">
         <div className="logo-continer">
           <Link href="/">
@@ -81,79 +82,89 @@ const Header = () => {
         </div>
 
         {/* mobile search box */}
-        <div className="absolute top-[90%] left-0 right-0 shadow-md lg:hidden lg:w-[520px] xl:w-[650px] 2xl:w-[830px]">
-          <form
-            onSubmit={handleSubmit}
-            className="flex items-center flex-grow bg-white rounded-md overflow-hidden"
-          >
-            <input
-              id="product-search"
-              type="search"
-              value={searchText}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setSearchText(e.target.value)
-              }
-              placeholder="I'm searching for"
-              className="flex-grow py-[10px] px-4 outline-none focus:outline-none rounded-md"
-            />
-            <button type="submit" className="h-full p-2 py-[10px] bg-[#FFB531]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-5 h-5"
+        {mobileNav && (
+          <div className="absolute top-[90%] left-0 right-0 shadow-md lg:hidden lg:w-[520px] xl:w-[650px] 2xl:w-[830px]">
+            <form
+              onSubmit={handleSubmit}
+              className="flex items-center flex-grow bg-white rounded-md overflow-hidden"
+            >
+              <input
+                id="product-search"
+                type="search"
+                value={searchText}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setSearchText(e.target.value)
+                }
+                placeholder="I'm searching for"
+                className="flex-grow py-[10px] px-4 outline-none focus:outline-none rounded-md"
+              />
+              <button
+                type="submit"
+                className="h-full p-2 py-[10px] bg-[#FFB531]"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                />
-              </svg>
-            </button>
-          </form>
-        </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                  />
+                </svg>
+              </button>
+            </form>
+          </div>
+        )}
         {/* search bar */}
-        <div className="hidden lg:flex lg:w-[520px] xl:w-[650px] 2xl:w-[830px]">
-          <form
-            onSubmit={handleSubmit}
-            className="flex items-center flex-grow bg-white rounded-md overflow-hidden"
-          >
-            <input
-              id="product-search"
-              type="search"
-              value={searchText}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setSearchText(e.target.value)
-              }
-              placeholder="I'm searching for"
-              className="flex-grow py-[10px] px-4 outline-none focus:outline-none rounded-md"
-            />
-            <button type="submit" className="h-full px-4 bg-[#FFB531]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                />
-              </svg>
-            </button>
-          </form>
-        </div>
+        
+          <div className="hidden lg:flex lg:w-[520px] xl:w-[650px] 2xl:w-[830px]">
+            <form
+              onSubmit={handleSubmit}
+              className="flex items-center flex-grow bg-white rounded-md overflow-hidden"
+            >
+              <input
+                id="product-search"
+                type="search"
+                value={searchText}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setSearchText(e.target.value)
+                }
+                placeholder="I'm searching for"
+                className="flex-grow py-[10px] px-4 outline-none focus:outline-none rounded-md"
+              />
+              <button type="submit" className="h-full px-4 bg-[#FFB531]">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                  />
+                </svg>
+              </button>
+            </form>
+          </div>
+        
 
         {/* right Icons */}
         <ul
           className={`flex items-center space-x-3 500px:space-x-4 lg:space-x-2 xl:space-x-5`}
         >
-          <li onClick={() => {}} className="cursor-pointer flex lg:hidden">
+          <li
+            onClick={() => setMobileNav(!mobileNav)}
+            className="cursor-pointer flex lg:hidden"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
