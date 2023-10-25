@@ -5,13 +5,9 @@ import "react-loading-skeleton/dist/skeleton.css";
 const Loading = () => {
   return (
     <SkeletonTheme baseColor="#E5E7EB" highlightColor="#F9FAFB">
-      <section className="py-10 lg:pb-14 bg-gray-50">
+      <section className="relative bg-[#f9fafb]">
         <div className="section-container">
-          <Skeleton height={24} count={10} className="" />
-
-          <div className="mt-6">
-            <Skeleton height={200} count={1} className="" />
-          </div>
+        <div className="px-2 lg:px-0 py-8 md:py-10 lg:py-12 2xl:max-w-screen-2xl w-full xl:max-w-screen-xl flex flex-col lg:space-y-0 lg:flex-row"></div>
         </div>
       </section>
     </SkeletonTheme>

@@ -22,7 +22,6 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
     return parseFloat(totalPrice.toFixed(2));
   };
 
-
   const response = await (
     await fetch(
       `${PUBLIC_API_URL}/order/product?filters[paymentID][$eq]=${paymentID}`,
@@ -195,10 +194,14 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
                   </td>
                   <td className="px-5 py-3 leading-6 text-center whitespace-nowrap">
                     <span className="text-sm font-bold">
-                      {products?.reduce((total, product) => {
-                        let value = product.quantity * product.price;
-                        return value + total;
-                      }, shipping_method_and_cost?.shippingCost)}
+                      {parseFloat(
+                        products
+                          ?.reduce((total, product) => {
+                            let value = product.quantity * product.price;
+                            return value + total;
+                          }, shipping_method_and_cost?.shippingCost)
+                          .toFixed(2)
+                      )}
                     </span>
                   </td>
                 </tr>
@@ -216,13 +219,14 @@ const Page = async ({ params }: { params: { paymentID: string } }) => {
   }
 
   return (
-    <section className="py-10 lg:pb-14 bg-gray-50">
-      <div className="section-container">
-        <div className="p-2 sm:p-[10px] md:p-4 lg:p-6 bg-white">
-          {pageContent}
+
+      <section className="py-10 lg:pb-14 bg-gray-50">
+        <div className="section-container">
+          <div className="p-2 sm:p-[10px] md:p-4 lg:p-6 bg-white">
+            {pageContent}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
   );
 };
 
