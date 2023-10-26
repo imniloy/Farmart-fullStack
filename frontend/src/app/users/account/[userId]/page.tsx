@@ -14,6 +14,7 @@ import { CartProduct } from "@/redux/features/cart/types";
 import NotFoundComp from "@/components/notFound";
 import CustomError from "@/components/notFound/CustomError";
 import Pagination from "@/components/Pagination";
+import { BsFillCartXFill } from "react-icons/bs";
 
 // export const runtime = "edge";
 
@@ -27,7 +28,7 @@ const Page = async ({
   const { userId } = params;
   const { orders: orderParams, page } = searchParams || {};
   let offset: number = 0;
-  let limit: number = 10;
+  let limit: number = 15;
   let searchUrl: string = `?userId=${userId}&orders=all&offset=${offset}&limit=${limit}`;
   let pageContent: React.ReactNode;
   let ordersContent: React.ReactNode;
@@ -183,7 +184,17 @@ const Page = async ({
           </tbody>
         </table>
       ) : (
-        <p>No order</p>
+        <div className="font-inter w-full px-6 py-10">
+          <div className="w-fit mx-auto flex flex-col items-center">
+            <div className="h-20 w-20 rounded-full flex justify-center items-center text-slate-100 bg-emerald-500 mb-2">
+              <BsFillCartXFill
+                className="w-8 h-8
+          "
+              />
+            </div>
+            <p className="">No Order found</p>
+          </div>
+        </div>
       );
 
     pageContent = (

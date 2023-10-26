@@ -15,7 +15,7 @@ const Page = async ({
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
   const { products: productsParams, page } = searchParams || {};
-  let limit: number = 2;
+  let limit: number = 15;
   let offset: number = page ? (Number(page) - 1) * limit : 0;
   let searchUrl: string = `?`;
   let pageContent: React.ReactNode;

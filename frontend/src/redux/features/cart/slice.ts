@@ -67,9 +67,19 @@ const cartSliderSlice = createSlice({
           return state;
       }
     },
+
+    setClearCart: (state) => {
+      state.cartProducts = [];
+      state.isCartSliderOpen = false;
+    },
   },
 });
 
 export default cartSliderSlice.reducer;
-export const { setIsCartSliderOpen, addToCart, removeToCart, handleQuantity } =
-  cartSliderSlice.actions;
+export const {
+  setIsCartSliderOpen,
+  addToCart,
+  removeToCart,
+  handleQuantity,
+  setClearCart,
+} = cartSliderSlice.actions;

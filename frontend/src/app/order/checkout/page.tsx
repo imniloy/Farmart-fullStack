@@ -9,9 +9,12 @@ import { toast } from "react-toastify";
 import { ProductsData } from "@/types/products";
 import { payloadType } from "@/types/checkoutProducts";
 import ScaleLoader from "react-spinners/ScaleLoader";
+import { useDispatch } from "react-redux";
+import { setClearCart } from "@/redux/features/cart/slice";
 
 const Page = (): React.ReactNode => {
   const { cartProducts } = useAppSelector((state) => state.cart);
+  const dispatch = useDispatch();
   // console.log(cartProducts);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -198,7 +201,7 @@ const Page = (): React.ReactNode => {
               deliveryIn: "",
             });
             console.log(checkoutedProducts);
-
+            dispatch(setClearCart());
             router.push(
               `/order/${checkoutedProducts?.data?.attributes?.paymentID}`
             );

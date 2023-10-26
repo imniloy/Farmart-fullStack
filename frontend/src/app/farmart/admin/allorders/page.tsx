@@ -18,7 +18,7 @@ const page = async ({
 }) => {
   const { orders: ordersParam, page } = searchParams || {};
   const cookieStore = cookies();
-  let limit: number = 2;
+  let limit: number = 15;
   let offset: number = page ? (Number(page) - 1) * limit : 0;
   let searchUrl: string = ``;
   let pageContent: React.ReactNode;
@@ -192,7 +192,7 @@ const page = async ({
 
                     <td className="px-5 py-3 leading-6 text-center whitespace-nowrap">
                       <span className="text-sm font-semibold text-gray-700">
-                        ${totalPrice}
+                        ${parseFloat(totalPrice.toString()).toFixed(2)}
                       </span>
                     </td>
                   </tr>

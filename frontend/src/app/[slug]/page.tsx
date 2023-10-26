@@ -20,8 +20,9 @@ export async function generateMetadata({ params }: { params: Params }) {
       await getProductDetails(slug);
 
     return {
-      title: data[0].attributes.name,
-      description: data[0].attributes.description,
+      title: typeof data === "object" ? data[0].attributes.name : "Not Found",
+      description:
+        typeof data === "object" ? data[0].attributes.description : "Not Found",
     };
   } catch (err) {
     return {
@@ -33,7 +34,6 @@ export async function generateMetadata({ params }: { params: Params }) {
 
 const Page = async ({ params }: { params: Params }) => {
   const { slug } = params;
-  // console.log(slug);
   let reletedProducts: product[] = [];
   const { success, data }: { success: boolean; data: product[] } =
     await getProductDetails(slug);
