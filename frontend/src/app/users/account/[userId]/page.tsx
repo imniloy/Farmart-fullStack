@@ -27,7 +27,7 @@ const Page = async ({
   const { userId } = params;
   const { orders: orderParams, page } = searchParams || {};
   let offset: number = 0;
-  let limit: number = 1;
+  let limit: number = 10;
   let searchUrl: string = `?userId=${userId}&orders=all&offset=${offset}&limit=${limit}`;
   let pageContent: React.ReactNode;
   let ordersContent: React.ReactNode;
@@ -165,7 +165,7 @@ const Page = async ({
                   </td>
                   <td className="px-5 py-3 leading-6 text-center whitespace-nowrap">
                     <span className="text-sm font-semibold text-gray-700">
-                      ${totalPrice}
+                      ${parseFloat(`${totalPrice}`).toFixed(2)}
                     </span>
                   </td>
 

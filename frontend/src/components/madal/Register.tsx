@@ -104,8 +104,6 @@ const Ragister = (): React.ReactElement => {
         verifyUser &&
           verifyUser.user.user_type === "admin" &&
           router.push(`/farmart/admin`);
-        // console.log(user);
-        // router.replace("/");
       }
     } catch (e) {
       let errorText = "";
