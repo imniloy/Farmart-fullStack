@@ -10,6 +10,9 @@ import {
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import BeatLoader from "react-spinners/BeatLoader";
+import { userLoggedIn } from "@/redux/features/auth/authSlice";
+import Cookies from "js-cookie";
+import { verifyAuthOnClient } from "@/services/verifyAuth";
 
 const Ragister = (): React.ReactElement => {
   const [name, setName] = useState<string>("");
@@ -78,15 +81,47 @@ const Ragister = (): React.ReactElement => {
           draggable: true,
           theme: "light",
         });
+        const userToken = Cookies.get("farmart_client_token");
+        const verifyUser = userToken && (await verifyAuthOnClient(userToken));
+        verifyUser &&
+          dispatch(
+            userLoggedIn({
+              userToken,
+              user: {
+                id: verifyUser.user.id,
+                username: verifyUser.user.username,
+                email: verifyUser.user.email,
+                user_type: verifyUser.user.user_type,
+              },
+            })
+          );
+
         setError(data.message);
         setName("");
         setEmail("");
         setPassword("");
         dispatch(setAuthMadalOpen(false));
+        verifyUser &&
+          verifyUser.user.user_type === "admin" &&
+          router.push(`/farmart/admin`);
+        // console.log(user);
         // router.replace("/");
       }
     } catch (e) {
-      if (e instanceof Error) setError(e.message);
+      let errorText = "";
+      if (e instanceof Error) {
+        setError(e.message);
+        errorText = e.message;
+        toast.error(`${errorText}`, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: true,
+          theme: "light",
+        });
+      }
     } finally {
       setLoading(false);
     }

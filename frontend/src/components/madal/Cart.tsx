@@ -288,8 +288,8 @@ function CartSlider(): React.ReactElement {
                   }  font-semibold text-sm text-center rounded`}
                   onClick={() => {
                     const getCookie = Cookies.get("farmart_client_token");
-                    console.log(getCookie);
-                    console.log(user);
+                    // console.log(getCookie);
+                    // console.log(user);
                     if (getCookie && user && user.id) {
                       router.push("/order/checkout");
                       closeModal();

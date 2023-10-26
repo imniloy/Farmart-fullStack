@@ -12,7 +12,7 @@ import ScaleLoader from "react-spinners/ScaleLoader";
 
 const Page = (): React.ReactNode => {
   const { cartProducts } = useAppSelector((state) => state.cart);
-  console.log(cartProducts);
+  // console.log(cartProducts);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [state, setState] = useState({
