@@ -200,7 +200,7 @@ const Page = (): React.ReactNode => {
               paymentMethod: "",
               deliveryIn: "",
             });
-            console.log(checkoutedProducts);
+            // console.log(checkoutedProducts);
             dispatch(setClearCart());
             router.push(
               `/order/${checkoutedProducts?.data?.attributes?.paymentID}`
